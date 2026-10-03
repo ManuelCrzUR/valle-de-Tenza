@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valle Directo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap">
+<style>
+:root{--dark:#14302b;--mid:#1d4540;--cream:#f6f3ec;--sand:#e9e1cd;--amber:#e0902f;--teal:#2f6b5a;--ink:#1f2a27;--muted:#3d4a45;--line:#e0d9c8}
+*{box-sizing:border-box}
+body{margin:0;font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink)}
+h1,h2,h3,.brand{font-family:'Fraunces',Georgia,serif;margin:0;color:var(--dark)}
+button{font:inherit;cursor:pointer}
+.wrap{max-width:1152px;margin:0 auto;padding:0 32px}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 0}
+.brand{font-size:28px;font-weight:700}
+.hero{padding:40px 0 32px;display:flex;flex-direction:column;gap:20px;max-width:760px}
+.eyebrow{font-size:15px;font-weight:700;letter-spacing:1px;color:#8a4d00;margin:0}
+h1{font-size:clamp(36px,6vw,60px);line-height:1.08;font-weight:600}
+.lead{font-size:20px;line-height:1.5;color:var(--muted);margin:0}
+.menu{display:flex;flex-wrap:wrap;gap:12px;padding:8px 0 32px}
+.tab{min-height:48px;padding:12px 22px;border-radius:999px;border:2px solid var(--dark);background:transparent;color:var(--dark);font-weight:700;font-size:16px}
+.tab:hover{background:var(--sand)}
+.tab[aria-selected="true"]{background:var(--dark);color:var(--cream)}
+.tab.cta{background:var(--amber);border-color:var(--amber)}
+.tab.cta[aria-selected="true"]{background:var(--dark);border-color:var(--dark)}
+.panel{display:none;background:#fff;border:1px solid var(--line);border-radius:24px;padding:36px;margin-bottom:64px}
+.panel.on{display:block}
+.hint{color:var(--muted);font-size:18px;padding-bottom:64px;margin:0}
+.panel h2{font-size:34px;font-weight:600;margin-bottom:8px}
+.sub{color:var(--muted);font-size:17px;margin:0 0 24px;line-height:1.5}
+.opts{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+.opt{min-height:48px;padding:12px 20px;border-radius:14px;border:2px solid var(--line);background:#fff;font-weight:500;font-size:16px;color:var(--ink)}
+.opt:hover{border-color:var(--teal)}
+.opt[aria-pressed="true"]{border-color:var(--teal);background:#e6f1ed;color:var(--dark);font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.card{background:var(--cream);border-radius:16px;padding:22px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:22px}
+.card p{margin:0;font-size:16px;line-height:1.45;color:var(--muted)}
+.chip{align-self:flex-start;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;background:var(--teal);color:#fff}
+.chip.soft{background:#efe3c8;color:#5a4414}
+.btn{min-height:48px;padding:12px 24px;border-radius:999px;border:0;background:var(--dark);color:var(--cream);font-weight:700;font-size:16px}
+.empty{background:var(--cream);border-radius:16px;padding:24px;color:var(--muted);font-size:17px;display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.route{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.route svg{flex:1 1 420px;max-width:560px;height:auto;background:var(--cream);border-radius:16px}
+.stops{flex:1 1 260px;margin:0;padding-left:22px;font-size:18px;line-height:1.8}
+.chat{display:flex;flex-direction:column;gap:14px;max-width:640px}
+.log{background:var(--cream);border-radius:16px;padding:18px;min-height:220px;max-height:340px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 14px;border-radius:14px;max-width:85%;font-size:16px;line-height:1.4}
+.msg.bot{background:#fff;border:1px solid var(--line);align-self:flex-start}
+.msg.me{background:var(--dark);color:var(--cream);align-self:flex-end}
+.chatform{display:flex;gap:10px}
+.chatform input{flex:1;min-height:48px;padding:0 16px;border-radius:14px;border:2px solid var(--line);font:inherit;font-size:16px}
+footer{padding:24px 0 40px;color:var(--muted);font-size:15px}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header><div class="brand">Valle Directo</div></header>
+<section class="hero">
+<p class="eyebrow">VALLE DE TENZA, BOYACÁ</p>
+<h1>¿Quieres viajar al Valle de Tenza este fin de semana?</h1>
+<p class="lead">Sin perder horas buscando información dispersa. Elige por dónde empezar.</p>
+</section>
+<div class="menu" role="tablist" aria-label="Secciones">
+<button class="tab cta" role="tab" id="t-itinerario" aria-selected="false" aria-controls="p-itinerario" data-p="itinerario">Armar mi itinerario</button>
+<button class="tab" role="tab" id="t-lugares" aria-selected="false" aria-controls="p-lugares" data-p="lugares">Qué lugares hay</button>
+<button class="tab" role="tab" id="t-mapa" aria-selected="false" aria-controls="p-mapa" data-p="mapa">Mi mapa</button>
+<button class="tab" role="tab" id="t-chat" aria-selected="false" aria-controls="p-chat" data-p="chat">Chatbot y embajador</button>
+<button class="tab" role="tab" id="t-prestadores" aria-selected="false" aria-controls="p-prestadores" data-p="prestadores">Soy prestador</button>
+</div>
+<p class="hint" id="hint">Toca una opción para ver su información.</p>
+
+<section class="panel" id="p-itinerario" role="tabpanel" aria-labelledby="t-itinerario">
+<h2>Tu itinerario a la medida</h2>
+<p class="sub">Elige tu plan y generamos el itinerario, sin buscar en catálogos.</p>
+<div class="opts" id="vibes">
+<button class="opt" aria-pressed="false" data-v="aventura">Naturaleza y Aventura</button>
+<button class="opt" aria-pressed="false" data-v="gastro">Descanso y Gastronomía</button>
+<button class="opt" aria-pressed="false" data-v="cultura">Cultura y Artesanías</button>
+</div>
+<div id="result"></div>
+</section>
+
+<section class="panel" id="p-lugares" role="tabpanel" aria-labelledby="t-lugares">
+<h2>Qué lugares hay</h2>
+<p class="sub">Explora el Valle por categoría.</p>
+<div class="opts" id="cats">
+<button class="opt" aria-pressed="true" data-c="aventura">Naturaleza</button>
+<button class="opt" aria-pressed="false" data-c="gastro">Gastronomía</button>
+<button class="opt" aria-pressed="false" data-c="cultura">Cultura</button>
+</div>
+<div class="grid" id="places"></div>
+</section>
+
+<section class="panel" id="p-mapa" role="tabpanel" aria-labelledby="t-mapa">
+<h2>Tu mapa</h2>
+<p class="sub">Muestra solo la ruta de tu itinerario ya generado. No es un buscador libre.</p>
+<div id="mapbox"></div>
+</section>
+
+<section class="panel" id="p-chat" role="tabpanel" aria-labelledby="t-chat">
+<h2>Chatbot y embajador</h2>
+<p class="sub">Dudas rápidas con el chatbot a cualquier hora, o habla con una persona del Valle en horario de oficina: [HORARIO].</p>
+<div class="chat">
+<div class="log" id="log" aria-live="polite"><div class="msg bot">Hola, soy el asistente de Valle Directo. Pregúntame por hospedaje, rutas o cómo armar tu viaje.</div></div>
+<form class="chatform" id="chatform"><label for="q" style="position:absolute;left:-9999px">Tu pregunta</label><input id="q" autocomplete="off" placeholder="Escribe tu pregunta"><button class="btn" type="submit">Enviar</button></form>
+<button class="opt" type="button" id="amb">Hablar con un embajador</button>
+</div>
+</section>
+
+<section class="panel" id="p-prestadores" role="tabpanel" aria-labelledby="t-prestadores">
+<h2>Para prestadores y emprendedores</h2>
+<p class="sub">Una red que conecta hospedajes, guías, artesanos y gastronomía de todo el Valle de Tenza, sin intermediarios externos.</p>
+<div class="grid">
+<div class="card"><h3>Red de integración</h3><p>Conecta y comunica a empresas, prestadores y emprendimientos locales.</p></div>
+<div class="card"><h3>Disponibilidad real</h3><p>Cada negocio mantiene su propia disponibilidad al día, organizada por municipio y vereda.</p></div>
+<div class="card"><h3>Cadena de suministro</h3><p>Intercambio de insumos y economía circular entre los negocios de la región.</p></div>
+</div>
+<p class="sub" style="margin-top:24px">¿Quieres hacer parte? Escríbenos a [CONTACTO].</p>
+</section>
+<footer>Valle Directo · [CONTACTO] · [REDES SOCIALES]</footer>
+</div>
+
+<script>
+const D={
+ aventura:{t:"Tu aventura en el Valle",pl:[["Cascada El Salto","Senderismo"],["Miradores","Vistas del valle"],["Pueblo Antiguo","Recorrido a pie"]],stay:"Finca La Esperanza",desc:"Cabaña rural",dur:"2 días"},
+ gastro:{t:"Tu escapada gastronómica",pl:[["Mercado Local","Productos de la región"],["Cata de quesos","Sabores locales"],["Recetas tradicionales","Cocina del Valle"]],stay:"Casa Rural El Sabor",desc:"Hospedería con restaurante de cocina local",dur:"2 días"},
+ cultura:{t:"Tu ruta cultural",pl:[["Talleres de cerámica","Oficio artesanal"],["Tejidos","Oficio artesanal"],["Museo Comunitario","Memoria del Valle"],["Tiangue","Mercado tradicional"]],stay:"Posada Artesanal",desc:"Casa colonial restaurada en Sutatenza",dur:"2 días"}
+};
+let current=null;
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function show(p){
+ $$('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.p===p));
+ $$('.panel').forEach(x=>x.classList.toggle('on',x.id==='p-'+p));
+ $('#hint').style.display='none';
+ if(p==='mapa')drawMap();
+ if(p==='lugares')drawPlaces($('#cats .opt[aria-pressed="true"]').dataset.c);
+ $('#p-'+p).scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>show(t.dataset.p)));
+
+$$('#vibes .opt').forEach(b=>b.addEventListener('click',()=>{
+ $$('#vibes .opt').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ current=b.dataset.v; const d=D[current];
+ $('#result').innerHTML=`<div class="grid">
+ <div class="card"><span class="chip">Cupo verificado hoy</span><h3>${d.stay}</h3><p>${d.desc}</p></div>
+ <div class="card"><h3>Ruta sugerida</h3><p>${d.pl.map(x=>x[0]).join(' → ')}</p><p>${d.dur}</p></div>
+ <div class="card"><h3>Tu embajador</h3><p>Red de confianza del Valle de Tenza en Bogotá.</p></div></div>
+ <p style="margin:20px 0 0"><button class="btn" id="gomap">Ver mi ruta en el mapa</button></p>`;
+ $('#gomap').addEventListener('click',()=>show('mapa'));
+}));
+
+function drawPlaces(c){
+ $('#places').innerHTML=D[c].pl.map(x=>`<div class="card"><span class="chip soft">${x[1]}</span><h3>${x[0]}</h3></div>`).join('');
+}
+$$('#cats .opt').forEach(b=>b.addEventListener('click',()=>{
+ $$('#cats .opt').forEach(x=>x.setAttribute('aria-pressed',x===b));
+ drawPlaces(b.dataset.c);
+}));
+
+function drawMap(){
+ const box=$('#mapbox');
+ if(!current){box.innerHTML=`<div class="empty">Aún no tienes una ruta. Genera tu itinerario y aquí verás sus puntos en orden.<button class="btn" id="tomk">Armar mi itinerario</button></div>`;$('#tomk').addEventListener('click',()=>show('itinerario'));return;}
+ const d=D[current], n=d.pl.length, w=520, h=300;
+ const pts=d.pl.map((_,i)=>[50+i*((w-100)/(n-1)),i%2?200:100]);
+ box.innerHTML=`<div class="route"><svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Esquema de la ruta con ${n} paradas">
+ <polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="#e0902f" stroke-width="4" stroke-dasharray="10 8"/>
+ ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="18" fill="#14302b"/><text x="${p[0]}" y="${p[1]+6}" text-anchor="middle" fill="#f6f3ec" font-size="16" font-weight="700">${i+1}</text>`).join('')}
+ <text x="12" y="${h-12}" fill="#3d4a45" font-size="13">Esquema ilustrativo, no a escala</text></svg>
+ <div><h3 style="margin-bottom:8px">${d.t}</h3><ol class="stops">${d.pl.map(x=>`<li>${x[0]}</li>`).join('')}</ol></div></div>`;
+}
+
+const R=[["hospedaje|dormir|cabaña|posada","Tu itinerario incluye un hospedaje con cupo verificado. Genéralo en «Armar mi itinerario»."],["ruta|mapa|lugares","Puedes ver los lugares por categoría y tu ruta en el mapa una vez generes el itinerario."],["precio|costo|cuánto","Aún no tengo precios. Un embajador te puede confirmar los valores."],["hola|buenas","¡Hola! ¿En qué te ayudo con tu viaje al Valle de Tenza?"]];
+function say(t,c){const m=document.createElement('div');m.className='msg '+c;m.textContent=t;$('#log').appendChild(m);$('#log').scrollTop=1e5}
+$('#chatform').addEventListener('submit',e=>{
+ e.preventDefault();const q=$('#q').value.trim();if(!q)return;
+ say(q,'me');$('#q').value='';
+ const r=R.find(x=>new RegExp(x[0],'i').test(q));
+ setTimeout(()=>say(r?r[1]:"Esa pregunta es mejor para un embajador. Toca «Hablar con un embajador».",'bot'),400);
+});
+$('#amb').addEventListener('click',()=>say("Un embajador del Valle te atiende en horario de oficina: [HORARIO]. Contacto: [CONTACTO].",'bot'));
+</script>
+</body>
+</html>

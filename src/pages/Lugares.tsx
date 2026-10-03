@@ -1,0 +1,27 @@
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Option, PlaceCard } from '../components/ui'
+import { PLANES, getPlan } from '../data/planes'
+import { usePagina } from '../usePagina'
+
+export default function Lugares() {
+  usePagina('Qué lugares hay')
+  const [params, setParams] = useSearchParams()
+  const go = useNavigate()
+  const plan = getPlan(params.get('cat')) ?? PLANES[0]
+  return (
+    <div className="wrap pagina">
+      <h1 id="titulo" tabIndex={-1} className="t-h1">Qué lugares hay</h1>
+      <p className="sub">Explora el Valle por categoría.</p>
+      <div className="opts" role="group" aria-label="Categoría">
+        {PLANES.map((p) => (
+          <Option key={p.id} icon={p.icono} selected={p.id === plan.id} onClick={() => setParams({ cat: p.id }, { replace: true })}>{p.categoria}</Option>
+        ))}
+      </div>
+      <div className="grid">
+        {plan.paradas.map((x) => (
+          <PlaceCard key={x.id} chip={x.detalle} title={x.nombre} meta={`En «${plan.opcion}»`} onClick={() => go(`/lugares/${x.id}`)} />
+        ))}
+      </div>
+    </div>
+  )
+}

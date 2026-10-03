@@ -1,0 +1,15 @@
+{
+  "name": "Valle Directo",
+  "short_name": "Valle Directo",
+  "description": "Itinerarios al Valle de Tenza con cupo verificado hoy.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f3ec",
+  "theme_color": "#14302b",
+  "icons": [
+    { "src": "app/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "app/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

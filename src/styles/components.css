@@ -1,0 +1,89 @@
+/* Valle Directo — estilos de componentes. Requiere tokens.css. */
+body { margin: 0; font-family: var(--font-sans); font-size: 16px; line-height: 24px; background: var(--surface); color: var(--ink); }
+.vd-stage { padding: var(--space-4); display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.vd-stage-col { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); max-width: 420px; }
+
+/* foco común */
+.vd-btn:focus-visible, .vd-opt:focus-visible, .vd-tab:focus-visible, .vd-card-action:focus-visible, .vd-input:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+.vd-icon { flex: none; display: block; }
+
+/* Logo */
+.vd-logo { display: inline-flex; align-items: center; gap: 12px; }
+.vd-logo-mark { display: block; flex: none; }
+.vd-logo-words { display: flex; flex-direction: column; gap: 4px; }
+.vd-logo-name { font-family: var(--font-display); font-weight: 600; line-height: 1; letter-spacing: -0.01em; color: var(--heading); }
+.vd-logo-tag { font-weight: 700; letter-spacing: 0.2em; line-height: 1; color: var(--accent-text); }
+.vd-logo { --vd-logo-ring: transparent; }
+[data-theme="dark"] .vd-logo, .vd-logo-ondark { --vd-logo-ring: #f6f3ec; }
+.vd-logo-ondark .vd-logo-name { color: #f6f3ec; }
+.vd-logo-ondark .vd-logo-tag { color: #e0902f; }
+.vd-logo-stacked { flex-direction: column; text-align: center; }
+.vd-logo-stacked .vd-logo-words { align-items: center; }
+
+/* Button */
+.vd-btn { font: inherit; font-size: 16px; font-weight: 700; line-height: 20px; min-height: var(--touch-min); padding: 12px 24px;
+  border-radius: var(--radius-pill); border: 2px solid transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  transition: background-color .15s ease, border-color .15s ease; }
+.vd-btn-primary { background: var(--primary); color: var(--on-primary); }
+.vd-btn-primary:hover { background: var(--primary-hover); }
+.vd-btn-cta { background: var(--accent); color: var(--on-accent); }
+.vd-btn-cta:hover { background: var(--arena); }
+.vd-btn-secondary { background: transparent; color: var(--heading); border-color: var(--heading); }
+.vd-btn-secondary:hover { background: var(--surface-sunken); }
+.vd-btn-ghost { background: transparent; color: var(--secondary); padding-inline: 12px; }
+.vd-btn-ghost:hover { background: var(--secondary-soft); color: var(--on-secondary-soft); }
+.vd-btn:disabled { opacity: .45; cursor: not-allowed; }
+.vd-btn-block { width: 100%; }
+
+/* Option */
+.vd-opt { font: inherit; font-size: 16px; font-weight: 500; min-height: var(--touch-min); padding: 12px 20px; border-radius: var(--radius-md);
+  border: 2px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); cursor: pointer; display: inline-flex; align-items: center; gap: var(--space-2); }
+.vd-opt:hover { border-color: var(--secondary); }
+.vd-opt[aria-pressed="true"] { border-color: var(--secondary); background: var(--secondary-soft); color: var(--on-secondary-soft); font-weight: 700; }
+
+/* Chip */
+.vd-chip { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; font-size: 13px; line-height: 18px; font-weight: 700; padding: 5px 11px; border-radius: var(--radius-pill); }
+.vd-chip-strong { background: var(--chip-strong); color: var(--on-chip-strong); }
+.vd-chip-soft { background: var(--accent-soft); color: var(--on-accent-soft); }
+.vd-chip-success { background: var(--secondary-soft); color: var(--success); }
+.vd-chip-danger { background: var(--surface-sunken); color: var(--danger); }
+
+/* PlaceCard */
+.vd-card { font: inherit; text-align: left; text-decoration: none; color: inherit; background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg);
+  padding: 22px; display: flex; flex-direction: column; gap: var(--space-2); }
+.vd-card-action { cursor: pointer; }
+.vd-card-action:hover { border-color: var(--line-strong); }
+.vd-card-img { width: calc(100% + 44px); margin: -22px -22px 6px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--radius-lg) var(--radius-lg) 0 0; display: block; }
+.vd-card-title { font-family: var(--font-display); font-size: 20px; line-height: 26px; font-weight: 600; color: var(--heading); }
+.vd-card-desc { font-size: 16px; line-height: 23px; color: var(--ink-muted); }
+.vd-card-meta { font-size: 13px; line-height: 18px; font-weight: 500; color: var(--ink-muted); }
+
+/* TextField */
+.vd-field { display: flex; flex-direction: column; gap: 6px; }
+.vd-field-label { font-size: 15px; font-weight: 700; color: var(--ink); }
+.vd-input { font: inherit; font-size: 16px; min-height: var(--touch-min); padding: 0 16px; border-radius: var(--radius-md); border: 2px solid var(--line-strong);
+  background: var(--surface-raised); color: var(--ink); }
+.vd-input::placeholder { color: var(--ink-muted); opacity: .8; }
+.vd-input:focus { border-color: var(--secondary); }
+.vd-field-msg { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 18px; color: var(--ink-muted); }
+.vd-field-error .vd-input { border-color: var(--danger); }
+.vd-field-error .vd-field-msg { color: var(--danger); font-weight: 500; }
+
+/* ChatBubble */
+.vd-msg { padding: 10px 14px; border-radius: var(--radius-md); max-width: 85%; font-size: 16px; line-height: 22px; display: flex; flex-direction: column; gap: 2px; }
+.vd-msg-bot { background: var(--surface-raised); border: 1px solid var(--line); color: var(--ink); align-self: flex-start; border-bottom-left-radius: 4px; }
+.vd-msg-me { background: var(--primary); color: var(--on-primary); align-self: flex-end; border-bottom-right-radius: 4px; }
+.vd-msg-ambassador { background: var(--accent-soft); color: var(--on-accent-soft); align-self: flex-start; border-bottom-left-radius: 4px; }
+.vd-msg-author { font-size: 13px; font-weight: 700; }
+
+/* TabBar */
+.vd-tabbar { display: flex; justify-content: space-around; min-height: var(--tabbar-height); padding: 6px var(--space-2) 8px; background: var(--surface-raised);
+  border-top: 1px solid var(--line); }
+.vd-tab { font: inherit; flex: 1; min-width: 64px; background: none; border: 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--ink-muted); padding: 0; }
+.vd-tab-pill { display: flex; align-items: center; justify-content: center; width: 56px; height: 32px; border-radius: var(--radius-pill); }
+.vd-tab-label { font-size: 12px; line-height: 16px; font-weight: 500; }
+.vd-tab[aria-current="page"] { color: var(--heading); }
+.vd-tab[aria-current="page"] .vd-tab-pill { background: var(--secondary-soft); color: var(--on-secondary-soft); }
+.vd-tab[aria-current="page"] .vd-tab-label { font-weight: 700; }

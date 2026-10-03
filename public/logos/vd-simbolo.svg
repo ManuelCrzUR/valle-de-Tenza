@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200"><title>Valle Directo — símbolo</title><circle cx="100" cy="100" r="96" fill="#14302b"></circle>
+<circle cx="100" cy="100" r="84" fill="none" stroke="#e0902f" stroke-width="3"></circle>
+<defs><clipPath id="s"><circle cx="100" cy="100" r="76"></circle></clipPath></defs>
+<g clip-path="url(#s)"><rect width="200" height="200" fill="#f6f3ec"></rect>
+<circle cx="132" cy="70" r="16" fill="#e0902f"></circle>
+<path d="M20 118 L58 94 L88 114 L124 80 L180 118 V200 H20Z" fill="#2f6b5a"></path>
+<path d="M20 134 L62 114 L94 132 L132 104 L180 134 V200 H20Z" fill="#14302b"></path>
+<path d="M62 152 H138 M80 164 H120" stroke="#f6f3ec" stroke-width="5" stroke-linecap="round"></path></g></svg>
