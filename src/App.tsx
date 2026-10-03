@@ -1,13 +1,16 @@
+import { lazy } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
-import Inicio from './pages/Inicio'
-import Itinerario from './pages/Itinerario'
-import Lugares from './pages/Lugares'
-import LugarDetalle from './pages/LugarDetalle'
-import Mapa from './pages/Mapa'
-import Chat from './pages/Chat'
-import Prestadores from './pages/Prestadores'
-import NoEncontrado from './pages/NoEncontrado'
+
+// Cada pantalla se descarga cuando se visita (Layout muestra <Cargando/> mientras tanto).
+const Inicio = lazy(() => import('./pages/Inicio'))
+const Itinerario = lazy(() => import('./pages/Itinerario'))
+const Lugares = lazy(() => import('./pages/Lugares'))
+const LugarDetalle = lazy(() => import('./pages/LugarDetalle'))
+const Mapa = lazy(() => import('./pages/Mapa'))
+const Chat = lazy(() => import('./pages/Chat'))
+const Prestadores = lazy(() => import('./pages/Prestadores'))
+const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
 
 export default function App() {
   return (

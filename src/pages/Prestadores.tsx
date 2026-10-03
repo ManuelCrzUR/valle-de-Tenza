@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+import { Montanas } from '../components/Montanas'
 import { config } from '../config'
 import { usePagina } from '../usePagina'
 
@@ -13,10 +15,15 @@ export default function Prestadores() {
     <div className="wrap pagina">
       <h1 id="titulo" tabIndex={-1} className="t-h1">Para prestadores y emprendedores</h1>
       <p className="sub">Una red que conecta hospedajes, guías, artesanos y gastronomía de todo el Valle de Tenza, sin intermediarios externos.</p>
-      <dl className="beneficios">
-        {BENEFICIOS.map(([t, d]) => <div key={t}><dt className="t-h3">{t}</dt><dd>{d}</dd></div>)}
-      </dl>
-      <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{config.contacto}</strong>.</p>
+      <div className="prest-grid">
+        <dl className="beneficios">
+          {BENEFICIOS.map(([t, d], i) => <div key={t} className="aparece" style={{ '--i': i } as CSSProperties}><dt className="t-h3">{t}</dt><dd>{d}</dd></div>)}
+        </dl>
+        <aside className="panel prest-aside">
+          <Montanas variante="cultura" className="prest-arte" />
+          <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{config.contacto}</strong>.</p>
+        </aside>
+      </div>
     </div>
   )
 }

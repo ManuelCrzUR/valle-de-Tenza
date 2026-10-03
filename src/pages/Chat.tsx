@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Button, ChatBubble, TextField } from '../components/ui'
+import { Icon } from '../components/Icon'
 import { responder } from '../data/respuestas'
 import { preguntar, ChatError } from '../chatApi'
 import { config } from '../config'
@@ -45,18 +46,31 @@ export default function Chat() {
     <div className="wrap pagina">
       <h1 id="titulo" tabIndex={-1} className="t-h1">Chatbot y embajador</h1>
       <p className="sub">Dudas rápidas con el chatbot a cualquier hora, o habla con una persona del Valle en horario de oficina: {config.horario}.</p>
-      <div className="chat">
-        <div className="chat-log" ref={log} role="log" aria-live="polite" aria-label="Conversación" aria-busy={pensando}>
-          {msgs.map((m, i) => <ChatBubble key={i} from={m.from} author={m.from === 'ambassador' ? 'Embajador del Valle' : undefined}>{m.text}</ChatBubble>)}
-          {pensando && <ChatBubble from="bot" className="vd-msg-pensando">Escribiendo…</ChatBubble>}
+      <div className="chat-layout">
+        <div className="chat">
+          <div className="chat-log" ref={log} role="log" aria-live="polite" aria-label="Conversación" aria-busy={pensando}>
+            {msgs.map((m, i) => <ChatBubble key={i} from={m.from} author={m.from === 'ambassador' ? 'Embajador del Valle' : undefined}>{m.text}</ChatBubble>)}
+            {pensando && (
+              <ChatBubble from="bot" className="vd-msg-pensando">
+                <span className="sr-only">Escribiendo…</span>
+                <span className="puntos" aria-hidden><i /><i /><i /></span>
+              </ChatBubble>
+            )}
+          </div>
+          <form className="chat-form" onSubmit={enviar}>
+            <TextField label="Tu pregunta" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" maxLength={MAX} placeholder="Escribe tu pregunta" />
+            <Button type="submit" variant="primary" disabled={pensando}>Enviar</Button>
+          </form>
         </div>
-        <form className="chat-form" onSubmit={enviar}>
-          <TextField label="Tu pregunta" value={q} onChange={(e) => setQ(e.target.value)} autoComplete="off" maxLength={MAX} placeholder="Escribe tu pregunta" />
-          <Button type="submit" variant="primary" disabled={pensando}>Enviar</Button>
-        </form>
-        <Button variant="secondary" icon="embajador" onClick={() => add({ from: 'ambassador', text: `Un embajador del Valle te atiende en horario de oficina: ${config.horario}. Contacto: ${config.contacto}.` })}>
-          Hablar con un embajador
-        </Button>
+        <aside className="panel chat-aside">
+          <Icon name="embajador" size={32} />
+          <h2 className="t-h3">Habla con una persona</h2>
+          <p>Un embajador del Valle te atiende en horario de oficina: {config.horario}.</p>
+          <p>Contacto: {config.contacto}</p>
+          <Button variant="secondary" icon="embajador" onClick={() => add({ from: 'ambassador', text: `Un embajador del Valle te atiende en horario de oficina: ${config.horario}. Contacto: ${config.contacto}.` })}>
+            Hablar con un embajador
+          </Button>
+        </aside>
       </div>
     </div>
   )

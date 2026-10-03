@@ -1,7 +1,9 @@
+import { Suspense } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { TabBar } from './ui'
 import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
+import { Cargando } from './Cargando'
 import { config } from '../config'
 
 const NAV: TabBarItem[] = [
@@ -31,7 +33,9 @@ export function Layout() {
         </div>
       </header>
 
-      <main id="contenido" tabIndex={-1}><Outlet /></main>
+      <main id="contenido" tabIndex={-1}>
+        <div key={pathname} className="ruta-entra"><Suspense fallback={<Cargando />}><Outlet /></Suspense></div>
+      </main>
 
       <footer className="footer">
         <div className="wrap footer-in">
