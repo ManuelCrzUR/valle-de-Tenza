@@ -1,6 +1,6 @@
 /* Valle Directo — layout y pantallas. Mobile-first: base < 720px, tablet ≥ 720px, escritorio ≥ 1024px. */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom) + var(--space-4)); }
 html, body { overflow-x: clip; }
 img, svg { max-width: 100%; }
 h1, h2, h3, p, ol, dl, dd { margin: 0; }
@@ -118,6 +118,7 @@ main { flex: 1; }
 
 /* Escritorio: navegación arriba, sin TabBar */
 @media (min-width: 1024px) {
+  html { scroll-padding-bottom: 0; }
   .shell { padding-bottom: 0; }
   .tabbar-fixed, .appbar-prest { display: none; }
   .topnav { display: flex; align-items: center; gap: var(--space-5); }
@@ -130,3 +131,6 @@ main { flex: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+
+/* Chat: indicador mientras la IA responde */
+.vd-msg-pensando { color: var(--ink-muted); font-style: italic; }
