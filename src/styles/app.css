@@ -149,7 +149,8 @@ main { flex: 1; }
 @keyframes pulso { 0%, 80%, 100% { opacity: 0.25; } 40% { opacity: 1; } }
 @keyframes brillo { from { background-position: 100% 0; } to { background-position: -100% 0; } }
 
-.ruta-entra { animation: entra 0.22s ease-out both; }
+/* backwards (no both): con relleno final, este contenedor se vuelve el bloque de referencia de los elementos fixed hijos (la hoja del mapa). */
+.ruta-entra { animation: entra 0.22s ease-out backwards; }
 .aparece { animation: entra 0.26s ease-out both; animation-delay: calc(var(--i, 0) * 60ms); }
 .vd-msg { animation: entra 0.2s ease-out both; }
 
@@ -223,3 +224,81 @@ main { flex: 1; }
   .chat-log { min-height: 420px; max-height: 58dvh; }
 }
 @media (min-width: 1500px) { .hero-arte { border-radius: var(--radius-xl); } }
+
+/* ===== Mapa de lugares ===== */
+@keyframes sube { from { transform: translateY(24px); opacity: 0; } }
+.mapa-app { --alto-mapa: clamp(420px, calc(100dvh - 330px), 680px); width: 100%; display: grid; gap: var(--space-4); margin-top: var(--space-2); }
+.mapa-lienzo { position: relative; height: var(--alto-mapa); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--line); background: var(--surface-sunken); isolation: isolate; }
+.mapa-leaflet { width: 100%; height: 100%; font: inherit; background: var(--surface-sunken); }
+.mapa-contador { position: absolute; top: var(--space-3); left: var(--space-3); z-index: 1000; margin: 0; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--surface-raised); border: 1px solid var(--line); color: var(--ink); font-size: 13px; font-weight: 700; max-width: calc(100% - 24px); }
+.mapa-botones { position: absolute; left: var(--space-3); top: var(--space-3); z-index: 1000; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.mapa-botones .vd-btn { box-shadow: var(--shadow-float); }
+.mapa-aside { padding: var(--space-4); height: auto; }
+
+/* Marcadores: círculo con el ícono de la categoría. Bosque = parada; teal = servicio; ámbar = elegido. */
+.pin-wrap { background: none; border: 0; }
+.pin { box-sizing: border-box; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--bosque); color: var(--crema); border: 3px solid var(--crema); box-shadow: var(--shadow-float); font: 700 16px var(--font-sans); cursor: pointer; transition: transform 0.15s ease-out, background-color 0.15s ease-out; }
+.pin-servicio { background: var(--teal); }
+.pin-aprox { border-style: dashed; }
+.pin-sel { background: var(--ambar); color: var(--bosque); border-color: var(--bosque); transform: scale(1.18); }
+.pin-mini { width: 32px; height: 32px; border-width: 2px; box-shadow: none; flex: none; cursor: inherit; }
+.leaflet-marker-icon:focus-visible { outline: none; }
+.leaflet-marker-icon:focus-visible .pin { outline: 3px solid var(--focus); outline-offset: 3px; }
+.leaflet-container { font: inherit; }
+.leaflet-touch .leaflet-bar a { width: 48px; height: 48px; line-height: 48px; font-size: 22px; }
+.leaflet-control-attribution { font-size: 12px; }
+
+/* Leyenda (filtro) */
+.leyenda { display: flex; flex-direction: column; gap: var(--space-3); }
+.leyenda-mun { display: flex; flex-direction: column; gap: 6px; }
+.leyenda-mun .vd-input { width: 100%; padding: 0 12px; }
+.leyenda-cab { display: flex; justify-content: space-between; align-items: center; }
+.leyenda-acc { display: flex; gap: var(--space-2); }
+.enlace { background: none; border: 0; font: inherit; font-weight: 700; color: var(--secondary); text-decoration: underline; cursor: pointer; min-height: 48px; padding: 0 8px; }
+.leyenda-lista { list-style: none; display: grid; gap: var(--space-2); padding: 0; margin: 0; }
+.leyenda-item { width: 100%; min-height: 48px; display: flex; align-items: center; gap: var(--space-3); padding: 6px 12px; border-radius: var(--radius-md); border: 2px solid var(--line-strong); background: var(--surface-raised); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: border-color 0.15s ease-out, background-color 0.15s ease-out; }
+.leyenda-item[aria-pressed="true"] { border-color: var(--secondary); background: var(--secondary-soft); color: var(--on-secondary-soft); font-weight: 700; }
+.leyenda-item[aria-pressed="false"] .pin { opacity: 0.4; }
+.leyenda-item:disabled { opacity: 0.45; cursor: not-allowed; }
+.leyenda-nombre { flex: 1; }
+.leyenda-n { font-weight: 700; min-width: 2ch; text-align: right; }
+.leyenda-nota { display: flex; align-items: center; gap: var(--space-2); margin: 0; font-size: 14px; color: var(--ink-muted); }
+
+/* Lista de resultados */
+.resultados { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); }
+.resultado-item { width: 100%; min-height: 56px; display: flex; align-items: center; gap: var(--space-3); padding: 8px 12px; border-radius: var(--radius-md); border: 1px solid var(--line); background: var(--surface-raised); color: var(--ink); font: inherit; text-align: left; cursor: pointer; transition: border-color 0.15s ease-out, background-color 0.15s ease-out; }
+.resultado-item:hover { border-color: var(--line-strong); }
+.resultado-item[aria-current="true"] { border-color: var(--secondary); background: var(--secondary-soft); }
+.resultado-txt { display: flex; flex-direction: column; min-width: 0; }
+.resultado-txt small { color: var(--ink-muted); font-size: 13px; }
+
+/* Ficha del lugar */
+.ficha { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); animation: entra 0.2s ease-out both; }
+.ficha-atras { background: none; border: 0; font: inherit; color: var(--link); cursor: pointer; padding: 0; }
+.ficha-cab { display: flex; gap: var(--space-3); align-items: center; }
+.ficha-cab .pin { cursor: default; }
+.ficha-sub { margin: 0; color: var(--ink-muted); }
+.ficha-datos { margin: 0; display: grid; gap: var(--space-3); width: 100%; }
+.ficha-datos dt { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-text); }
+.ficha-datos dd { margin: 2px 0 0; }
+.ficha-aviso { margin: 0; width: 100%; padding: 10px 12px; border-radius: var(--radius-md); background: var(--surface-sunken); font-size: 15px; color: var(--ink-muted); }
+.ficha-acciones { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); width: 100%; }
+.ficha-fuente { margin: 0; font-size: 13px; color: var(--ink-muted); }
+
+/* Hoja inferior (móvil y tablet): sube sobre el mapa, por encima de la barra de pestañas */
+.hoja { position: fixed; left: 0; right: 0; bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom)); z-index: 15; max-width: 640px; margin-inline: auto; max-height: 72dvh; display: flex; flex-direction: column; background: var(--surface-raised); border-radius: var(--radius-xl) var(--radius-xl) 0 0; box-shadow: var(--shadow-float); animation: sube 0.2s ease-out both; outline: none; }
+.hoja-cab { display: flex; align-items: center; justify-content: space-between; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4); border-bottom: 1px solid var(--line); }
+.hoja-x { width: 48px; height: 48px; display: grid; place-items: center; border: 0; border-radius: 50%; background: none; color: var(--heading); cursor: pointer; }
+.hoja-x:hover { background: var(--surface-sunken); }
+.hoja-cuerpo { overflow-y: auto; overscroll-behavior: contain; padding: var(--space-4); }
+
+@media (min-width: 1024px) {
+  .mapa-app { --alto-mapa: clamp(540px, calc(100dvh - 300px), 740px); grid-template-columns: 380px minmax(0, 1fr); align-items: start; gap: var(--space-5); }
+  .mapa-aside { height: var(--alto-mapa); overflow-y: auto; }
+  .mapa-tabs { margin-top: 0; }
+}
+
+/* En móvil el contador se oculta a la vista (el botón "Lista (N)" ya lo dice); queda para lectores de pantalla. */
+@media (max-width: 1023px) {
+  .mapa-contador { width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); border: 0; }
+}

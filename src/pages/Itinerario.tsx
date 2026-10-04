@@ -41,7 +41,7 @@ export default function Itinerario() {
             </div>
             <p className="embajador"><Icon name="embajador" size={24} />
               <span><strong>Tu embajador.</strong> Red de confianza del Valle de Tenza en {config.ciudadEmbajadores}.</span></p>
-            <LinkButton to="/mapa" variant="cta" icon="mapa">Ver mi ruta en el mapa</LinkButton>
+            <LinkButton to="/mapa?vista=ruta" variant="cta" icon="mapa">Ver mi ruta en el mapa</LinkButton>
           </section>
         ) : (
           <div className="panel vacio-panel">

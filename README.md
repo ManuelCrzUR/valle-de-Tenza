@@ -33,6 +33,23 @@ El chat llama a `/api/chat` (`api/chat.ts`, función de Vercel), que reenvía la
 - Límites: 500 caracteres por mensaje y 20 mensajes cada 10 minutos por IP (de mejor esfuerzo).
 - El contenido que debe conocer el bot está en [docs/auren-conocimiento-valle.md](docs/auren-conocimiento-valle.md).
 
+## Lugares reales y mapa
+
+La pantalla **Mapa** muestra lugares reales de Guayatá, Somondoco, Tenza, Sutatenza, Almeida, Chivor y La Capilla (Leaflet + teselas de OpenStreetMap, sin llave de API). Los datos salen de `src/data/lugares.json`, que genera el scraper de `scraper/` (Python + [Scrapling](https://github.com/D4Vinci/Scrapling)).
+
+```
+python3.12 -m venv scraper/.venv && scraper/.venv/bin/pip install -r scraper/requirements.txt   # una vez
+scraper/.venv/bin/python scraper/ejecutar.py                 # SIN red: usa cache/ y datos/osm_inicial.json
+scraper/.venv/bin/python scraper/ejecutar.py --descargar     # CON red: baja OpenStreetMap y datos.gov.co
+scraper/.venv/bin/python scraper/probar.py                   # pruebas sin red
+```
+
+- **Fuentes:** OpenStreetMap (Overpass), Registro Nacional de Turismo, red de salud de Boyacá y cajeros del Banco Agrario (datos.gov.co), y `scraper/datos/lugares_manual.csv` para lo que falte (ver `scraper/datos/LEEME.md`).
+- **Qué hay hoy:** solo OpenStreetMap (100 lugares, todos con ubicación exacta). Las demás fuentes están escritas y probadas con filas de ejemplo, pero no se han descargado todavía.
+- **Privacidad:** el JSON público no lleva teléfonos ni correos, y las viviendas turísticas y guías salen por tipo y vereda, sin el nombre de la persona.
+- **Reporte:** cada corrida escribe `scraper/salida/reporte.md` (lugares por municipio y categoría, paradas disponibles por tipo de plan y lo que falta completar).
+- **Datos:** © Colaboradores de OpenStreetMap, licencia ODbL.
+
 ## Publicación
 
 Cada push a `main` ejecuta `.github/workflows/deploy.yml` y publica en GitHub Pages. En el repositorio: *Settings → Pages → Source: GitHub Actions*. Las rutas usan hash (`/#/mapa`) porque GitHub Pages no tiene fallback para SPA.

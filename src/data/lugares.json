@@ -1,0 +1,1815 @@
+{
+ "generado": "2026-10-03",
+ "atribucion": "© Colaboradores de OpenStreetMap (ODbL); datos.gov.co",
+ "municipios": [
+  {
+   "slug": "guayata",
+   "nombre": "Guayatá",
+   "centro": [
+    4.964752,
+    -73.491087
+   ],
+   "caja": [
+    4.89419,
+    -73.55389,
+    4.97659,
+    -73.45694
+   ]
+  },
+  {
+   "slug": "somondoco",
+   "nombre": "Somondoco",
+   "centro": [
+    4.99086,
+    -73.429269
+   ],
+   "caja": [
+    4.97383,
+    -73.44358,
+    5.01549,
+    -73.39865
+   ]
+  },
+  {
+   "slug": "tenza",
+   "nombre": "Tenza",
+   "centro": [
+    5.076408,
+    -73.420011
+   ],
+   "caja": [
+    5.0301,
+    -73.44653,
+    5.08845,
+    -73.4053
+   ]
+  },
+  {
+   "slug": "sutatenza",
+   "nombre": "Sutatenza",
+   "centro": [
+    5.021839,
+    -73.433118
+   ],
+   "caja": [
+    4.99815,
+    -73.46489,
+    5.04614,
+    -73.39053
+   ]
+  },
+  {
+   "slug": "almeida",
+   "nombre": "Almeida",
+   "centro": [
+    4.971518,
+    -73.378479
+   ],
+   "caja": [
+    4.93125,
+    -73.39764,
+    4.98818,
+    -73.35411
+   ]
+  },
+  {
+   "slug": "chivor",
+   "nombre": "Chivor",
+   "centro": [
+    4.884462,
+    -73.355697
+   ],
+   "caja": [
+    4.84476,
+    -73.42601,
+    4.91611,
+    -73.29363
+   ]
+  },
+  {
+   "slug": "la-capilla",
+   "nombre": "La Capilla",
+   "centro": [
+    5.096083,
+    -73.445038
+   ],
+   "caja": [
+    5.08556,
+    -73.47647,
+    5.15623,
+    -73.43312
+   ]
+  }
+ ],
+ "lugares": [
+  {
+   "id": "almeida-alojamiento-el-turista-cbe62",
+   "nombre": "El turista",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "almeida",
+   "lat": 4.970664,
+   "lon": -73.378758,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-alojamiento-la-isabelina-fb74b",
+   "nombre": "La Isabelina",
+   "categoria": "alojamiento",
+   "subtipo": "guest_house",
+   "municipio": "almeida",
+   "lat": 4.963654,
+   "lon": -73.37707,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-atraccion-cristo-rey-55c68",
+   "nombre": "Cristo Rey",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "almeida",
+   "lat": 4.972691,
+   "lon": -73.382292,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-atraccion-el-mojon-a0758",
+   "nombre": "El Mojón",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "almeida",
+   "lat": 4.978179,
+   "lon": -73.378101,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-atraccion-quebrada-la-chital-86e63",
+   "nombre": "Quebrada la Chital",
+   "categoria": "atraccion",
+   "subtipo": "viewpoint",
+   "municipio": "almeida",
+   "lat": 4.962877,
+   "lon": -73.376538,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-cajero-banco-agrario-de-colombia-cf8ef",
+   "nombre": "Banco Agrario de Colombia",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "almeida",
+   "lat": 4.971561,
+   "lon": -73.378621,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-cajero-bancolombia-a6cbd",
+   "nombre": "Bancolombia",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "almeida",
+   "lat": 4.969957,
+   "lon": -73.379046,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.bancolombia.com/"
+   }
+  },
+  {
+   "id": "almeida-comercio-dona-lilia-30bf1",
+   "nombre": "Doña Lilia",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.971596,
+   "lon": -73.378669,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-la-esquina-a3be7",
+   "nombre": "La esquina",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.970067,
+   "lon": -73.378916,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-la-fama-b1f5e",
+   "nombre": "La Fama",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "almeida",
+   "lat": 4.97077,
+   "lon": -73.379034,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-nacho-051b3",
+   "nombre": "Nacho",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "almeida",
+   "lat": 4.970544,
+   "lon": -73.378297,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-sra-johanna-c08b5",
+   "nombre": "Sra Johanna",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "almeida",
+   "lat": 4.971052,
+   "lon": -73.379229,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-sra-nancy-9f07c",
+   "nombre": "Sra Nancy",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.970599,
+   "lon": -73.378492,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-sra-yinny-vargas-e01a0",
+   "nombre": "Sra Yinny Vargas",
+   "categoria": "comercio",
+   "subtipo": "greengrocer",
+   "municipio": "almeida",
+   "lat": 4.970446,
+   "lon": -73.378643,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-supermercado-don-fredy-3c0f0",
+   "nombre": "Supermercado Don Fredy",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "almeida",
+   "lat": 4.970169,
+   "lon": -73.379174,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-tienda-danuvio-2bd77",
+   "nombre": "Tienda Danuvio",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.969434,
+   "lon": -73.379198,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-tienda-senora-transito-e14f4",
+   "nombre": "Tienda Señora Transito",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.970254,
+   "lon": -73.379312,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-tienda-sra-maria-suarez-6846a",
+   "nombre": "Tienda Sra María Suárez",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.970366,
+   "lon": -73.378681,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-comercio-tienda-sra-miriam-6a625",
+   "nombre": "Tienda Sra Miriam",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "almeida",
+   "lat": 4.970023,
+   "lon": -73.379209,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-monumento-divino-nino-jesus-17e6a",
+   "nombre": "Divino Niño Jesús",
+   "categoria": "monumento",
+   "subtipo": "monument",
+   "municipio": "almeida",
+   "lat": 4.970229,
+   "lon": -73.380336,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-monumento-iglesia-la-santisima-trinidad-0e01d",
+   "nombre": "Iglesia la Santísima Trinidad",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "almeida",
+   "lat": 4.971067,
+   "lon": -73.378347,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-monumento-la-virgen-6f5af",
+   "nombre": "La Virgen",
+   "categoria": "monumento",
+   "subtipo": "monument",
+   "municipio": "almeida",
+   "lat": 4.973654,
+   "lon": -73.380253,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-monumento-paluro-6ddf8",
+   "nombre": "Paluro",
+   "categoria": "monumento",
+   "subtipo": "artwork",
+   "municipio": "almeida",
+   "lat": 4.970016,
+   "lon": -73.379139,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-monumento-sagrado-corazon-fdea2",
+   "nombre": "Sagrado Corazón",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "almeida",
+   "lat": 4.952423,
+   "lon": -73.387639,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-monumento-san-judas-7996c",
+   "nombre": "San Judas",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "almeida",
+   "lat": 4.96756,
+   "lon": -73.378103,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-naturaleza-cuchilla-el-sauche-4f462",
+   "nombre": "Cuchilla El Sauche",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "almeida",
+   "lat": 4.941254,
+   "lon": -73.370631,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-naturaleza-parque-principal-almeida-90432",
+   "nombre": "Parque Principal Almeida",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "almeida",
+   "lat": 4.971137,
+   "lon": -73.378761,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-naturaleza-polideportivo-almeida-4ad2b",
+   "nombre": "Polideportivo Almeida",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "almeida",
+   "lat": 4.969524,
+   "lon": -73.378913,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-naturaleza-via-a-almeida-c3136",
+   "nombre": "Vía a Almeida",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "almeida",
+   "lat": 4.967286,
+   "lon": -73.364106,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-restaurante-delimary-6e948",
+   "nombre": "DeliMary",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "almeida",
+   "lat": 4.970507,
+   "lon": -73.379222,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-restaurante-senora-chela-561cd",
+   "nombre": "Señora Chela",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "almeida",
+   "lat": 4.97063,
+   "lon": -73.378166,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-salud-drogueria-kevin-bd2ce",
+   "nombre": "Droguería Kevin",
+   "categoria": "salud",
+   "subtipo": "pharmacy",
+   "municipio": "almeida",
+   "lat": 4.970126,
+   "lon": -73.379074,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-salud-hospital-23064",
+   "nombre": "Hospital",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "almeida",
+   "lat": 4.971497,
+   "lon": -73.379061,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-servicio-almeida-2754d",
+   "nombre": "Almeida",
+   "categoria": "servicio",
+   "subtipo": "townhall",
+   "municipio": "almeida",
+   "lat": 4.971518,
+   "lon": -73.378479,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-servicio-casa-de-la-cultura-acc99",
+   "nombre": "Casa de la Cultura",
+   "categoria": "servicio",
+   "subtipo": "library",
+   "municipio": "almeida",
+   "lat": 4.971588,
+   "lon": -73.378353,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-atraccion-damm-05785",
+   "nombre": "Damm",
+   "categoria": "atraccion",
+   "subtipo": "viewpoint",
+   "municipio": "chivor",
+   "lat": 4.901469,
+   "lon": -73.326113,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-atraccion-mina-cielo-abierto-guali-65b3b",
+   "nombre": "Mina Cielo Abierto Guali",
+   "categoria": "atraccion",
+   "subtipo": "viewpoint",
+   "municipio": "chivor",
+   "lat": 4.886973,
+   "lon": -73.347826,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-gasolinera-chivor-cf379",
+   "nombre": "Chivor",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "chivor",
+   "lat": 4.894143,
+   "lon": -73.36997,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-naturaleza-alto-del-fique-a50bb",
+   "nombre": "Alto Del Fique",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chivor",
+   "lat": 4.871399,
+   "lon": -73.382467,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-naturaleza-coliseo-7fad5",
+   "nombre": "Coliseo",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "chivor",
+   "lat": 4.887802,
+   "lon": -73.369891,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-naturaleza-cuchilla-cerro-negro-8234c",
+   "nombre": "Cuchilla Cerro Negro",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chivor",
+   "lat": 4.879476,
+   "lon": -73.303626,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-naturaleza-cuchilla-negra-3b130",
+   "nombre": "Cuchilla Negra",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chivor",
+   "lat": 4.854765,
+   "lon": -73.323902,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-naturaleza-loma-el-alimento-4acaa",
+   "nombre": "Loma El Alimento",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chivor",
+   "lat": 4.878019,
+   "lon": -73.361463,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-naturaleza-pico-de-chula-5afa8",
+   "nombre": "Pico de Chula",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chivor",
+   "lat": 4.90611,
+   "lon": -73.41601,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-alojamiento-casa-bc464",
+   "nombre": "casa",
+   "categoria": "alojamiento",
+   "subtipo": "guest_house",
+   "municipio": "guayata",
+   "lat": 4.944757,
+   "lon": -73.516052,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-alojamiento-casa-e28b7",
+   "nombre": "casa",
+   "categoria": "alojamiento",
+   "subtipo": "guest_house",
+   "municipio": "guayata",
+   "lat": 4.937826,
+   "lon": -73.525211,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-alojamiento-casa-0e4fa",
+   "nombre": "casa",
+   "categoria": "alojamiento",
+   "subtipo": "guest_house",
+   "municipio": "guayata",
+   "lat": 4.941315,
+   "lon": -73.521094,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-alojamiento-hotel-roca-center-01c75",
+   "nombre": "Hotel Roca Center",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guayata",
+   "lat": 4.965727,
+   "lon": -73.489903,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-cajero-banco-agrario-d3763",
+   "nombre": "Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "guayata",
+   "lat": 4.964974,
+   "lon": -73.49045,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-monumento-iglesia-guayata-7189d",
+   "nombre": "Iglesia Guayatá",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "guayata",
+   "lat": 4.964502,
+   "lon": -73.490389,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-monumento-parroquia-bac98",
+   "nombre": "Parroquia",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "guayata",
+   "lat": 4.964695,
+   "lon": -73.490377,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-alto-ceibo-1e099",
+   "nombre": "Alto Ceibo",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guayata",
+   "lat": 4.944739,
+   "lon": -73.466942,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-alto-de-pan-de-azucar-2ff30",
+   "nombre": "Alto De Pan de Azúcar",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guayata",
+   "lat": 4.917778,
+   "lon": -73.489167,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-alto-las-cruces-93488",
+   "nombre": "Alto Las Cruces",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guayata",
+   "lat": 4.904186,
+   "lon": -73.541103,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-alto-pan-de-azucar-2edd1",
+   "nombre": "Alto Pan De Azucar",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guayata",
+   "lat": 4.916543,
+   "lon": -73.482624,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-coliseo-7a7fc",
+   "nombre": "Coliseo",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "guayata",
+   "lat": 4.966586,
+   "lon": -73.489956,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-loma-el-regadio-95a75",
+   "nombre": "Loma El Regadio",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guayata",
+   "lat": 4.935868,
+   "lon": -73.543134,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-loma-el-rogache-55882",
+   "nombre": "Loma El Rogache",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guayata",
+   "lat": 4.935278,
+   "lon": -73.543889,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-naturaleza-vereda-carrisal-2b58f",
+   "nombre": "Vereda Carrisal",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "guayata",
+   "lat": 4.950317,
+   "lon": -73.491449,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-restaurante-cafe-deleite-colombainos-sas-68255",
+   "nombre": "Cafe Deleite Colombainos SAS",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "guayata",
+   "lat": 4.948568,
+   "lon": -73.492149,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-restaurante-cafe-fonsaque-993e2",
+   "nombre": "Café Fonsaque",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "guayata",
+   "lat": 4.964797,
+   "lon": -73.490368,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guayata-servicio-alcaldia-0b5da",
+   "nombre": "Alcaldia",
+   "categoria": "servicio",
+   "subtipo": "townhall",
+   "municipio": "guayata",
+   "lat": 4.964752,
+   "lon": -73.491087,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "la-capilla-monumento-iglesia-nuestra-senora-de-la-candela-8e14c",
+   "nombre": "Iglesia Nuestra Señora de la Candelaria",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "la-capilla",
+   "lat": 5.095563,
+   "lon": -73.443921,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "la-capilla-naturaleza-cuchilla-los-cristales-144f1",
+   "nombre": "Cuchilla Los Cristales",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "la-capilla",
+   "lat": 5.14623,
+   "lon": -73.466466,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "la-capilla-naturaleza-parque-principal-77eba",
+   "nombre": "Parque Principal",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "la-capilla",
+   "lat": 5.095746,
+   "lon": -73.444619,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "la-capilla-salud-e-s-e-la-capilla-bef96",
+   "nombre": "E.S.E. La Capilla",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "la-capilla",
+   "lat": 5.095785,
+   "lon": -73.443116,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "la-capilla-servicio-alcaldia-municipal-76e1a",
+   "nombre": "Alcaldía Municipal",
+   "categoria": "servicio",
+   "subtipo": "townhall",
+   "municipio": "la-capilla",
+   "lat": 5.096083,
+   "lon": -73.445038,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-naturaleza-alto-el-aire-edf88",
+   "nombre": "Alto El Aire",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "somondoco",
+   "lat": 4.988775,
+   "lon": -73.408648,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-naturaleza-antiguo-jardin-dfc16",
+   "nombre": "antiguo jardin",
+   "categoria": "naturaleza",
+   "subtipo": "garden",
+   "municipio": "somondoco",
+   "lat": 4.984017,
+   "lon": -73.433577,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-naturaleza-los-lagos-4e7ae",
+   "nombre": "los lagos",
+   "categoria": "naturaleza",
+   "subtipo": "swimming_pool",
+   "municipio": "somondoco",
+   "lat": 4.986358,
+   "lon": -73.431115,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-naturaleza-parque-principal-a966b",
+   "nombre": "PARQUE PRINCIPAL",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "somondoco",
+   "lat": 4.985837,
+   "lon": -73.432635,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-restaurante-brisas-del-sunuba-bb6d9",
+   "nombre": "Brisas del Sunuba",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "somondoco",
+   "lat": 5.005489,
+   "lon": -73.431574,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-restaurante-chicharron-de-cuajada-dona-ceila-19001",
+   "nombre": "Chicharron de Cuajada Doña Ceila",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "somondoco",
+   "lat": 4.98732,
+   "lon": -73.432201,
+   "precision": "exacta",
+   "direccion": "5-73",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-restaurante-video-bar-vega-del-rio-58fc6",
+   "nombre": "Video Bar Vega del Río",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "somondoco",
+   "lat": 5.005249,
+   "lon": -73.431721,
+   "precision": "exacta",
+   "direccion": "Salitre de Somondoco",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-salud-hospital-dfa64",
+   "nombre": "Hospital",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "somondoco",
+   "lat": 4.983834,
+   "lon": -73.432685,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "sutatenza-monumento-iglesia-san-bartolome-5a45f",
+   "nombre": "Iglesia San Bartolomé",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "sutatenza",
+   "lat": 5.0214,
+   "lon": -73.454887,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "sutatenza-monumento-monumento-al-desarrollo-a8de9",
+   "nombre": "Monumento al Desarrollo",
+   "categoria": "monumento",
+   "subtipo": "memorial",
+   "municipio": "sutatenza",
+   "lat": 5.02167,
+   "lon": -73.453201,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "sutatenza-naturaleza-alto-de-irzon-28add",
+   "nombre": "Alto De Irzon",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "sutatenza",
+   "lat": 5.036139,
+   "lon": -73.423855,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "sutatenza-restaurante-pare-y-pique-61c7f",
+   "nombre": "Pare y Pique",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "sutatenza",
+   "lat": 5.008148,
+   "lon": -73.400528,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Tu-Su 08:00-15:00; Sa 08:00-12:00"
+   }
+  },
+  {
+   "id": "tenza-alojamiento-hostal-santa-ana-21a84",
+   "nombre": "Hostal Santa Ana",
+   "categoria": "alojamiento",
+   "subtipo": "hostel",
+   "municipio": "tenza",
+   "lat": 5.077767,
+   "lon": -73.422973,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-alojamiento-hotel-turistico-de-tenza-1f0b1",
+   "nombre": "Hotel Turistico de Tenza",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "tenza",
+   "lat": 5.076648,
+   "lon": -73.419119,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-alojamiento-posada-casa-mora-8b612",
+   "nombre": "Posada Casa Mora",
+   "categoria": "alojamiento",
+   "subtipo": "hostel",
+   "municipio": "tenza",
+   "lat": 5.077301,
+   "lon": -73.420763,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-cajero-banco-agrario-de-colombia-768b7",
+   "nombre": "Banco Agrario de Colombia",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "tenza",
+   "lat": 5.077529,
+   "lon": -73.422668,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-cajero-bancolombia-19d97",
+   "nombre": "Bancolombia",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "tenza",
+   "lat": 5.076839,
+   "lon": -73.420626,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.bancolombia.com/"
+   }
+  },
+  {
+   "id": "tenza-comercio-almacen-mercatodo-e7061",
+   "nombre": "Almacen Mercatodo",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "tenza",
+   "lat": 5.077652,
+   "lon": -73.422591,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-comercio-servientrega-tenza-cll-5-90e9e",
+   "nombre": "Servientrega Tenza Cll 5",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "tenza",
+   "lat": 5.077295,
+   "lon": -73.422027,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-gasolinera-estacion-de-servicio-bc074",
+   "nombre": "Estación de servicio",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "tenza",
+   "lat": 5.078452,
+   "lon": -73.424265,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-monumento-iglesia-san-miguel-arcangel-87e9b",
+   "nombre": "Iglesia San Miguel Arcangel",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "tenza",
+   "lat": 5.077078,
+   "lon": -73.419213,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-monumento-obelisco-de-las-heroinas-65392",
+   "nombre": "Obelisco de las Heroínas",
+   "categoria": "monumento",
+   "subtipo": "monument",
+   "municipio": "tenza",
+   "lat": 5.076813,
+   "lon": -73.419933,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-monumento-plaza-de-toros-mariano-ospina-perez-21019",
+   "nombre": "Plaza de Toros Mariano Ospina Perez",
+   "categoria": "monumento",
+   "subtipo": "monument",
+   "municipio": "tenza",
+   "lat": 5.077437,
+   "lon": -73.423519,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-naturaleza-alto-de-suta-bf7e9",
+   "nombre": "Alto de Suta",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "tenza",
+   "lat": 5.040099,
+   "lon": -73.436528,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-naturaleza-lomas-de-valle-grande-d40aa",
+   "nombre": "Lomas de Valle Grande",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "tenza",
+   "lat": 5.05879,
+   "lon": -73.415301,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-naturaleza-parque-principal-27cdb",
+   "nombre": "Parque Principal",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "tenza",
+   "lat": 5.076781,
+   "lon": -73.419754,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-restaurante-plaza-de-mercado-municipal-de-tenza-2ee32",
+   "nombre": "Plaza de Mercado Municipal de Tenza",
+   "categoria": "restaurante",
+   "subtipo": "plaza de mercado",
+   "municipio": "tenza",
+   "lat": 5.077163,
+   "lon": -73.423585,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-restaurante-restaurante-san-diego-ab4f5",
+   "nombre": "Restaurante San Diego",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "tenza",
+   "lat": 5.07742,
+   "lon": -73.422015,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-restaurante-restaurante-san-miguel-5d088",
+   "nombre": "Restaurante San Miguel",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "tenza",
+   "lat": 5.076619,
+   "lon": -73.423509,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-restaurante-salon-de-onces-la-playa-96cb9",
+   "nombre": "Salon de Onces La Playa",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "tenza",
+   "lat": 5.07772,
+   "lon": -73.42279,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-restaurante-salon-de-onces-tentaciones-f9f6c",
+   "nombre": "Salón de Onces Tentaciones",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "tenza",
+   "lat": 5.077517,
+   "lon": -73.422241,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-restaurante-tenzu-cafe-26d36",
+   "nombre": "Tenzu Café",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "tenza",
+   "lat": 5.077203,
+   "lon": -73.419375,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "tenza-servicio-alcaldia-de-tenza-b9547",
+   "nombre": "Alcaldía de Tenza",
+   "categoria": "servicio",
+   "subtipo": "townhall",
+   "municipio": "tenza",
+   "lat": 5.076408,
+   "lon": -73.420011,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  }
+ ]
+}

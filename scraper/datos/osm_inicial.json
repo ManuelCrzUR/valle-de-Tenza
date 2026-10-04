@@ -1,0 +1,1663 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.11 87bfad18",
+  "osm3s": {
+    "timestamp_osm_base": "2026-07-24T11:04:51Z",
+    "timestamp_areas_base": "2026-07-24T11:04:51Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "relation",
+  "id": 1315419,
+  "tags": {
+    "DANE:area": "111.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15236",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "Chivor",
+    "objectid": "3789",
+    "source": "OCHA - SIGOT",
+    "type": "boundary",
+    "wikidata": "Q1656250",
+    "wikipedia": "es:Chivor"
+  }
+},
+{
+  "type": "node",
+  "id": 496818874,
+  "lat": 4.9061104,
+  "lon": -73.4160104,
+  "tags": {
+    "divipola": "15022",
+    "gns_classification": "PK",
+    "gns_uni": "-819893",
+    "is_in": "Colombia; Boyacá ; Almeida",
+    "is_in:country": "Colombia",
+    "is_in:country_code": "CO",
+    "name": "Pico de Chula",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 8bd82afa47efe848e7bad0ca4a0d6166",
+    "source": "GNS"
+  }
+},
+{
+  "type": "node",
+  "id": 703226104,
+  "lat": 4.8794758,
+  "lon": -73.3036258,
+  "tags": {
+    "divipola": "15236",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Chivor",
+    "name": "Cuchilla Cerro Negro",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, fbc55f7adad79544071ff81951a9c594",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 703226105,
+  "lat": 4.8547646,
+  "lon": -73.3239017,
+  "tags": {
+    "divipola": "15236",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Chivor",
+    "name": "Cuchilla Negra",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, a267434aaaba2888f7e8e63851c8dfc6",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 703226109,
+  "lat": 4.8780191,
+  "lon": -73.3614633,
+  "tags": {
+    "divipola": "15236",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Chivor",
+    "name": "Loma El Alimento",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, b91677979ab60afb9697ce8fc8872eb1",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 703226110,
+  "lat": 4.8713992,
+  "lon": -73.3824674,
+  "tags": {
+    "divipola": "15236",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Chivor",
+    "name": "Alto Del Fique",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, e28e1993c3f6a4ea92cf246374aae1a0",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 6040558000,
+  "lat": 4.8869728,
+  "lon": -73.3478264,
+  "tags": {
+    "name": "Mina Cielo Abierto Guali",
+    "tourism": "viewpoint"
+  }
+},
+{
+  "type": "node",
+  "id": 6040558002,
+  "lat": 4.9014685,
+  "lon": -73.3261129,
+  "tags": {
+    "name": "Damm",
+    "tourism": "viewpoint"
+  }
+},
+{
+  "type": "node",
+  "id": 6376236012,
+  "lat": 4.8878019,
+  "lon": -73.3698914,
+  "tags": {
+    "leisure": "sports_centre",
+    "name": "Coliseo",
+    "operator": "gobierno"
+  }
+},
+{
+  "type": "node",
+  "id": 6376236013,
+  "lat": 4.9077053,
+  "lon": -73.3726188,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "american",
+    "healthcare": "hospital"
+  }
+},
+{
+  "type": "way",
+  "id": 1094641942,
+  "center": {
+    "lat": 4.8941425,
+    "lon": -73.3699702
+  },
+  "tags": {
+    "amenity": "fuel",
+    "building": "roof",
+    "name": "Chivor"
+  }
+},
+{
+  "type": "relation",
+  "id": 1353242,
+  "tags": {
+    "DANE:area": "57.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15022",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "Almeida",
+    "objectid": "4342",
+    "source": "OCHA - SIGOT",
+    "type": "boundary",
+    "wikidata": "Q1656170",
+    "wikipedia": "es:Almeida (Boyacá)"
+  }
+},
+{
+  "type": "node",
+  "id": 703226657,
+  "lat": 4.9412539,
+  "lon": -73.3706312,
+  "tags": {
+    "divipola": "15022",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Almeida",
+    "name": "Cuchilla El Sauche",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 4a75e695e69a7b1647c5a1af80a896bc",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 6374704085,
+  "lat": 4.9726911,
+  "lon": -73.3822917,
+  "tags": {
+    "name": "Cristo Rey",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 6388066988,
+  "lat": 4.9702542,
+  "lon": -73.3793119,
+  "tags": {
+    "name": "Tienda Señora Transito",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6388075687,
+  "lat": 4.9707696,
+  "lon": -73.3790341,
+  "tags": {
+    "name": "La Fama",
+    "shop": "butcher"
+  }
+},
+{
+  "type": "node",
+  "id": 6388080685,
+  "lat": 4.9710670,
+  "lon": -73.3783467,
+  "tags": {
+    "amenity": "place_of_worship",
+    "name": "Iglesia la Santísima Trinidad",
+    "religion": "christian"
+  }
+},
+{
+  "type": "node",
+  "id": 6388080686,
+  "lat": 4.9705072,
+  "lon": -73.3792223,
+  "tags": {
+    "amenity": "fast_food",
+    "cuisine": "fast_food",
+    "name": "DeliMary"
+  }
+},
+{
+  "type": "node",
+  "id": 6388080687,
+  "lat": 4.9701694,
+  "lon": -73.3791744,
+  "tags": {
+    "name": "Supermercado Don Fredy",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 6388080688,
+  "lat": 4.9700227,
+  "lon": -73.3792085,
+  "tags": {
+    "name": "Tienda Sra Miriam",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6388080785,
+  "lat": 4.9710522,
+  "lon": -73.3792290,
+  "tags": {
+    "name": "Sra Johanna",
+    "shop": "bakery"
+  }
+},
+{
+  "type": "node",
+  "id": 6398794686,
+  "lat": 4.9663765,
+  "lon": -73.3768206,
+  "tags": {
+    "amenity": "community_centre",
+    "name": "Trapiche Comunal"
+  }
+},
+{
+  "type": "node",
+  "id": 6398835085,
+  "lat": 4.9675600,
+  "lon": -73.3781034,
+  "tags": {
+    "amenity": "place_of_worship",
+    "name": "San Judas",
+    "religion": "christian"
+  }
+},
+{
+  "type": "node",
+  "id": 6399048360,
+  "lat": 4.9695235,
+  "lon": -73.3789129,
+  "tags": {
+    "leisure": "sports_centre",
+    "name": "Polideportivo Almeida"
+  }
+},
+{
+  "type": "node",
+  "id": 6399048382,
+  "lat": 4.9524233,
+  "lon": -73.3876394,
+  "tags": {
+    "amenity": "place_of_worship",
+    "name": "Sagrado Corazón"
+  }
+},
+{
+  "type": "node",
+  "id": 6399050488,
+  "lat": 4.9628767,
+  "lon": -73.3765380,
+  "tags": {
+    "name": "Quebrada la Chital",
+    "tourism": "viewpoint"
+  }
+},
+{
+  "type": "node",
+  "id": 6399050498,
+  "lat": 4.9694338,
+  "lon": -73.3791984,
+  "tags": {
+    "name": "Tienda Danuvio",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6439272579,
+  "lat": 4.9714968,
+  "lon": -73.3790608,
+  "tags": {
+    "amenity": "hospital",
+    "healthcare": "hospital"
+  }
+},
+{
+  "type": "node",
+  "id": 6439272580,
+  "lat": 4.9715182,
+  "lon": -73.3784787,
+  "tags": {
+    "amenity": "townhall",
+    "name": "Almeida"
+  }
+},
+{
+  "type": "node",
+  "id": 6439272581,
+  "lat": 4.9715609,
+  "lon": -73.3786209,
+  "tags": {
+    "amenity": "bank",
+    "brand": "Banco Agrario de Colombia",
+    "brand:wikidata": "Q20013358",
+    "brand:wikipedia": "es:Banco Agrario de Colombia",
+    "name": "Banco Agrario de Colombia"
+  }
+},
+{
+  "type": "node",
+  "id": 6439272582,
+  "lat": 4.9715957,
+  "lon": -73.3786692,
+  "tags": {
+    "name": "Doña Lilia",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6439272583,
+  "lat": 4.9716625,
+  "lon": -73.3783339,
+  "tags": {
+    "amenity": "police"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273185,
+  "lat": 4.9719190,
+  "lon": -73.3776875,
+  "tags": {
+    "amenity": "community_centre",
+    "name": "Canchas de tejo"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273186,
+  "lat": 4.9705990,
+  "lon": -73.3784922,
+  "tags": {
+    "name": "Sra Nancy",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273189,
+  "lat": 4.9715877,
+  "lon": -73.3783527,
+  "tags": {
+    "amenity": "library",
+    "name": "Casa de la Cultura"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273191,
+  "lat": 4.9697626,
+  "lon": -73.3788650,
+  "tags": {
+    "amenity": "community_centre",
+    "name": "Plaza de Mercado"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273192,
+  "lat": 4.9706636,
+  "lon": -73.3787577,
+  "tags": {
+    "name": "El turista",
+    "tourism": "hotel"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273194,
+  "lat": 4.9704459,
+  "lon": -73.3786435,
+  "tags": {
+    "name": "Sra Yinny Vargas",
+    "shop": "greengrocer"
+  }
+},
+{
+  "type": "node",
+  "id": 6439273198,
+  "lat": 4.9699570,
+  "lon": -73.3790459,
+  "tags": {
+    "amenity": "bank",
+    "brand": "Bancolombia",
+    "brand:wikidata": "Q806206",
+    "brand:wikipedia": "es:Bancolombia",
+    "name": "Bancolombia",
+    "name:en": "Bancolombia",
+    "name:es": "Bancolombia",
+    "website": "https://www.bancolombia.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 6443526198,
+  "lat": 4.9714067,
+  "lon": -73.3781098,
+  "tags": {
+    "amenity": "community_centre",
+    "name": "Vive Digital"
+  }
+},
+{
+  "type": "node",
+  "id": 6443526201,
+  "lat": 4.9700163,
+  "lon": -73.3791389,
+  "tags": {
+    "name": "Paluro",
+    "tourism": "artwork"
+  }
+},
+{
+  "type": "node",
+  "id": 6443526204,
+  "lat": 4.9716875,
+  "lon": -73.3774641,
+  "tags": {
+    "craft": "dressmaker",
+    "name": "Señora Reina"
+  }
+},
+{
+  "type": "node",
+  "id": 6467994988,
+  "lat": 4.9703656,
+  "lon": -73.3786806,
+  "tags": {
+    "name": "Tienda Sra María Suárez",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6467994991,
+  "lat": 4.9705444,
+  "lon": -73.3782966,
+  "tags": {
+    "name": "Nacho",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 6467995195,
+  "lat": 4.9781793,
+  "lon": -73.3781011,
+  "tags": {
+    "name": "El Mojón",
+    "tourism": "attraction"
+  }
+},
+{
+  "type": "node",
+  "id": 6467995486,
+  "lat": 4.9700672,
+  "lon": -73.3789155,
+  "tags": {
+    "name": "La esquina",
+    "name:es": "La Esquina",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6467995487,
+  "lat": 4.9701260,
+  "lon": -73.3790737,
+  "tags": {
+    "amenity": "pharmacy",
+    "name": "Droguería Kevin"
+  }
+},
+{
+  "type": "node",
+  "id": 6467995688,
+  "lat": 4.9736541,
+  "lon": -73.3802532,
+  "tags": {
+    "historic": "monument",
+    "name": "La Virgen"
+  }
+},
+{
+  "type": "node",
+  "id": 6467998685,
+  "lat": 4.9636545,
+  "lon": -73.3770699,
+  "tags": {
+    "name": "La Isabelina",
+    "tourism": "guest_house"
+  }
+},
+{
+  "type": "node",
+  "id": 6467998688,
+  "lat": 4.9702294,
+  "lon": -73.3803359,
+  "tags": {
+    "historic": "monument",
+    "name": "Divino Niño Jesús"
+  }
+},
+{
+  "type": "node",
+  "id": 6467998885,
+  "lat": 4.9523110,
+  "lon": -73.3876279,
+  "tags": {
+    "historic": "monument",
+    "name": "Sagrado Corazón"
+  }
+},
+{
+  "type": "node",
+  "id": 9718185830,
+  "lat": 4.9706296,
+  "lon": -73.3781657,
+  "tags": {
+    "amenity": "restaurant",
+    "name": "Señora Chela"
+  }
+},
+{
+  "type": "node",
+  "id": 12192570202,
+  "lat": 4.9710383,
+  "lon": -73.3614449,
+  "tags": {
+    "internet_access": "wlan",
+    "tourism": "guest_house"
+  }
+},
+{
+  "type": "way",
+  "id": 834359809,
+  "center": {
+    "lat": 4.9672861,
+    "lon": -73.3641056
+  },
+  "tags": {
+    "highway": "track",
+    "name": "Vía a Almeida",
+    "surface": "dirt"
+  }
+},
+{
+  "type": "way",
+  "id": 1057637987,
+  "center": {
+    "lat": 4.9711366,
+    "lon": -73.3787608
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Parque Principal Almeida"
+  }
+},
+{
+  "type": "way",
+  "id": 1305337562,
+  "center": {
+    "lat": 4.9830997,
+    "lon": -73.3700224
+  },
+  "tags": {
+    "amenity": "community_centre",
+    "building": "yes",
+    "building:levels": "1",
+    "name": "Trapiche comunitario"
+  }
+},
+{
+  "type": "way",
+  "id": 1308357626,
+  "center": {
+    "lat": 4.9690564,
+    "lon": -73.3609299
+  },
+  "tags": {
+    "addr:city": "Tona",
+    "addr:postcode": "153027",
+    "addr:street": "Almeida",
+    "amenity": "community_centre",
+    "building": "barn",
+    "building:levels": "1",
+    "name": "Trapiche",
+    "name:es": "Trapiche",
+    "opening_hours": "\"El lugar está por inaugurarse, aun no cuenta con horario\"",
+    "operator": "Municipio",
+    "operator:type": "community"
+  }
+},
+{
+  "type": "relation",
+  "id": 1315399,
+  "tags": {
+    "DANE:area": "81.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15325",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "Guayatá",
+    "objectid": "3790",
+    "source": "OCHA - SIGOT",
+    "type": "boundary",
+    "wikidata": "Q1577926",
+    "wikipedia": "es:Guayatá"
+  }
+},
+{
+  "type": "node",
+  "id": 496818556,
+  "lat": 4.9352780,
+  "lon": -73.5438890,
+  "tags": {
+    "gns_classification": "HLL",
+    "gns_uni": "6181421",
+    "is_in": "Departamento de Cundinamarca",
+    "is_in:country": "Colombia",
+    "is_in:country_code": "CO",
+    "name": "Loma El Rogache",
+    "natural": "peak",
+    "source": "GNS"
+  }
+},
+{
+  "type": "node",
+  "id": 496818925,
+  "lat": 4.9177780,
+  "lon": -73.4891670,
+  "tags": {
+    "gns_classification": "MT",
+    "gns_uni": "6272855",
+    "is_in": "Departamento de Boyacá",
+    "is_in:country": "Colombia",
+    "is_in:country_code": "CO",
+    "name": "Alto De Pan de Azúcar",
+    "natural": "peak",
+    "source": "GNS"
+  }
+},
+{
+  "type": "node",
+  "id": 496818942,
+  "lat": 4.9041856,
+  "lon": -73.5411034,
+  "tags": {
+    "divipola": "25297",
+    "gns_classification": "HLL",
+    "gns_uni": "-832416",
+    "is_in": "Colombia; Cundinamarca ; Gachetá",
+    "is_in:country": "Colombia",
+    "is_in:country_code": "CO",
+    "name": "Alto Las Cruces",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 0ad2a1ced6349b290a317bb0846f6506",
+    "source": "GNS"
+  }
+},
+{
+  "type": "node",
+  "id": 703226070,
+  "lat": 4.9165426,
+  "lon": -73.4826237,
+  "tags": {
+    "divipola": "15325",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Guayata",
+    "name": "Alto Pan De Azucar",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, b89406168748d981ce9480d40e2a619e",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 703226600,
+  "lat": 4.9358681,
+  "lon": -73.5431345,
+  "tags": {
+    "divipola": "15325",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Guayata",
+    "name": "Loma El Regadio",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, d3357a1406881d22b62a001f7acc5acd",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 703226643,
+  "lat": 4.9447388,
+  "lon": -73.4669416,
+  "tags": {
+    "divipola": "15325",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Guayata",
+    "name": "Alto Ceibo",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 498a8c93fa972f505c9faf2b18001a08",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 6297654199,
+  "lat": 4.9645021,
+  "lon": -73.4903887,
+  "tags": {
+    "addr:city": "Guayatá",
+    "addr:postcode": "153040",
+    "amenity": "place_of_worship",
+    "denomination": "catholic",
+    "name": "Iglesia Guayatá",
+    "religion": "christian"
+  }
+},
+{
+  "type": "node",
+  "id": 6319606043,
+  "lat": 4.9647522,
+  "lon": -73.4910866,
+  "tags": {
+    "amenity": "townhall",
+    "name": "Alcaldia"
+  }
+},
+{
+  "type": "node",
+  "id": 6319606053,
+  "lat": 4.9657270,
+  "lon": -73.4899032,
+  "tags": {
+    "name": "Hotel Roca Center",
+    "tourism": "hotel"
+  }
+},
+{
+  "type": "node",
+  "id": 6319606058,
+  "lat": 4.9665862,
+  "lon": -73.4899564,
+  "tags": {
+    "leisure": "sports_centre",
+    "name": "Coliseo"
+  }
+},
+{
+  "type": "node",
+  "id": 6319606065,
+  "lat": 4.9649743,
+  "lon": -73.4904500,
+  "tags": {
+    "amenity": "bank",
+    "brand": "Banco Agrario",
+    "brand:wikidata": "Q20013358",
+    "brand:wikipedia": "es:Banco Agrario de Colombia",
+    "name": "Banco Agrario"
+  }
+},
+{
+  "type": "node",
+  "id": 6340419584,
+  "lat": 4.9447571,
+  "lon": -73.5160519,
+  "tags": {
+    "name": "casa",
+    "tourism": "guest_house"
+  }
+},
+{
+  "type": "node",
+  "id": 6340419989,
+  "lat": 4.9378265,
+  "lon": -73.5252111,
+  "tags": {
+    "name": "casa",
+    "tourism": "guest_house"
+  }
+},
+{
+  "type": "node",
+  "id": 6340451838,
+  "lat": 4.9413150,
+  "lon": -73.5210935,
+  "tags": {
+    "name": "casa",
+    "tourism": "guest_house"
+  }
+},
+{
+  "type": "node",
+  "id": 6341650303,
+  "lat": 4.9647974,
+  "lon": -73.4903680,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café Fonsaque"
+  }
+},
+{
+  "type": "node",
+  "id": 6627835786,
+  "lat": 4.9646947,
+  "lon": -73.4903775,
+  "tags": {
+    "amenity": "place_of_worship",
+    "name": "Parroquia",
+    "religion": "christian"
+  }
+},
+{
+  "type": "node",
+  "id": 6643690880,
+  "lat": 4.9675948,
+  "lon": -73.5231808,
+  "tags": {
+    "tourism": "guest_house"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108124,
+  "lat": 4.9650805,
+  "lon": -73.4909541,
+  "tags": {
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108125,
+  "lat": 4.9650294,
+  "lon": -73.4909803,
+  "tags": {
+    "amenity": "cafe"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108126,
+  "lat": 4.9649652,
+  "lon": -73.4910209,
+  "tags": {
+    "amenity": "restaurant"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108129,
+  "lat": 4.9653622,
+  "lon": -73.4904781,
+  "tags": {
+    "amenity": "cafe"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108130,
+  "lat": 4.9650734,
+  "lon": -73.4904590,
+  "tags": {
+    "shop": "butcher"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108131,
+  "lat": 4.9650371,
+  "lon": -73.4905186,
+  "tags": {
+    "shop": "bakery"
+  }
+},
+{
+  "type": "node",
+  "id": 9719108132,
+  "lat": 4.9651269,
+  "lon": -73.4907572,
+  "tags": {
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 10920473719,
+  "lat": 4.9485684,
+  "lon": -73.4921490,
+  "tags": {
+    "amenity": "cafe",
+    "description": "Finca Cafetera",
+    "name": "Cafe Deleite Colombainos SAS",
+    "source": "Finca El Crucero;survey"
+  }
+},
+{
+  "type": "way",
+  "id": 674806430,
+  "center": {
+    "lat": 4.9647589,
+    "lon": -73.4907142
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 674806431,
+  "center": {
+    "lat": 4.9656036,
+    "lon": -73.4897247
+  },
+  "tags": {
+    "tourism": "hotel"
+  }
+},
+{
+  "type": "way",
+  "id": 834058009,
+  "center": {
+    "lat": 4.9503171,
+    "lon": -73.4914488
+  },
+  "tags": {
+    "highway": "track",
+    "lanes": "1",
+    "name": "Vereda Carrisal",
+    "oneway": "no",
+    "surface": "unpaved"
+  }
+},
+{
+  "type": "relation",
+  "id": 1315415,
+  "tags": {
+    "DANE:area": "41.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15778",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "Sutatenza",
+    "objectid": "3792",
+    "source": "OCHA - SIGOT",
+    "type": "boundary"
+  }
+},
+{
+  "type": "node",
+  "id": 640980784,
+  "lat": 5.0213997,
+  "lon": -73.4548875,
+  "tags": {
+    "amenity": "place_of_worship",
+    "denomination": "catholic",
+    "name": "Iglesia San Bartolomé",
+    "religion": "christian"
+  }
+},
+{
+  "type": "node",
+  "id": 644457730,
+  "lat": 5.0081479,
+  "lon": -73.4005278,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "regional",
+    "name": "Pare y Pique",
+    "opening_hours": "Tu-Su 08:00-15:00; Sa 08:00-12:00"
+  }
+},
+{
+  "type": "node",
+  "id": 703226673,
+  "lat": 5.0361386,
+  "lon": -73.4238554,
+  "tags": {
+    "divipola": "15778",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Sutatenza",
+    "name": "Alto De Irzon",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 7c5d422833c0109cb9867cd826cb6b01",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "way",
+  "id": 1363200235,
+  "center": {
+    "lat": 5.0223417,
+    "lon": -73.4523300
+  },
+  "tags": {
+    "building": "yes",
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 1363200236,
+  "center": {
+    "lat": 5.0216698,
+    "lon": -73.4532011
+  },
+  "tags": {
+    "building": "yes",
+    "historic": "memorial",
+    "name": "Monumento al Desarrollo"
+  }
+},
+{
+  "type": "way",
+  "id": 1363200237,
+  "center": {
+    "lat": 5.0217413,
+    "lon": -73.4532099
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 1363200238,
+  "center": {
+    "lat": 5.0216084,
+    "lon": -73.4533048
+  },
+  "tags": {
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 1363200239,
+  "center": {
+    "lat": 5.0215863,
+    "lon": -73.4531458
+  },
+  "tags": {
+    "building": "yes",
+    "leisure": "park"
+  }
+},
+{
+  "type": "way",
+  "id": 1363200240,
+  "center": {
+    "lat": 5.0216409,
+    "lon": -73.4530580
+  },
+  "tags": {
+    "leisure": "park",
+    "park": "public"
+  }
+},
+{
+  "type": "relation",
+  "id": 1344585,
+  "tags": {
+    "DANE:area": "49.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15798",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "Tenza",
+    "objectid": "4478",
+    "source": "OCHA - SIGOT",
+    "type": "boundary",
+    "wikidata": "Q1654622",
+    "wikipedia": "es:Tenza"
+  }
+},
+{
+  "type": "node",
+  "id": 703226668,
+  "lat": 5.0400987,
+  "lon": -73.4365278,
+  "tags": {
+    "divipola": "15798",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Tenza",
+    "name": "Alto de Suta",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 61f45c1faa55f113de6493c27537fc73",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 703226681,
+  "lat": 5.0587905,
+  "lon": -73.4153015,
+  "tags": {
+    "divipola": "15798",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Tenza",
+    "name": "Lomas de Valle Grande",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, d4c4c68b90c8ad0e67b0b1e1085b7cec",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 6237130258,
+  "lat": 5.0770781,
+  "lon": -73.4192126,
+  "tags": {
+    "amenity": "place_of_worship",
+    "name": "Iglesia San Miguel Arcangel",
+    "religion": "christian"
+  }
+},
+{
+  "type": "node",
+  "id": 6237130270,
+  "lat": 5.0768130,
+  "lon": -73.4199331,
+  "tags": {
+    "historic": "monument",
+    "name": "Obelisco de las Heroínas"
+  }
+},
+{
+  "type": "node",
+  "id": 6237163973,
+  "lat": 5.0774366,
+  "lon": -73.4235195,
+  "tags": {
+    "historic": "monument",
+    "name": "Plaza de Toros Mariano Ospina Perez"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215105,
+  "lat": 5.0772948,
+  "lon": -73.4220265,
+  "tags": {
+    "name": "Servientrega Tenza Cll 5",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215106,
+  "lat": 5.0777666,
+  "lon": -73.4229729,
+  "tags": {
+    "name": "Hostal Santa Ana",
+    "tourism": "hostel"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215107,
+  "lat": 5.0766190,
+  "lon": -73.4235094,
+  "tags": {
+    "amenity": "restaurant",
+    "name": "Restaurante San Miguel"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215112,
+  "lat": 5.0775292,
+  "lon": -73.4226678,
+  "tags": {
+    "amenity": "bank",
+    "brand": "Banco Agrario de Colombia",
+    "brand:wikidata": "Q20013358",
+    "brand:wikipedia": "es:Banco Agrario de Colombia",
+    "name": "Banco Agrario de Colombia"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215114,
+  "lat": 5.0768392,
+  "lon": -73.4206263,
+  "tags": {
+    "amenity": "bank",
+    "brand": "Bancolombia",
+    "brand:wikidata": "Q806206",
+    "brand:wikipedia": "es:Bancolombia",
+    "name": "Bancolombia",
+    "name:en": "Bancolombia",
+    "name:es": "Bancolombia",
+    "website": "https://www.bancolombia.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215115,
+  "lat": 5.0773014,
+  "lon": -73.4207631,
+  "tags": {
+    "name": "Posada Casa Mora",
+    "tourism": "hostel"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215117,
+  "lat": 5.0774203,
+  "lon": -73.4220154,
+  "tags": {
+    "amenity": "restaurant",
+    "name": "Restaurante San Diego"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215118,
+  "lat": 5.0775169,
+  "lon": -73.4222409,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Salón de Onces Tentaciones"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215119,
+  "lat": 5.0772031,
+  "lon": -73.4193752,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Tenzu Café"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215120,
+  "lat": 5.0776520,
+  "lon": -73.4225910,
+  "tags": {
+    "name": "Almacen Mercatodo",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 6237215121,
+  "lat": 5.0777200,
+  "lon": -73.4227902,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Salon de Onces La Playa"
+  }
+},
+{
+  "type": "node",
+  "id": 9760676381,
+  "lat": 5.0771632,
+  "lon": -73.4235848,
+  "tags": {
+    "amenity": "marketplace",
+    "name": "Plaza de Mercado Municipal de Tenza"
+  }
+},
+{
+  "type": "node",
+  "id": 9760676397,
+  "lat": 5.0766481,
+  "lon": -73.4191190,
+  "tags": {
+    "name": "Hotel Turistico de Tenza",
+    "tourism": "hotel"
+  }
+},
+{
+  "type": "node",
+  "id": 9760676403,
+  "lat": 5.0764077,
+  "lon": -73.4200108,
+  "tags": {
+    "amenity": "townhall",
+    "name": "Alcaldía de Tenza"
+  }
+},
+{
+  "type": "way",
+  "id": 666186767,
+  "center": {
+    "lat": 5.0767814,
+    "lon": -73.4197539
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Parque Principal"
+  }
+},
+{
+  "type": "way",
+  "id": 1092215860,
+  "center": {
+    "lat": 5.0784524,
+    "lon": -73.4242649
+  },
+  "tags": {
+    "amenity": "fuel",
+    "building": "roof",
+    "fuel:diesel": "yes",
+    "fuel:gasolina_comum": "yes",
+    "operator": "Biomax"
+  }
+},
+{
+  "type": "way",
+  "id": 1387238786,
+  "center": {
+    "lat": 5.0765123,
+    "lon": -73.4188033
+  },
+  "tags": {
+    "access": "private",
+    "leisure": "swimming_pool",
+    "location": "outdoor",
+    "swimming_pool": "outdoor"
+  }
+},
+{
+  "type": "relation",
+  "id": 1353243,
+  "tags": {
+    "DANE:area": "68.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15761",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "Somondoco",
+    "objectid": "4343",
+    "source": "OCHA - SIGOT",
+    "type": "boundary",
+    "wikidata": "Q1654735",
+    "wikipedia": "es:Somondoco"
+  }
+},
+{
+  "type": "node",
+  "id": 703226646,
+  "lat": 4.9887754,
+  "lon": -73.4086485,
+  "tags": {
+    "divipola": "15761",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; Somondoco",
+    "name": "Alto El Aire",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, 8fbcda6e0e38b877ee81b4f391080184",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 6331321385,
+  "lat": 5.0052494,
+  "lon": -73.4317207,
+  "tags": {
+    "addr:street": "Salitre de Somondoco",
+    "amenity": "bar",
+    "name": "Video Bar Vega del Río"
+  }
+},
+{
+  "type": "node",
+  "id": 9750240442,
+  "lat": 4.9873201,
+  "lon": -73.4322008,
+  "tags": {
+    "addr:housenumber": "5-73",
+    "amenity": "restaurant",
+    "email": "productosceila@gmail.com",
+    "name": "Chicharron de Cuajada Doña Ceila",
+    "phone": "+57 3208539814"
+  }
+},
+{
+  "type": "way",
+  "id": 590548807,
+  "center": {
+    "lat": 5.0054888,
+    "lon": -73.4315740
+  },
+  "tags": {
+    "amenity": "cafe",
+    "area": "yes",
+    "internet_access": "no",
+    "name": "Brisas del Sunuba",
+    "outdoor_seating": "yes",
+    "takeaway": "yes",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "way",
+  "id": 676809570,
+  "center": {
+    "lat": 4.9858370,
+    "lon": -73.4326349
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "PARQUE PRINCIPAL"
+  }
+},
+{
+  "type": "way",
+  "id": 680937329,
+  "center": {
+    "lat": 4.9863580,
+    "lon": -73.4311152
+  },
+  "tags": {
+    "leisure": "swimming_pool",
+    "name": "los lagos"
+  }
+},
+{
+  "type": "way",
+  "id": 680937332,
+  "center": {
+    "lat": 4.9838344,
+    "lon": -73.4326850
+  },
+  "tags": {
+    "amenity": "hospital",
+    "healthcare": "hospital"
+  }
+},
+{
+  "type": "way",
+  "id": 680937335,
+  "center": {
+    "lat": 4.9840166,
+    "lon": -73.4335765
+  },
+  "tags": {
+    "leisure": "garden",
+    "name": "antiguo jardin"
+  }
+},
+{
+  "type": "way",
+  "id": 680937345,
+  "center": {
+    "lat": 4.9869227,
+    "lon": -73.4324768
+  },
+  "tags": {
+    "amenity": "library",
+    "building": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 1061204977,
+  "center": {
+    "lat": 4.9872558,
+    "lon": -73.4321749
+  },
+  "tags": {
+    "addr:city": "Somondoco",
+    "addr:housenumber": "5 - 73",
+    "addr:street": "Vía a Somondoco",
+    "amenity": "cafe",
+    "building": "yes",
+    "internet_access": "no",
+    "name": "Chicharrones de Cuajada Doña Ceila",
+    "opening_hours": "Mo-Su 09:00-21:00",
+    "phone": "+57 3208539814",
+    "source": "microsoft/BuildingFootprints"
+  }
+},
+{
+  "type": "relation",
+  "id": 1315404,
+  "tags": {
+    "DANE:area": "54.00",
+    "DANE:departamento": "15",
+    "admin_level": "6",
+    "boundary": "administrative",
+    "clcfile": "MunicipiosDepartamentos/ADM_Municipios.shp",
+    "divipola": "15380",
+    "entidad_te": "Cabecera Municipal",
+    "is_in:country": "Colombia",
+    "is_in:state": "Boyacá",
+    "name": "La Capilla",
+    "objectid": "3793",
+    "source": "OCHA - SIGOT",
+    "type": "boundary",
+    "wikidata": "Q1654986",
+    "wikipedia": "es:La Capilla (Boyacá)"
+  }
+},
+{
+  "type": "node",
+  "id": 703226770,
+  "lat": 5.1462301,
+  "lon": -73.4664664,
+  "tags": {
+    "divipola": "15380",
+    "fixme": "Revisar: este punto fue creado por importación directa",
+    "is_in": "Colombia; Boyacá ; La Capilla",
+    "name": "Cuchilla Los Cristales",
+    "natural": "peak",
+    "note": "OROGRAFIA, MONTAÑAS Y CERROS, f37b397aa3a27430d191952a0dbf1aa4",
+    "source": "OCHA Colombia 2010"
+  }
+},
+{
+  "type": "node",
+  "id": 9702004775,
+  "lat": 5.0957846,
+  "lon": -73.4431158,
+  "tags": {
+    "amenity": "hospital",
+    "healthcare": "hospital",
+    "name": "E.S.E. La Capilla"
+  }
+},
+{
+  "type": "node",
+  "id": 9702004776,
+  "lat": 5.0960827,
+  "lon": -73.4450376,
+  "tags": {
+    "amenity": "townhall",
+    "name": "Alcaldía Municipal"
+  }
+},
+{
+  "type": "way",
+  "id": 1055861822,
+  "center": {
+    "lat": 5.0957457,
+    "lon": -73.4446191
+  },
+  "tags": {
+    "leisure": "park",
+    "name": "Parque Principal"
+  }
+},
+{
+  "type": "way",
+  "id": 1059392639,
+  "center": {
+    "lat": 5.0955626,
+    "lon": -73.4439211
+  },
+  "tags": {
+    "amenity": "place_of_worship",
+    "building": "yes",
+    "building:levels": "1",
+    "name": "Iglesia Nuestra Señora de la Candelaria",
+    "ref:codcat": "153800100000000100008000000000",
+    "religion": "christian"
+  }
+}
+
+  ]
+}

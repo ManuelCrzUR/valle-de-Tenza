@@ -3,3 +3,9 @@ dist
 .DS_Store
 *.local
 *.tsbuildinfo
+
+# scraper
+scraper/.venv/
+scraper/cache/
+scraper/salida/
+__pycache__/
