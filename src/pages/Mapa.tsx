@@ -11,11 +11,12 @@ import '../styles/itinerario.css'
 // Leaflet pesa bastante: solo se descarga al abrir la vista de lugares.
 const MapaLugares = lazy(() => import('../components/mapa/MapaLugares'))
 
-const MapaLeaflet = lazy(() => import('../components/mapa/MapaLeaflet'))
+const MapaRuta = lazy(() => import('../components/mapa/MapaRuta'))
 
 function MiRuta() {
   const { itinerario } = useItinerario()
   const [sel, setSel] = useState<string | null>(null)
+  const [corrida, setCorrida] = useState(0)   // sube para repetir la animación del recorrido
   if (!itinerario) {
     return (
       <div className="vacio vacio-col">
@@ -25,13 +26,15 @@ function MiRuta() {
     )
   }
   const orden = [...itinerario.paradas, ...(itinerario.comida ? [itinerario.comida] : []), ...(itinerario.hospedaje ? [itinerario.hospedaje] : [])]
-  const puntos = orden.filter(tieneUbicacion)
+  // Cada parada conserva su número de la lista; las que no tienen ubicación no se dibujan, pero no cambian la numeración.
+  const puntos = orden.flatMap((lugar, i) => (tieneUbicacion(lugar) ? [{ n: i + 1, lugar }] : []))
   return (
     <div className="mapa-grid">
       <div className="mapa-ruta">
         <Suspense fallback={<Cargando />}>
-          <MapaLeaflet puntos={puntos} seleccionadoId={sel} onElegir={setSel} />
+          <MapaRuta paradas={puntos} seleccionadoId={sel} onElegir={setSel} corrida={corrida} />
         </Suspense>
+        {puntos.length > 1 && <button type="button" className="vd-btn vd-btn-secondary ruta-repetir" onClick={() => setCorrida((c) => c + 1)}>Ver el recorrido otra vez</button>}
       </div>
       <div>
         <h2 className="t-h3">{itinerario.plan.titulo}</h2>
