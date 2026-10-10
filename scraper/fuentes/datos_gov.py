@@ -59,9 +59,19 @@ def _candidato(**k) -> dict:
     return base
 
 
-def _vereda(direccion: str) -> str:
-    m = re.search(r"(?i)\bvereda\s+([^,;\n]+)", direccion or "")
-    return titulo(m.group(1)) if m else ""
+_CORTE_VEREDA = re.compile(r"\b(finca|casa|lote|predio|hacienda|parcela|km|kil[oó]metro|sector|entrada|v[ií]a|carretera|frente|diagonal|vereda|municipi?o|municpio|boyac[aá]|departamento|a\s+\d+)\b|\d|[,;\-/()]", re.I)
+
+
+def _vereda(direccion: str, municipio: str = "") -> str:
+    """'Vereda Rincon Arriba Finca Nuestro Sueño' -> 'Rincon Arriba' (sin el nombre de la finca ni otros datos).
+    Si el dato termina con el nombre del municipio ('Cora Chiquito Tenza'), se lo quita."""
+    m = re.search(r"(?i)\bvereda\s+(.+)", direccion or "")
+    if not m:
+        return ""
+    v = re.sub(r"\s+", " ", _CORTE_VEREDA.split(m.group(1), maxsplit=1)[0]).strip()
+    if municipio and norm(v).endswith(" " + norm(municipio)):
+        v = v[: -len(municipio)].strip()
+    return titulo(v)
 
 
 def _num(x) -> int:
@@ -96,7 +106,7 @@ def rnt_a_candidatos(filas: list[dict]) -> tuple[list[dict], dict]:
             continue
         sub = titulo(f.get("sub_categoria", ""))
         dir_raw = f.get("direcci_n_comercial_establecimiento", "")
-        vereda = _vereda(dir_raw)
+        vereda = _vereda(dir_raw, m["nombre"])
         publico = f.get("tipo_rnt") == "ESTABLECIMIENTO" and f.get("tipo_prestador") == "Comerciante"
         if publico:
             nombre, direccion = _t(f.get("razon_social_establecimiento", "")), re.sub(r"\s+", " ", _t(dir_raw))

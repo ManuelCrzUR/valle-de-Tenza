@@ -27,13 +27,17 @@ def _parecidos(a: dict, b: dict) -> bool:
     if not mismo:
         return False
     if a["lat"] is not None and b["lat"] is not None:
+        if a["precision"] != "exacta" or b["precision"] != "exacta":
+            return True   # una posición aproximada (vereda, calle, cabecera) no sirve para medir distancia
         return metros((a["lat"], a["lon"]), (b["lat"], b["lon"])) < 75
     return bool(ta) and bool(tb)
 
 
 def _fusionar(base: dict, otro: dict) -> dict:
     """Conserva el que tiene coordenadas y suma fuentes, RNT y datos extra."""
-    a, b = (base, otro) if base["lat"] is not None or otro["lat"] is None else (otro, base)
+    # Se queda el de mejor ubicación: exacta > aproximada > sin ubicación.
+    rango = {"exacta": 0, "direccion": 1, "vereda": 2, "cabecera": 3, None: 4}
+    a, b = (base, otro) if rango[base["precision"]] <= rango[otro["precision"]] else (otro, base)
     a["fuentes"] = sorted(set(a["fuentes"]) | set(b["fuentes"]))
     a["rnt"] = a["rnt"] or b["rnt"]
     a["direccion"] = a["direccion"] or b["direccion"]

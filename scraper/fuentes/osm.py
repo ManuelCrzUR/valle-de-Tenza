@@ -81,14 +81,34 @@ def _direccion(t: dict) -> str:
     return calle or t.get("addr:full", "")
 
 
+def _interpretar(datos: dict) -> dict:
+    """Respuesta de Overpass de UN municipio -> lugares, sitios (veredas, cabecera) y límites."""
+    limites, lugares, sitios = None, [], []
+    for e in datos.get("elements", []):
+        t = e.get("tags", {})
+        if e["type"] == "relation" and "bounds" in e and t.get("admin_level") == "6":
+            b = e["bounds"]
+            limites = [b["minlat"], b["minlon"], b["maxlat"], b["maxlon"]]
+            continue
+        if t.get("place") and t.get("name"):
+            c = e.get("center") or {}
+            lat = e["lat"] if e.get("lat") is not None else c.get("lat")
+            lon = e["lon"] if e.get("lon") is not None else c.get("lon")
+            if lat is not None and lon is not None:
+                sitios.append({"nombre": t["name"], "tipo": t["place"], "lat": lat, "lon": lon})
+        lugar = _lugar(e)
+        if lugar:
+            lugares.append(lugar)
+    return {"lugares": lugares, "sitios": sitios, "limites": limites}
+
+
 def descargar(refrescar: bool = False) -> dict:
-    """RED. Por municipio: lugares crudos y sitios 'place'. Guarda cada respuesta en cache/."""
+    """RED. Por municipio: lugares crudos, sitios 'place' y límites. Guarda cada respuesta en cache/."""
     salida = {}
     for m in MUNICIPIOS:
         print(f"  OSM · {m['nombre']}…", flush=True)
         datos = con_cache(f"osm-{m['slug']}", lambda m=m: _consultar(m["osm"]), refrescar)
-        lugares = [x for x in map(_lugar, datos.get("elements", [])) if x]
-        salida[m["slug"]] = {"lugares": lugares}
+        salida[m["slug"]] = _interpretar(datos)
     return salida
 
 
@@ -96,7 +116,7 @@ def desde_volcado(ruta) -> dict:
     """SIN RED. Lee un volcado de Overpass con todos los municipios; cada elemento pertenece al
     municipio cuya relación administrativa aparece justo antes (así salió de la consulta con foreach)."""
     datos = json.loads(Path(ruta).read_text(encoding="utf-8"))
-    salida = {m["slug"]: {"lugares": []} for m in MUNICIPIOS}
+    salida = {m["slug"]: {"lugares": [], "sitios": [], "limites": None} for m in MUNICIPIOS}
     actual = None
     for e in datos.get("elements", []):
         t = e.get("tags", {})

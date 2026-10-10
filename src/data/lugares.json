@@ -20,14 +20,14 @@
    "slug": "somondoco",
    "nombre": "Somondoco",
    "centro": [
-    4.99086,
-    -73.429269
+    4.988932,
+    -73.429453
    ],
    "caja": [
-    4.97383,
-    -73.44358,
-    5.01549,
-    -73.39865
+    4.94915,
+    -73.46459,
+    5.0181,
+    -73.37631
    ]
   },
   {
@@ -41,15 +41,15 @@
     5.0301,
     -73.44653,
     5.08845,
-    -73.4053
+    -73.39548
    ]
   },
   {
    "slug": "sutatenza",
    "nombre": "Sutatenza",
    "centro": [
-    5.021839,
-    -73.433118
+    5.022382,
+    -73.440706
    ],
    "caja": [
     4.99815,
@@ -76,8 +76,8 @@
    "slug": "chivor",
    "nombre": "Chivor",
    "centro": [
-    4.884462,
-    -73.355697
+    4.886101,
+    -73.361027
    ],
    "caja": [
     4.84476,
@@ -94,10 +94,10 @@
     -73.445038
    ],
    "caja": [
-    5.08556,
+    5.0854,
     -73.47647,
     5.15623,
-    -73.43312
+    -73.43246
    ]
   }
  ],
@@ -118,6 +118,28 @@
    "fuentes": [
     "OpenStreetMap"
    ]
+  },
+  {
+   "id": "almeida-alojamiento-finca-turistica-vereda-umbavita-63220",
+   "nombre": "Finca turística · vereda Umbavita",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "almeida",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Umbavita",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Umbavita",
+   "extra": {
+    "habitaciones": 6,
+    "camas": 14
+   }
   },
   {
    "id": "almeida-alojamiento-la-isabelina-fb74b",
@@ -633,6 +655,43 @@
    ]
   },
   {
+   "id": "almeida-restaurante-sra-hilda-de8b4",
+   "nombre": "Sra hilda",
+   "categoria": "restaurante",
+   "subtipo": "ice_cream",
+   "municipio": "almeida",
+   "lat": 4.970748,
+   "lon": -73.37893,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "almeida-salud-centro-de-salud-de-almeida-386a2",
+   "nombre": "Centro de Salud de Almeida",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "almeida",
+   "lat": 4.971518,
+   "lon": -73.378479,
+   "precision": "cabecera",
+   "direccion": "Centro",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
    "id": "almeida-salud-drogueria-kevin-bd2ce",
    "nombre": "Droguería Kevin",
    "categoria": "salud",
@@ -701,6 +760,69 @@
    ]
   },
   {
+   "id": "chivor-alojamiento-emerald-hotel-boutique-verilo-06219",
+   "nombre": "Emerald Hotel Boutique & Verilo",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "chivor",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Km 75 Chivor Via la Playa",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 11,
+    "camas": 35
+   }
+  },
+  {
+   "id": "chivor-alojamiento-hostal-anni-6cea8",
+   "nombre": "Hostal Anni",
+   "categoria": "alojamiento",
+   "subtipo": "apartahotel",
+   "municipio": "chivor",
+   "lat": 4.888742,
+   "lon": -73.369935,
+   "precision": "direccion",
+   "direccion": "Calle 6 4 14",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 14,
+    "camas": 28
+   }
+  },
+  {
+   "id": "chivor-alojamiento-smaragdus-hotel-52503",
+   "nombre": "Smaragdus Hotel",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "chivor",
+   "lat": 4.888742,
+   "lon": -73.369935,
+   "precision": "direccion",
+   "direccion": "Calle 6 4 06",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 26,
+    "camas": 60
+   }
+  },
+  {
    "id": "chivor-atraccion-damm-05785",
    "nombre": "Damm",
    "categoria": "atraccion",
@@ -732,6 +854,23 @@
    "conRegistro": false,
    "fuentes": [
     "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chivor-cajero-cajero-banco-agrario-3d116",
+   "nombre": "Cajero Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "cajero automático",
+   "municipio": "chivor",
+   "lat": 4.888674,
+   "lon": -73.369482,
+   "precision": "cabecera",
+   "direccion": "Carrera 4 # 4 -02/06",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario"
    ]
   },
   {
@@ -854,6 +993,77 @@
    ]
   },
   {
+   "id": "chivor-operador-bendicion-a-chivor-tours-y-esmeralda-b5b90",
+   "nombre": "Bendicion a Chivor Tours y Esmeraldas",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "chivor",
+   "lat": 4.888735,
+   "lon": -73.365985,
+   "precision": "direccion",
+   "direccion": "Calle 3 4 46",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "chivor-operador-emerald-hotel-boutique-verilo-01029",
+   "nombre": "Emerald Hotel Boutique & Verilo",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "chivor",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Km 75 Chivor Via la Playa",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "chivor-operador-sendero-verde-esmeralda-e1ee6",
+   "nombre": "Sendero Verde Esmeralda",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "chivor",
+   "lat": 4.887794,
+   "lon": -73.369314,
+   "precision": "direccion",
+   "direccion": "Calle 4 4 37",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "chivor-salud-centro-de-salud-de-chivor-17b9b",
+   "nombre": "Centro de Salud de Chivor",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "chivor",
+   "lat": 4.888674,
+   "lon": -73.369482,
+   "precision": "cabecera",
+   "direccion": "Centro",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
    "id": "guayata-alojamiento-casa-bc464",
    "nombre": "casa",
    "categoria": "alojamiento",
@@ -905,6 +1115,71 @@
    ]
   },
   {
+   "id": "guayata-alojamiento-centro-recreacional-luna-park-0cd29",
+   "nombre": "Centro Recreacional Luna Park",
+   "categoria": "alojamiento",
+   "subtipo": "centro vacacional",
+   "municipio": "guayata",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca Luna Park",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 10,
+    "camas": 20
+   }
+  },
+  {
+   "id": "guayata-alojamiento-finca-turistica-vereda-rincon-arriba-830b3",
+   "nombre": "Finca turística · vereda Rincon Arriba",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "guayata",
+   "lat": 4.931433,
+   "lon": -73.492762,
+   "precision": "vereda",
+   "direccion": "Vereda Rincon Arriba",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Rincon Arriba",
+   "extra": {
+    "habitaciones": 4,
+    "camas": 6
+   }
+  },
+  {
+   "id": "guayata-alojamiento-finca-turistica-vereda-tablon-1ff0c",
+   "nombre": "Finca turística · vereda Tablon",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "guayata",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Tablon",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Tablon",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 9
+   }
+  },
+  {
    "id": "guayata-alojamiento-hotel-roca-center-01c75",
    "nombre": "Hotel Roca Center",
    "categoria": "alojamiento",
@@ -913,13 +1188,18 @@
    "lat": 4.965727,
    "lon": -73.489903,
    "precision": "exacta",
-   "direccion": "",
+   "direccion": "Carrera 4 5 32",
    "plan": null,
    "esServicio": false,
-   "conRegistro": false,
+   "conRegistro": true,
    "fuentes": [
-    "OpenStreetMap"
-   ]
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 32,
+    "camas": 56
+   }
   },
   {
    "id": "guayata-cajero-banco-agrario-d3763",
@@ -930,11 +1210,12 @@
    "lat": 4.964974,
    "lon": -73.49045,
    "precision": "exacta",
-   "direccion": "",
+   "direccion": "Calle 4 # 4 - 02",
    "plan": null,
    "esServicio": true,
    "conRegistro": false,
    "fuentes": [
+    "Banco Agrario",
     "OpenStreetMap"
    ]
   },
@@ -1092,20 +1373,20 @@
    ]
   },
   {
-   "id": "guayata-naturaleza-vereda-carrisal-2b58f",
-   "nombre": "Vereda Carrisal",
-   "categoria": "naturaleza",
-   "subtipo": "sendero",
+   "id": "guayata-operador-territorio-guayata-0b872",
+   "nombre": "Territorio Guayatá",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
    "municipio": "guayata",
-   "lat": 4.950317,
-   "lon": -73.491449,
-   "precision": "exacta",
-   "direccion": "",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Carrera 6 10a 30 Finca la Cañada",
    "plan": "aventura",
    "esServicio": false,
-   "conRegistro": false,
+   "conRegistro": true,
    "fuentes": [
-    "OpenStreetMap"
+    "RNT"
    ]
   },
   {
@@ -1143,6 +1424,26 @@
    ]
   },
   {
+   "id": "guayata-salud-centro-de-salud-de-guayata-39c18",
+   "nombre": "Centro de Salud de Guayatá",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "guayata",
+   "lat": 4.964752,
+   "lon": -73.491087,
+   "precision": "cabecera",
+   "direccion": "Cl 7 Kr 4 Esq",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
    "id": "guayata-servicio-alcaldia-0b5da",
    "nombre": "Alcaldia",
    "categoria": "servicio",
@@ -1158,6 +1459,48 @@
    "fuentes": [
     "OpenStreetMap"
    ]
+  },
+  {
+   "id": "la-capilla-alojamiento-finca-turistica-d4e8b",
+   "nombre": "Finca turística",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "la-capilla",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 6
+   }
+  },
+  {
+   "id": "la-capilla-alojamiento-hospedaje-la-capilla-db0bf",
+   "nombre": "Hospedaje la Capilla",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "la-capilla",
+   "lat": 5.096451,
+   "lon": -73.444812,
+   "precision": "direccion",
+   "direccion": "Carrera 4 3 49",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 8,
+    "camas": 10
+   }
   },
   {
    "id": "la-capilla-monumento-iglesia-nuestra-senora-de-la-candela-8e14c",
@@ -1199,8 +1542,8 @@
    "categoria": "naturaleza",
    "subtipo": "park",
    "municipio": "la-capilla",
-   "lat": 5.095746,
-   "lon": -73.444619,
+   "lat": 5.095757,
+   "lon": -73.444597,
    "precision": "exacta",
    "direccion": "",
    "plan": "aventura",
@@ -1228,6 +1571,26 @@
    ]
   },
   {
+   "id": "la-capilla-salud-empresa-social-del-estado-centro-de--c62d3",
+   "nombre": "Empresa Social del Estado Centro de Salud la Candelaria de la Capilla",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "la-capilla",
+   "lat": 5.095399,
+   "lon": -73.442462,
+   "precision": "direccion",
+   "direccion": "Calle 4 No 1 - 68",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "1"
+   }
+  },
+  {
    "id": "la-capilla-servicio-alcaldia-municipal-76e1a",
    "nombre": "Alcaldía Municipal",
    "categoria": "servicio",
@@ -1239,6 +1602,257 @@
    "direccion": "",
    "plan": null,
    "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-alojamiento-cabana-campestre-los-pajaritos-d632d",
+   "nombre": "Cabaña Campestre los Pajaritos",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 4.985964,
+   "lon": -73.432617,
+   "precision": "cabecera",
+   "direccion": "Vrd Cucuavaca",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 12
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-el-guaney-campestre-80270",
+   "nombre": "El Guaney Campestre",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 4.985964,
+   "lon": -73.432617,
+   "precision": "cabecera",
+   "direccion": "Fca el Porvenir",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 4
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-finca-agroturistica-somondoco-0a867",
+   "nombre": "Finca Agroturistica Somondoco",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 4.985964,
+   "lon": -73.432617,
+   "precision": "cabecera",
+   "direccion": "Vrd Cucuavaca",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 30
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-finca-turistica-vereda-boya-8b681",
+   "nombre": "Finca turística · vereda Boya",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 5.008101,
+   "lon": -73.386313,
+   "precision": "vereda",
+   "direccion": "Vereda Boya",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Boya",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 12
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-finca-turistica-vereda-cucuavaca-98f09",
+   "nombre": "Finca turística · vereda Cucuavaca",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 4.978954,
+   "lon": -73.417044,
+   "precision": "vereda",
+   "direccion": "Vereda Cucuavaca",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Cucuavaca",
+   "extra": {
+    "habitaciones": 3,
+    "camas": 20
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-finca-turistica-vereda-san-antonio-6e4d5",
+   "nombre": "Finca turística · vereda San Antonio",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda San Antonio",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "San Antonio",
+   "extra": {
+    "habitaciones": 4,
+    "camas": 12
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-hospedaje-real-simindoco-753da",
+   "nombre": "Hospedaje Real Simindoco",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "somondoco",
+   "lat": 4.986009,
+   "lon": -73.432378,
+   "precision": "direccion",
+   "direccion": "Calle 3 4 89",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 10,
+    "camas": 16
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-meseta-de-los-angeles-e7076",
+   "nombre": "Meseta de los Angeles",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 4.959154,
+   "lon": -73.454586,
+   "precision": "vereda",
+   "direccion": "Vereda Sabanetas Finca la Meseta",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Sabanetas",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 10
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-otro-tipo-de-vivienda-turistica-vere-3dbf8",
+   "nombre": "Otro tipo de vivienda turística · vereda Bohorquez",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "somondoco",
+   "lat": 5.004629,
+   "lon": -73.431421,
+   "precision": "vereda",
+   "direccion": "Vereda Bohorquez",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Bohorquez",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 5
+   }
+  },
+  {
+   "id": "somondoco-alojamiento-viajes-alojamiento-el-recreo-81eee",
+   "nombre": "Viajes & Alojamiento el Recreo",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "somondoco",
+   "lat": 5.004629,
+   "lon": -73.431421,
+   "precision": "vereda",
+   "direccion": "Vereda Bohorquez",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Bohorquez",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 13
+   }
+  },
+  {
+   "id": "somondoco-cajero-banco-agrario-4f136",
+   "nombre": "Banco agrario",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "somondoco",
+   "lat": 4.985619,
+   "lon": -73.43232,
+   "precision": "exacta",
+   "direccion": "Calle 4 # 3 - 15",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario",
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "somondoco-monumento-diocesis-de-garacoa-73f15",
+   "nombre": "Diócesis de Garacoa",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "somondoco",
+   "lat": 4.985447,
+   "lon": -73.432599,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
    "conRegistro": false,
    "fuentes": [
     "OpenStreetMap"
@@ -1313,6 +1927,23 @@
    ]
   },
   {
+   "id": "somondoco-operador-cafemuseo-somondoco-ec1e6",
+   "nombre": "Cafemuseo Somondoco",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "somondoco",
+   "lat": 4.985964,
+   "lon": -73.432617,
+   "precision": "cabecera",
+   "direccion": "Verda Canos",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
    "id": "somondoco-restaurante-brisas-del-sunuba-bb6d9",
    "nombre": "Brisas del Sunuba",
    "categoria": "restaurante",
@@ -1347,6 +1978,23 @@
    ]
   },
   {
+   "id": "somondoco-restaurante-helados-alcinita-4a086",
+   "nombre": "Helados Alcinita",
+   "categoria": "restaurante",
+   "subtipo": "ice_cream",
+   "municipio": "somondoco",
+   "lat": 4.987221,
+   "lon": -73.432891,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
    "id": "somondoco-restaurante-video-bar-vega-del-rio-58fc6",
    "nombre": "Video Bar Vega del Río",
    "categoria": "restaurante",
@@ -1364,6 +2012,26 @@
    ]
   },
   {
+   "id": "somondoco-salud-empresa-social-del-estado-centro-de--4faf3",
+   "nombre": "Empresa Social del Estado Centro de Salud San Sebastian de Somondoco",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "somondoco",
+   "lat": 4.986009,
+   "lon": -73.432378,
+   "precision": "direccion",
+   "direccion": "Calle 2 No 4 - 64",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "1"
+   }
+  },
+  {
    "id": "somondoco-salud-hospital-dfa64",
    "nombre": "Hospital",
    "categoria": "salud",
@@ -1379,6 +2047,132 @@
    "fuentes": [
     "OpenStreetMap"
    ]
+  },
+  {
+   "id": "sutatenza-alojamiento-alojamiento-rural-campesino-la-ponde-f61b2",
+   "nombre": "Alojamiento Rural Campesino la Ponderosa Sutatenza",
+   "categoria": "alojamiento",
+   "subtipo": "glamping",
+   "municipio": "sutatenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca la Ponderosa",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 6
+   }
+  },
+  {
+   "id": "sutatenza-alojamiento-casa-turistica-1fc03",
+   "nombre": "Casa turística",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "sutatenza",
+   "lat": 5.023105,
+   "lon": -73.450823,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 7
+   }
+  },
+  {
+   "id": "sutatenza-alojamiento-el-refugio-de-gufo-b0c06",
+   "nombre": "El Refugio de Gufo",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "sutatenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Km 67 Via Guateque las Juntas",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 3,
+    "camas": 8
+   }
+  },
+  {
+   "id": "sutatenza-alojamiento-finca-agroturistica-la-puerta-del-so-a33ee",
+   "nombre": "Finca Agroturistica la Puerta del Sol",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "sutatenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca Agroturistica la Puerta del Sol",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 6,
+    "camas": 12
+   }
+  },
+  {
+   "id": "sutatenza-alojamiento-finca-villa-rica-cd187",
+   "nombre": "Finca Villa Rica",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "sutatenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Km 5 Via las Juntas",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 4,
+    "camas": 11
+   }
+  },
+  {
+   "id": "sutatenza-alojamiento-hotel-villa-de-la-esperanza-4bc52",
+   "nombre": "Hotel Villa de la Esperanza",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "sutatenza",
+   "lat": 5.023105,
+   "lon": -73.450823,
+   "precision": "cabecera",
+   "direccion": "Calle 2 2 14",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 23,
+    "camas": 50
+   }
   },
   {
    "id": "sutatenza-monumento-iglesia-san-bartolome-5a45f",
@@ -1432,6 +2226,23 @@
    ]
   },
   {
+   "id": "sutatenza-operador-travel-the-valley-dad2c",
+   "nombre": "Travel The Valley",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "sutatenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca las Orquideas",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
    "id": "sutatenza-restaurante-pare-y-pique-61c7f",
    "nombre": "Pare y Pique",
    "categoria": "restaurante",
@@ -1452,6 +2263,112 @@
    }
   },
   {
+   "id": "sutatenza-salud-centro-de-salud-de-sutatenza-77f22",
+   "nombre": "Centro de Salud de Sutatenza",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "sutatenza",
+   "lat": 5.023105,
+   "lon": -73.450823,
+   "precision": "cabecera",
+   "direccion": "Cl 5 No. 5-22",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
+   "id": "tenza-alojamiento-casa-turistica-10382",
+   "nombre": "Casa turística",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "tenza",
+   "lat": 5.076408,
+   "lon": -73.420011,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 15
+   }
+  },
+  {
+   "id": "tenza-alojamiento-finca-turistica-2b105",
+   "nombre": "Finca turística",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "tenza",
+   "lat": 5.076408,
+   "lon": -73.420011,
+   "precision": "cabecera",
+   "direccion": "Vereda Quebradas",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 8,
+    "camas": 9
+   }
+  },
+  {
+   "id": "tenza-alojamiento-finca-turistica-vereda-cora-chiquito-fe19f",
+   "nombre": "Finca turística · vereda Cora Chiquito",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "tenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Cora Chiquito",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Cora Chiquito",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 6
+   }
+  },
+  {
+   "id": "tenza-alojamiento-finca-turistica-vereda-rucha-5ed78",
+   "nombre": "Finca turística · vereda Rucha",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "tenza",
+   "lat": 5.062275,
+   "lon": -73.40548,
+   "precision": "vereda",
+   "direccion": "Vereda Rucha",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Rucha",
+   "extra": {
+    "habitaciones": 28,
+    "camas": 60
+   }
+  },
+  {
    "id": "tenza-alojamiento-hostal-santa-ana-21a84",
    "nombre": "Hostal Santa Ana",
    "categoria": "alojamiento",
@@ -1460,13 +2377,39 @@
    "lat": 5.077767,
    "lon": -73.422973,
    "precision": "exacta",
-   "direccion": "",
+   "direccion": "Calle 5 N 9 - 61",
    "plan": null,
    "esServicio": false,
-   "conRegistro": false,
+   "conRegistro": true,
    "fuentes": [
-    "OpenStreetMap"
-   ]
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 7,
+    "camas": 28
+   }
+  },
+  {
+   "id": "tenza-alojamiento-hotel-de-tenza-ltda-26b23",
+   "nombre": "Hotel de Tenza Ltda.",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "tenza",
+   "lat": 5.076408,
+   "lon": -73.420011,
+   "precision": "cabecera",
+   "direccion": "Carrera 5 5 36",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 30,
+    "camas": 61
+   }
   },
   {
    "id": "tenza-alojamiento-hotel-turistico-de-tenza-1f0b1",
@@ -1486,6 +2429,27 @@
    ]
   },
   {
+   "id": "tenza-alojamiento-magno-glamping-1caa2",
+   "nombre": "Magno Glamping",
+   "categoria": "alojamiento",
+   "subtipo": "glamping",
+   "municipio": "tenza",
+   "lat": 5.076408,
+   "lon": -73.420011,
+   "precision": "cabecera",
+   "direccion": "Pd las Cruces",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 14
+   }
+  },
+  {
    "id": "tenza-alojamiento-posada-casa-mora-8b612",
    "nombre": "Posada Casa Mora",
    "categoria": "alojamiento",
@@ -1503,6 +2467,48 @@
    ]
   },
   {
+   "id": "tenza-alojamiento-valle-de-ceibas-46858",
+   "nombre": "Valle de Ceibas",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "tenza",
+   "lat": 5.076815,
+   "lon": -73.420159,
+   "precision": "direccion",
+   "direccion": "Carrera 6 6-04",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 6
+   }
+  },
+  {
+   "id": "tenza-alojamiento-valle-del-sol-340dc",
+   "nombre": "Valle del Sol",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "tenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Kilometro 25 Via Tenza la Capilla la Esperanza Verea Chaguatoque",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 10,
+    "camas": 30
+   }
+  },
+  {
    "id": "tenza-cajero-banco-agrario-de-colombia-768b7",
    "nombre": "Banco Agrario de Colombia",
    "categoria": "cajero",
@@ -1511,11 +2517,12 @@
    "lat": 5.077529,
    "lon": -73.422668,
    "precision": "exacta",
-   "direccion": "",
+   "direccion": "Calle 5 # 9 - 27/29",
    "plan": null,
    "esServicio": true,
    "conRegistro": false,
    "fuentes": [
+    "Banco Agrario",
     "OpenStreetMap"
    ]
   },
@@ -1693,6 +2700,23 @@
    ]
   },
   {
+   "id": "tenza-operador-guia-de-turismo-5f571",
+   "nombre": "Guía de turismo",
+   "categoria": "operador",
+   "subtipo": "guia de turismo",
+   "municipio": "tenza",
+   "lat": 5.076408,
+   "lon": -73.420011,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
    "id": "tenza-restaurante-plaza-de-mercado-municipal-de-tenza-2ee32",
    "nombre": "Plaza de Mercado Municipal de Tenza",
    "categoria": "restaurante",
@@ -1793,6 +2817,43 @@
    "fuentes": [
     "OpenStreetMap"
    ]
+  },
+  {
+   "id": "tenza-restaurante-valle-del-sol-d20c4",
+   "nombre": "Valle del Sol",
+   "categoria": "restaurante",
+   "subtipo": "restaurante",
+   "municipio": "tenza",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Kilometro 25 Via Tenza la Capilla la Esperanza Verea Chaguatoque",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "tenza-salud-centro-de-salud-de-tenza-571b1",
+   "nombre": "Centro de Salud de Tenza",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "tenza",
+   "lat": 5.076732,
+   "lon": -73.418499,
+   "precision": "direccion",
+   "direccion": "Kr 4 No. 5-88",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
   },
   {
    "id": "tenza-servicio-alcaldia-de-tenza-b9547",

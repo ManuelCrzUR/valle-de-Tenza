@@ -101,5 +101,67 @@ with tempfile.TemporaryDirectory() as d:
     ok(len(err) == 4 and all("línea" in e for e in err), f"Manual: 4 errores reportados con número de línea")
     ok(ms[0]["precision"] == "exacta" and ms[1]["precision"] is None, "Manual: precisión exacta solo si trae coordenadas")
 
+# ---- Geocodificador (sin red) ----------------------------------------------------
+import geocodificar as geo
+from fuentes.datos_gov import _vereda
+
+ok(geo.normalizar_direccion("Cl 7 Kr 4 Esq") == "Calle 7 Carrera 4 esquina", "Geo: abreviaturas de calle → palabras completas")
+ok(geo.es_calle("Carrera 4 5 32") and geo.es_calle("Kr 4 No. 5-88") and geo.es_calle("CALLE 5 #  9 - 27/29"), "Geo: reconoce direcciones de calle")
+ok(not any(geo.es_calle(x) for x in ("Km 75 Chivor Via la Playa", "Finca Luna Park", "Centro", "Vereda Umbavita", "Carrera 6 10A 30 Finca La Cañada")),
+   "Geo: no toma como calle lo rural ni lo vago (km, finca, vereda, 'Centro')")
+ok(geo.es_urbana("Centro") and not geo.es_urbana("Finca Luna Park") and not geo.es_urbana("") and not geo.es_urbana("Km 75 vía"), "Geo: urbano vs rural")
+caja = [5.0, -73.5, 5.2, -73.3]
+ok(geo.dentro(caja, 5.1, -73.4) and not geo.dentro(caja, 4.0, -73.4) and geo.dentro(caja, 5.201, -73.4, 0.002), "Geo: validación contra el límite del municipio")
+sitios = [{"nombre": "Rincón Arriba", "tipo": "locality", "lat": 4.95, "lon": -73.49}, {"nombre": "El Tablón", "tipo": "locality", "lat": 4.97, "lon": -73.48},
+          {"nombre": "San José", "tipo": "hamlet", "lat": 4.99, "lon": -73.47}, {"nombre": "Guayatá", "tipo": "town", "lat": 4.96, "lon": -73.49},
+          {"nombre": "Chavita Alta", "tipo": "locality", "lat": 4.9, "lon": -73.4}, {"nombre": "Chavita Baja", "tipo": "locality", "lat": 4.91, "lon": -73.41}]
+ok(geo.buscar_vereda("Rincon Arriba", sitios)["lat"] == 4.95, "Geo: vereda con/sin tilde")
+ok(geo.buscar_vereda("Tablon", sitios)["lat"] == 4.97, "Geo: 'Tablon' encuentra 'El Tablón' (único)")
+ok(geo.buscar_vereda("Chavita", sitios) is None, "Geo: nombre ambiguo (Chavita Alta/Baja) NO se adivina")
+ok(geo.buscar_vereda("Vereda Inexistente", sitios) is None and geo.buscar_vereda("Guayatá", sitios) is None, "Geo: sin coincidencia, o solo la cabecera (no es vereda) → None")
+fixt = [{"lat": "4.0", "lon": "-73.4", "name": "Hotel X", "category": "tourism", "type": "hotel"},
+        {"lat": "5.1", "lon": "-73.4", "name": "Hotel Roca Center", "category": "tourism", "type": "hotel", "display_name": "Hotel Roca Center, Guayatá"},
+        {"lat": "5.1", "lon": "-73.4", "name": "Calle 4", "category": "highway", "type": "residential"}]
+ok(geo.elegir_resultado(fixt, caja)["lat"] == 5.1, "Geo: descarta resultados fuera del municipio")
+ok(geo.elegir_resultado(fixt, caja, nombre="Hotel Roca Center") is not None and geo.elegir_resultado(fixt, caja, nombre="Otro Nombre") is None,
+   "Geo: por nombre exige un lugar con nombre parecido")
+
+def cand(**k):
+    base = dict(nombre="X", categoria="alojamiento", subtipo="", municipio="guayata", direccion="", vereda="", lat=None, lon=None, precision=None,
+                fuentes=["RNT"], rnt="1", anonimo=False, contacto={}, extra={})
+    base.update(k)
+    return base
+ctx = {"guayata": {"sitios": sitios, "limites": caja, "centro": [5.05, -73.45]}}
+casos = [cand(nombre="Con vereda", vereda="Rincon Arriba", anonimo=True), cand(nombre="Calle sin red", direccion="Carrera 4 5 32"),
+         cand(nombre="Rural km", direccion="Km 75 Via la Playa"), cand(nombre="Vereda desconocida", vereda="Inventada", anonimo=True, direccion="Vereda Inventada"),
+         cand(nombre="Barrio", direccion="Centro", categoria="salud"), cand(nombre="Ya ubicado", lat=5.0, lon=-73.4, precision="exacta")]
+est = geo.aplicar(casos, ctx, red=False)
+p = {c["nombre"]: c["precision"] for c in casos}
+ok(p == {"Con vereda": "vereda", "Calle sin red": "cabecera", "Rural km": None, "Vereda desconocida": None, "Barrio": "cabecera", "Ya ubicado": "exacta"},
+   f"Geo: cascada sin red → {p}")
+ok(est["consultas"] == 0 and est["vereda"] == 1 and est["cabecera"] == 2 and est["sin ubicación"] == 2, f"Geo: estadísticas {est}")
+ok(casos[0]["lat"] == 4.95 and casos[1]["lat"] == 5.05, "Geo: coordenadas asignadas (vereda y alcaldía)")
+
+# Fusión: la posición aproximada se une a su gemelo exacto aunque estén lejos, y se conserva la exacta
+exacto = dict(osm_banco, nombre="Hospital San Rafael", categoria="salud", municipio="guayata", lat=5.0, lon=-73.4, precision="exacta", fuentes=["OpenStreetMap"], osm="node/9")
+aprox = cand(nombre="Hospital San Rafael", categoria="salud", lat=5.05, lon=-73.45, precision="cabecera", fuentes=["Red de salud de Boyacá"])
+f = normalizar([aprox, exacto])
+ok(len(f) == 1 and f[0]["precision"] == "exacta" and f[0]["lat"] == 5.0 and len(f[0]["fuentes"]) == 2, "Fusión: aproximado + exacto → uno solo, con la posición exacta y las dos fuentes")
+
+# Vereda sin datos de más
+ok(_vereda("Vereda Rincon Arriba Finca Nuestro Sueño", "Guayatá") == "Rincon Arriba" and _vereda("Vereda Cora Chiquito Tenza", "Tenza") == "Cora Chiquito",
+   "Vereda: sin nombre de finca ni municipio pegado")
+
+# ---- Alcaldías (funciones puras) -------------------------------------------------
+from fuentes import alcaldias as alc
+ok(alc.permitido("", "/tema/turismo") and alc.permitido("<!doctype html><html></html>", "/x"), "Alcaldías: robots vacío o página HTML = permitido")
+ok(not alc.permitido("User-agent: *\nDisallow: /tema/", "/tema/turismo") and alc.permitido("User-agent: *\nDisallow: /admin", "/tema/turismo"), "Alcaldías: respeta Disallow de robots.txt")
+pags = [["Menú", "Saltar a contenido", f"Artículo {i}"] for i in range(4)]
+lim = alc.quitar_repetido(pags)
+ok(all(l == [f"Artículo {i}"] for i, l in enumerate(lim)), "Alcaldías: quita menús y textos repetidos en varias páginas")
+fr = alc.frases_de_lugares("Visite la Cascada del Hato en la vereda Chaguatoque. Hoy hubo reunión del concejo. Se celebra el Festival de la Mogolla en el Parque Principal.\nMuy corta.")
+ok([f["clave"] for f in fr] == ["cascada", "parque"] and fr[0]["tipo"] == "naturaleza", f"Alcaldías: extrae frases con sitios y descarta el resto → {[f['clave'] for f in fr]}")
+ok(alc.frases_de_lugares("la cascada es bonita y está lejos de aquí hoy mismo") == [], "Alcaldías: sin nombre propio no es candidata")
+
 print("\n" + ("TODO BIEN" if not fallos else f"{len(fallos)} FALLO(S)"))
 sys.exit(1 if fallos else 0)

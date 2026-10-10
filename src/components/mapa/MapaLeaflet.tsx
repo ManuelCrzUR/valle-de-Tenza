@@ -53,7 +53,7 @@ export default function MapaLeaflet({ puntos, seleccionadoId, onElegir }: { punt
       <ZoomControl position="bottomright" zoomInTitle="Acercar" zoomOutTitle="Alejar" />
       <Ajustar puntos={puntos} seleccionado={seleccionado} />
       <MarkerClusterGroup
-        chunkedLoading showCoverageOnHover={false} maxClusterRadius={46} disableClusteringAtZoom={17}
+        chunkedLoading showCoverageOnHover={false} maxClusterRadius={46}
         iconCreateFunction={(c: { getChildCount(): number }) => L.divIcon({ html: `<span class="pin pin-cluster">${c.getChildCount()}</span>`, className: 'pin-wrap', iconSize: [44, 44], iconAnchor: [22, 22] })}
       >
         {puntos.filter((p) => p.id !== seleccionadoId).map((p) => (

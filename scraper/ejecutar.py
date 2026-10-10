@@ -14,10 +14,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from categorias import CATEGORIAS
-from fuentes import datos_gov, manual, osm
+import geocodificar
+from fuentes import alcaldias, datos_gov, manual, osm
 from municipios import MUNICIPIOS
 from normalizar import PRECISIONES, normalizar, publico
-from util import APP_JSON, CACHE, DATOS, SALIDA
+from util import APP_JSON, CACHE, DATOS, SALIDA, norm
 
 
 def _osm_desde_cache():
@@ -26,10 +27,38 @@ def _osm_desde_cache():
     return osm.desde_volcado(DATOS / "osm_inicial.json"), "volcado inicial (datos/osm_inicial.json)"
 
 
+def escribir_alcaldias(alc: dict) -> dict:
+    """Material de REVISIÓN con lo raspado de las alcaldías (no va al mapa): frases que nombran sitios y resumen por municipio."""
+    if not alc:
+        return {}
+    SALIDA.mkdir(exist_ok=True)
+    nombre = {m["slug"]: m["nombre"] for m in MUNICIPIOS}
+    filas, vistas, md = [], set(), ["# Alcaldías: material para revisar", "",
+                                     "Sale de los portales oficiales. **No está en el mapa**: son noticias e historia, no listas de lugares. "
+                                     "Si una frase nombra un sitio real, agrégalo a `datos/lugares_manual.csv` con su ubicación.", ""]
+    for slug, paginas in alc.items():
+        md += [f"## {nombre[slug]}", ""]
+        for p in paginas:
+            titulo = p.get("titulo") or p["url"].rsplit("/", 1)[-1].replace("-", " ")
+            md.append(f"- [{p['tipo']}] {titulo} — {p['url']}")
+            for c in alcaldias.frases_de_lugares("\n".join(p["lineas"])):
+                if (slug, c["frase"]) not in vistas:
+                    vistas.add((slug, c["frase"]))
+                    filas.append({"municipio": nombre[slug], "tipo": c["tipo"], "clave": c["clave"], "frase": c["frase"], "fuente": p["url"]})
+        md.append("")
+    with open(SALIDA / "candidatos_alcaldias.csv", "w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=["municipio", "tipo", "clave", "frase", "fuente"])
+        w.writeheader()
+        w.writerows(sorted(filas, key=lambda f: (f["municipio"], f["tipo"])))
+    (SALIDA / "alcaldias_resumen.md").write_text("\n".join(md) + "\n", encoding="utf-8")
+    return {"municipios": len(alc), "paginas": sum(len(p) for p in alc.values()), "frases": len(filas), "por_municipio": Counter(f["municipio"] for f in filas)}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--descargar", action="store_true", help="usa la red")
-    ap.add_argument("--refrescar", action="store_true", help="ignora la caché (con --descargar)")
+    ap.add_argument("--refrescar", action="store_true", help="ignora la caché (con --descargar o --alcaldias)")
+    ap.add_argument("--alcaldias", action="store_true", help="descarga los portales de las alcaldías (usa el Chrome instalado; ~6 min)")
     a = ap.parse_args()
     notas = []
 
@@ -41,6 +70,10 @@ def main():
     else:
         osm_datos, origen_osm = _osm_desde_cache()
     abiertos = datos_gov.cargar_en_cache()
+    if a.alcaldias:
+        print("Descargando portales de las alcaldías (Chrome)…")
+    alc = alcaldias.descargar(a.refrescar) if a.alcaldias else alcaldias.cargar_en_cache()
+    alc_stats = escribir_alcaldias(alc)
     manual_c, errores_manual = manual.leer()
 
     candidatos = [dict(l, municipio=slug, fuentes=["OpenStreetMap"], rnt=None, anonimo=False, contacto={}, extra={}, vereda="", precision="exacta")
@@ -49,6 +82,21 @@ def main():
     for nombre in ("rnt", "salud", "cajeros"):
         if not abiertos[nombre]:
             notas.append(f"Fuente **{nombre}** no cargada (sin datos en caché; se obtiene con `--descargar`).")
+
+    # Contexto de cada municipio para ubicar direcciones: veredas (OSM), límites y centro (la alcaldía).
+    contexto = {}
+    for m in MUNICIPIOS:
+        v = osm_datos[m["slug"]]
+        pts = [(l["lat"], l["lon"]) for l in v["lugares"]]
+        alc = next((l for l in v["lugares"] if l["categoria"] == "servicio" and l["subtipo"] == "townhall"), None)
+        cab = next((x for x in v.get("sitios", []) if x["tipo"] in ("town", "village") and norm(x["nombre"]) == norm(m["nombre"])), None)
+        centro = [alc["lat"], alc["lon"]] if alc else [cab["lat"], cab["lon"]] if cab else ([sum(p[0] for p in pts) / len(pts), sum(p[1] for p in pts) / len(pts)] if pts else None)
+        limites = v.get("limites") or ([min(p[0] for p in pts) - .03, min(p[1] for p in pts) - .03, max(p[0] for p in pts) + .03, max(p[1] for p in pts) + .03] if pts else None)
+        contexto[m["slug"]] = {"sitios": v.get("sitios", []), "limites": limites, "centro": centro}
+    pendientes = [c for c in candidatos if c["lat"] is None]
+    geo = geocodificar.aplicar(pendientes, contexto, red=a.descargar) if pendientes else {}
+    if pendientes:
+        print(f"Ubicación de {len(pendientes)} lugares sin coordenadas: " + ", ".join(f"{k} {v}" for k, v in geo.items() if v))
 
     lugares = normalizar(candidatos)
     pub = [publico(l) for l in lugares]
@@ -85,12 +133,12 @@ def main():
                         "tel_privado": " / ".join(x for x in (ct.get("telefono"), ct.get("celular")) if x), "correo_privado": ct.get("correo", ""),
                         "razon_social_privada": ct.get("razon_social", "")})
 
-    reporte(pub, municipios, origen_osm, notas, errores_manual, abiertos["descartados"])
+    reporte(pub, municipios, origen_osm, notas, errores_manual, abiertos["descartados"], geo, alc_stats)
     print(f"{len(pub)} lugares → {APP_JSON.relative_to(APP_JSON.parents[2])}")
     print(f"Reporte: {SALIDA / 'reporte.md'}")
 
 
-def reporte(pub, municipios, origen_osm, notas, errores_manual, descartados):
+def reporte(pub, municipios, origen_osm, notas, errores_manual, descartados, geo=None, alc_stats=None):
     nombre = {m["slug"]: m["nombre"] for m in municipios}
     cats = list(CATEGORIAS)
     L = [f"# Reporte del scraper ({date.today().isoformat()})", "", f"- OpenStreetMap: **{origen_osm}**", f"- Lugares: **{len(pub)}**", ""]
@@ -103,6 +151,14 @@ def reporte(pub, municipios, origen_osm, notas, errores_manual, descartados):
     pr = Counter(l["precision"] or "sin ubicación" for l in pub)
     for k, v in pr.most_common():
         L.append(f"- {k}: {v}" + ("  *(no se dibuja en el mapa; aparece en la lista)*" if k == "sin ubicación" else ""))
+    if geo:
+        L += ["", "### Cómo se ubicaron los que venían sin coordenadas", ""]
+        etiqueta = {"vereda": "por nombre de vereda (centro de la vereda)", "direccion": "por dirección de calle (Nominatim)", "nombre": "por nombre del negocio (Nominatim)",
+                    "cabecera": "zona urbana (la alcaldía)", "sin ubicación": "**sin ubicación** (quedan en la lista, no en el mapa)", "consultas": "consultas nuevas a Nominatim"}
+        L += [f"- {etiqueta[k]}: {v}" for k, v in geo.items()]
+        sin = [l for l in pub if l["precision"] is None]
+        if sin:
+            L += ["", "Sin ubicación: " + "; ".join(f"{l['nombre']} ({nombre[l['municipio']]})" for l in sin)]
     L += ["", "## Fuentes", ""] + [f"- {k}: {v}" for k, v in Counter(f for l in pub for f in l["fuentes"]).most_common()]
     L += ["", "## Para los planes", ""]
     for plan in ("aventura", "gastro", "cultura"):
@@ -114,6 +170,11 @@ def reporte(pub, municipios, origen_osm, notas, errores_manual, descartados):
     pub_priv = [l for l in pub if l["conRegistro"] and not any(x in l["nombre"].lower() for x in ("vivienda", "finca", "guía", "cabaña", "casa"))]
     if pub_priv:
         L += ["", "## Nombres de prestadores publicados (revisar que no sean personas)", ""] + [f"- {l['nombre']} ({nombre[l['municipio']]})" for l in pub_priv]
+    if alc_stats:
+        L += ["", "## Alcaldías (material para revisar)", "",
+              f"- {alc_stats['paginas']} páginas de {alc_stats['municipios']} portales → **{alc_stats['frases']} frases** que nombran sitios: " + ", ".join(f"{k} {v}" for k, v in sorted(alc_stats["por_municipio"].items())),
+              "- Revísalas en `salida/candidatos_alcaldias.csv`; el contexto por municipio está en `salida/alcaldias_resumen.md`.",
+              "- Tenza publica una **guía turística en PDF** (6 MB): https://www.tenza-boyaca.gov.co/turismo/guia-turistica — no se descargó; conviene leerla a mano."]
     if descartados:
         L += ["", "## Categorías del RNT que no usamos", ""] + [f"- {k}: {v}" for k, v in descartados.items()]
     if errores_manual:
