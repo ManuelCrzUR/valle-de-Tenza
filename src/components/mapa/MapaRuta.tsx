@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { CircleMarker, MapContainer, Marker, Polyline, TileLayer, ZoomControl, useMap } from 'react-leaflet'
@@ -7,7 +7,8 @@ import type { Lugar } from '../../data/lugares'
 export type ParadaMapa = { n: number; lugar: Lugar & { lat: number; lon: number } }   // n = posición en el recorrido (1, 2, 3…)
 
 const MS_POR_TRAMO = 1100
-const PAUSA_INICIAL = 500
+const PAUSA_INICIAL = 1500   // vista general + vuelo al primer nodo antes de empezar a dibujar
+const ZOOM_SEGUIR = 14.5
 const reduceMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Un solo ícono por número/estado: si cambiara de identidad en cada fotograma, Leaflet recrearía el pin y reiniciaría su animación.
@@ -63,6 +64,54 @@ function Encuadrar({ paradas, seleccionado }: { paradas: ParadaMapa[]; seleccion
   return null
 }
 
+// La cámara acompaña a la línea: vista general → vuelo al nodo 1 → sigue la cabeza → al terminar, vuelve a mostrar toda la ruta.
+// Si la persona toca o mueve el mapa, deja de seguir (hasta que repita el recorrido).
+function Seguir({ paradas, cabeza, empezo, animando, corrida, seleccionadoId }: { seleccionadoId: string | null; paradas: ParadaMapa[]; cabeza: [number, number] | undefined; empezo: boolean; animando: boolean; corrida: number }) {
+  const map = useMap()
+  const sigue = useRef(true)
+  const animo = useRef(false)
+  const quieto = reduceMovimiento() || paradas.length < 2
+
+  useEffect(() => {
+    const parar = () => { sigue.current = false }
+    const c = map.getContainer()
+    map.on('dragstart', parar)
+    c.addEventListener('wheel', parar, { passive: true }); c.addEventListener('dblclick', parar); c.addEventListener('touchstart', parar, { passive: true })
+    return () => { map.off('dragstart', parar); c.removeEventListener('wheel', parar); c.removeEventListener('dblclick', parar); c.removeEventListener('touchstart', parar) }
+  }, [map])
+
+  // Elegir una parada en la lista tiene prioridad sobre el seguimiento.
+  useEffect(() => { if (seleccionadoId) sigue.current = false }, [seleccionadoId])
+
+  // Cada recorrido empieza con la vista general y vuela al primer nodo.
+  useEffect(() => {
+    sigue.current = true
+    if (quieto) return
+    const t = setTimeout(() => { if (sigue.current) map.flyTo([paradas[0].lugar.lat, paradas[0].lugar.lon], ZOOM_SEGUIR, { duration: 0.8 }) }, 600)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [corrida, map])
+
+  // Mientras se dibuja, el centro del mapa va con la cabeza de la línea.
+  const lat = cabeza?.[0], lon = cabeza?.[1]
+  useEffect(() => {
+    if (quieto || !animando || !empezo || !sigue.current || lat === undefined || lon === undefined) return
+    animo.current = true
+    map.setView([lat, lon], ZOOM_SEGUIR, { animate: false })
+  }, [lat, lon, animando, empezo, quieto, map])
+
+  // Al llegar al último nodo, se aleja para mostrar toda la ruta.
+  useEffect(() => {
+    if (animando || !animo.current) return
+    animo.current = false
+    if (!sigue.current) return
+    const t = setTimeout(() => map.flyToBounds(L.latLngBounds(paradas.map((p) => [p.lugar.lat, p.lugar.lon] as [number, number])), { padding: [64, 64], maxZoom: 15, duration: 1.2 }), 500)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animando, map])
+  return null
+}
+
 // Mapa de «Mi ruta»: nodos numerados y una línea que se dibuja del primero al último, pasando por todos.
 export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida }: { paradas: ParadaMapa[]; seleccionadoId: string | null; onElegir: (id: string) => void; corrida: number }) {
   const prog = useRecorrido(paradas.length, corrida)
@@ -87,6 +136,7 @@ export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida }:
       <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" maxZoom={19} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Colaboradores de OpenStreetMap</a>' />
       <ZoomControl position="bottomright" zoomInTitle="Acercar" zoomOutTitle="Alejar" />
       <Encuadrar paradas={paradas} seleccionado={seleccionado} />
+      <Seguir paradas={paradas} cabeza={cabeza} empezo={prog > 0} animando={animando} corrida={corrida} seleccionadoId={seleccionadoId} />
       {linea.length > 1 && <Polyline positions={linea} interactive={false} className="ruta-linea" pathOptions={{ weight: 5, dashArray: '10 9', lineCap: 'round', lineJoin: 'round' }} />}
       {animando && cabeza && <CircleMarker center={cabeza} radius={8} interactive={false} className="ruta-cabeza" />}
       {paradas.slice(0, alcanzado + 1).map((p) => (
