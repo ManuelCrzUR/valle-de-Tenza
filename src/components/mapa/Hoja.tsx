@@ -1,23 +1,37 @@
-import { useEffect, useRef } from 'react'
-import type { ReactNode } from 'react'
-import { X } from 'lucide-react'
+import { useState } from 'react';
+import { Hoja } from './Hoja'; // Ajusta la ruta según dónde esté tu archivo Hoja.tsx
+import { lugares } from '../../data/lugares'; // Importa tus datos desde la carpeta data
 
-// Hoja inferior (móvil y tablet): sube sobre el mapa, se cierra con la X o con Escape.
-export function Hoja({ titulo, onCerrar, children }: { titulo: string; onCerrar: () => void; children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    ref.current?.focus({ preventScroll: true })
-    const esc = (e: KeyboardEvent) => e.key === 'Escape' && onCerrar()
-    document.addEventListener('keydown', esc)
-    return () => document.removeEventListener('keydown', esc)
-  }, [onCerrar])
+export function SeccionLugaresMapa() {
+  const [isHojaAbierta, setIsHojaAbierta] = useState(true);
+
   return (
-    <div className="hoja" role="dialog" aria-label={titulo} ref={ref} tabIndex={-1}>
-      <div className="hoja-cab">
-        <h2 className="t-h3">{titulo}</h2>
-        <button type="button" className="hoja-x" onClick={onCerrar} aria-label={`Cerrar ${titulo.toLowerCase()}`}><X size={24} aria-hidden /></button>
-      </div>
-      <div className="hoja-cuerpo">{children}</div>
+    <div className="relative w-full h-screen">
+      {/* Aquí iría tu mapa interactivo de fondo */}
+      
+      {isHojaAbierta && (
+        <Hoja 
+          titulo="Lugares del Valle" 
+          onCerrar={() => setIsHojaAbierta(false)}
+        >
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-gray-600">
+              Explora los sitios registrados en los municipios:
+            </p>
+            
+            {/* Recorremos el arreglo de lugares para listarlos */}
+            {lugares.map((lugar, index) => (
+              <div 
+                key={index} 
+                className="p-3 border rounded-lg shadow-xs bg-white hover:bg-gray-50 transition"
+              >
+                <h4 className="font-semibold text-gray-800">{lugar.nombre}</h4>
+                <p className="text-xs text-gray-500 mt-1">{lugar.descripcion}</p>
+              </div>
+            ))}
+          </div>
+        </Hoja>
+      )}
     </div>
-  )
+  );
 }
