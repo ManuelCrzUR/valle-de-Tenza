@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Option, PlaceCard } from '../components/ui'
 import { Montanas } from '../components/Montanas'
-import { LUGARES, CATEGORIAS } from '../data/lugares'
+import { LUGARES, CATEGORIAS, type CategoriaId } from '../data/lugares'
 import { usePagina } from '../usePagina'
 
 export default function Lugares() {
@@ -10,13 +10,14 @@ export default function Lugares() {
   const [params, setParams] = useSearchParams()
   const go = useNavigate()
   
-  // Categoría seleccionada actual (por defecto la primera de la lista)
-  const catActual = params.get('cat') || CATEGORIAS[0].id
+  // Categoría seleccionada (por defecto la primera, ej. 'alojamiento')
+  const catActual = (params.get('cat') as CategoriaId) || CATEGORIAS[0].id
 
-  // Filtramos los lugares según la categoría seleccionada en el menú
-  const lugaresFiltrados = LUGARES.filter(
-    (l) => l.categoria === catActual
-  )
+  // Filtramos los lugares de LUGARES que coincidan con la categoría seleccionada
+  const lugaresFiltrados = LUGARES.filter((l) => l.categoria === catActual)
+
+  // Buscamos la categoría actual para mostrar sus datos
+  const categoriaActualObj = CATEGORIAS.find((c) => c.id === catActual) || CATEGORIAS[0]
 
   return (
     <div className="wrap pagina">
@@ -43,7 +44,7 @@ export default function Lugares() {
           lugaresFiltrados.map((x, i) => (
             <div key={x.id} className="aparece grid-item" style={{ '--i': i } as CSSProperties}>
               <PlaceCard 
-                chip={x.subtipo} 
+                chip={x.subtipo || categoriaActualObj.singular} 
                 title={x.nombre} 
                 meta={`En «${x.municipio}»`} 
                 onClick={() => go(`/lugares/${x.id}`)} 
