@@ -1,0 +1,23 @@
+/* Itinerario y «Mi ruta»: controles, acciones de tarjeta y lista de recorrido. */
+.it-controles { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-4); width: 100%; }
+.it-controles label { font-weight: 700; }
+.it-controles .vd-input { width: 100%; }
+.it-aviso { padding: var(--space-4); border-radius: var(--radius-md); background: var(--surface-sunken); color: var(--ink-muted); }
+.it-bloque { display: flex; flex-direction: column; gap: var(--space-3); width: 100%; }
+.it-acciones { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); margin-top: var(--space-3); }
+.it-enlace { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; text-decoration: underline; color: var(--secondary); }
+.it-ruta-lista { list-style: none; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); width: 100%; }
+.it-ruta-lista li { display: flex; flex-direction: column; gap: var(--space-2); }
+.it-pie { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+
+/* Mi ruta */
+.mapa-ruta { width: 100%; height: 420px; border-radius: var(--radius-lg); overflow: hidden; background: var(--surface-sunken); }
+.paradas { list-style: none; padding: 0; width: 100%; display: flex; flex-direction: column; gap: var(--space-3); }
+.parada { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3); border: 2px solid var(--line-strong); border-radius: var(--radius-md); }
+.parada-sel { border-color: var(--secondary); background: var(--surface-sunken); }
+.parada-elegir { flex: 1; min-width: 0; min-height: 44px; display: flex; align-items: center; gap: var(--space-3); text-align: left; font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+.parada-elegir:focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
+.parada-n { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--primary); color: #fff; }
+.parada-txt { display: flex; flex-direction: column; min-width: 0; }
+.parada-txt strong { overflow-wrap: anywhere; }
+.parada-txt small { color: var(--ink-muted); font-size: 14px; }

@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Montanas } from '../components/Montanas'
+import { LinkButton } from '../components/LinkButton'
+import { useUsuario } from '../state/demo'
 import { config } from '../config'
 import { usePagina } from '../usePagina'
 
@@ -11,6 +13,7 @@ const BENEFICIOS = [
 
 export default function Prestadores() {
   usePagina('Para prestadores y emprendedores')
+  const usuario = useUsuario()
   return (
     <div className="wrap pagina">
       <h1 id="titulo" tabIndex={-1} className="t-h1">Para prestadores y emprendedores</h1>
@@ -23,6 +26,12 @@ export default function Prestadores() {
           <Montanas variante="cultura" className="prest-arte" />
           <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{config.contacto}</strong>.</p>
         </aside>
+      </div>
+      <p className="sub">Recibe solicitudes de reserva con cuatro módulos: restaurante, caminata, actividad y hotel.</p>
+      <div className="acciones-fila" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+        {usuario
+          ? <LinkButton to="/prestadores/panel" variant="cta">Ir a mi panel</LinkButton>
+          : <><LinkButton to="/prestadores/entrar" variant="cta">Crear mi cuenta</LinkButton><LinkButton to="/prestadores/entrar" variant="secondary">Entrar</LinkButton></>}
       </div>
     </div>
   )

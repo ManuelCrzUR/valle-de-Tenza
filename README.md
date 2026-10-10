@@ -14,7 +14,8 @@ npm run preview   # sirve dist/ para revisar
 ## Dónde cambiar cosas
 
 - **Contacto, horario y redes:** `src/config.ts` (reemplaza los valores `[ENTRE CORCHETES]`).
-- **Planes, lugares y hospedajes:** `src/data/planes.ts`.
+- **Planes (metadatos):** `src/data/planes.ts`.
+- **Lugares reales:** `src/data/lugares.json` (lo genera el scraper) y el generador de itinerarios en `src/data/generarPlan.ts`.
 - **Respuestas del chatbot:** `src/data/respuestas.ts`.
 - **Colores, tipografía y espacios:** vienen del sistema de marca (`scripts/tokens.json`). Tras cambiarlos: `node scripts/gen-tokens.mjs`.
 
@@ -52,6 +53,14 @@ scraper/.venv/bin/python scraper/probar.py                      # pruebas sin re
 - **Cortesía:** respeta `robots.txt`, máximo 1 petición por segundo por servidor y todo se guarda en caché (`scraper/cache/`, fuera de git).
 - **Reporte:** cada corrida escribe `scraper/salida/reporte.md` (por municipio y categoría, precisión de ubicación, paradas por tipo de plan y lo que falta completar).
 - **Datos:** © Colaboradores de OpenStreetMap, licencia ODbL; datos abiertos de datos.gov.co.
+
+## Prestadores y reservas (modo demo)
+
+- **Prestadores:** entran en `/prestadores/entrar` y administran su negocio desde `/prestadores/panel`. Pueden registrar restaurante, caminata, actividad u hotel, reclamar un lugar del mapa o crear uno nuevo, y definir un cupo diario.
+- **Viajeros:** reservan sin cuenta desde `/reservar/<id>` (botón «Reservar» en Lugares, Mapa e Itinerario) y ven sus solicitudes en `/reservas`.
+- **Confirmación:** el prestador confirma o rechaza cada solicitud desde su panel.
+- **Almacenamiento:** todo se guarda en el `localStorage` del navegador (`src/state/demo.ts`). Es una **DEMO**: no es segura, no se comparte entre dispositivos y las contraseñas no deben ser reales.
+- **Para operar de verdad:** reemplaza solo `src/state/demo.ts` por un backend (por ejemplo, Supabase).
 
 ## Publicación
 

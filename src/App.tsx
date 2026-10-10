@@ -10,6 +10,10 @@ const LugarDetalle = lazy(() => import('./pages/LugarDetalle'))
 const Mapa = lazy(() => import('./pages/Mapa'))
 const Chat = lazy(() => import('./pages/Chat'))
 const Prestadores = lazy(() => import('./pages/Prestadores'))
+const Reservar = lazy(() => import('./pages/Reservar'))
+const MisReservas = lazy(() => import('./pages/MisReservas'))
+const PrestadorAcceso = lazy(() => import('./pages/PrestadorAcceso'))
+const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
 const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
 
 export default function App() {
@@ -23,6 +27,10 @@ export default function App() {
         <Route path="mapa" element={<Mapa />} />
         <Route path="chat" element={<Chat />} />
         <Route path="prestadores" element={<Prestadores />} />
+        <Route path="prestadores/entrar" element={<PrestadorAcceso />} />
+        <Route path="prestadores/panel" element={<PrestadorPanel />} />
+        <Route path="reservar/:id" element={<Reservar />} />
+        <Route path="reservas" element={<MisReservas />} />
         <Route path="*" element={<NoEncontrado />} />
       </Route>
     </Routes>

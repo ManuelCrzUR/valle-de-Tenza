@@ -1,0 +1,9 @@
+/* Pantallas Lugares y Detalle de lugar. */
+.lugares-filtros { display: grid; gap: var(--space-3); width: 100%; }
+.lugares-mun { display: grid; gap: var(--space-1); max-width: 320px; }
+.lugares-mun .vd-input { min-height: var(--touch-min); }
+.lugares-conteo { color: var(--ink-muted); font-weight: 700; margin: 0; }
+.lugares-vacio { width: 100%; padding: var(--space-6) var(--space-4); text-align: center; background: var(--surface-sunken); border-radius: var(--radius-xl); display: grid; gap: var(--space-2); justify-items: center; }
+.lugares-vacio p { margin: 0; color: var(--ink-muted); }
+.detalle-acciones { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); width: 100%; max-width: 420px; }
+.detalle-datos { display: grid; gap: var(--space-3); width: 100%; }

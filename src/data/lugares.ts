@@ -48,3 +48,31 @@ export const NOMBRE_MUNICIPIO = Object.fromEntries(MUNICIPIOS.map((m) => [m.slug
 
 export const tieneUbicacion = (l: Lugar): l is Lugar & { lat: number; lon: number } => l.lat !== null && l.lon !== null
 export const esAproximado = (l: Lugar) => l.precision !== null && l.precision !== 'exacta'
+
+export const getLugar = (id: string | undefined) => LUGARES.find((l) => l.id === id)
+
+// ---------- Reservas ----------
+export type TipoReserva = 'hotel' | 'restaurante' | 'caminata' | 'actividad'
+export const TIPOS_RESERVA: { id: TipoReserva; etiqueta: string }[] = [
+  { id: 'hotel', etiqueta: 'Hotel o alojamiento' },
+  { id: 'restaurante', etiqueta: 'Restaurante' },
+  { id: 'caminata', etiqueta: 'Caminata' },
+  { id: 'actividad', etiqueta: 'Actividad o guía' },
+]
+// Los servicios (cajero, salud, gasolina, tienda, alcaldía) no se reservan.
+export function tipoReserva(l: Pick<Lugar, 'categoria'>): TipoReserva | null {
+  switch (l.categoria) {
+    case 'alojamiento': return 'hotel'
+    case 'restaurante': return 'restaurante'
+    case 'naturaleza': return 'caminata'
+    case 'operador': case 'atraccion': case 'monumento': return 'actividad'
+    default: return null
+  }
+}
+
+// Distancia en metros entre dos puntos (haversine).
+export function metros(a: [number, number], b: [number, number]): number {
+  const r = (g: number) => (g * Math.PI) / 180
+  const h = Math.sin(r(b[0] - a[0]) / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(r(b[1] - a[1]) / 2) ** 2
+  return 2 * 6371000 * Math.asin(Math.sqrt(h))
+}

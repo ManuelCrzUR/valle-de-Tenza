@@ -7,9 +7,9 @@ import { usePagina } from '../usePagina'
 
 const PASOS = [
   ['Elige tu plan', 'Naturaleza, gastronomía o cultura. Tú decides por dónde empezar.'],
-  ['Recibe tu itinerario', 'Un hospedaje con cupo verificado hoy y las paradas en orden.'],
-  ['Mira tu ruta', 'Un esquema de tu recorrido, sin buscadores ni catálogos.'],
-  ['Pregunta lo que falte', 'El chatbot responde a cualquier hora; un embajador te atiende en horario de oficina.'],
+  ['Recibe tu itinerario', 'Arma una ruta con lugares reales del Valle: paradas cercanas entre sí, dónde comer y dónde dormir.'],
+  ['Mira tu ruta', 'Verla en el mapa, parada por parada.'],
+  ['Reserva y pregunta', 'Reserva hospedaje, comida y actividades directo con los negocios y pregunta lo que falte al chatbot o a un embajador.'],
 ]
 
 export default function Inicio() {

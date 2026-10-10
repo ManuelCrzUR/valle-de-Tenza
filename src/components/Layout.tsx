@@ -5,6 +5,7 @@ import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
 import { config } from '../config'
+import { useUsuario } from '../state/demo'
 
 const NAV: TabBarItem[] = [
   { id: 'itinerario', label: 'Itinerario', icon: 'itinerario' },
@@ -17,6 +18,8 @@ const base = import.meta.env.BASE_URL
 export function Layout() {
   const { pathname } = useLocation()
   const go = useNavigate()
+  const usuario = useUsuario()
+  const prest = usuario ? { to: '/prestadores/panel', texto: 'Mi panel' } : { to: '/prestadores', texto: 'Soy prestador' }
   const seg = pathname.split('/')[1] ?? ''
   return (
     <div className="shell">
@@ -27,9 +30,9 @@ export function Layout() {
           <Link to="/" className="appbar-logo" aria-label="Valle Directo, inicio"><Logo size={40} /></Link>
           <nav className="topnav" aria-label="Principal">
             {NAV.map((n) => <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
-            <NavLink to="/prestadores">Soy prestador</NavLink>
+            <NavLink to={prest.to}>{prest.texto}</NavLink>
           </nav>
-          <Link to="/prestadores" className="appbar-prest">Soy prestador</Link>
+          <Link to={prest.to} className="appbar-prest">{prest.texto}</Link>
         </div>
       </header>
 
