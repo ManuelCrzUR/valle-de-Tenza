@@ -6,7 +6,7 @@ import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
 import { fotoDeLugar } from '../data/fotos'
 import { DatosLugar } from '../components/mapa/DatosLugar'
-import { CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, TIPOS_RESERVA, getLugar, tieneUbicacion, tipoReserva } from '../data/lugares'
+import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, TIPOS_RESERVA, getLugar, tieneUbicacion, tipoReserva } from '../data/lugares'
 import { LUGAR_NEGOCIO, useDemo } from '../state/demo'
 import { useItinerario } from '../state/itinerario'
 import NoEncontrado from './NoEncontrado'
@@ -50,7 +50,7 @@ export default function LugarDetalle() {
     <div className="wrap pagina detalle">
       <Link to={`/lugares?cat=${volver}`} className="atras"><ArrowLeft size={20} aria-hidden /> Volver a lugares</Link>
       {foto ? <Foto key={foto} n={foto} className="detalle-arte" /> : <Montanas variante={plan ?? 'cultura'} className="detalle-arte" />}
-      <Chip tone="soft">{CATEGORIA_POR_ID[lugar.categoria].singular}{lugar.subtipo && lugar.categoria === 'alojamiento' ? ` · ${lugar.subtipo}` : ''}</Chip>
+      <Chip tone="soft">{CATEGORIA_POR_ID[lugar.categoria].singular}{lugar.subtipo && lugar.categoria === 'alojamiento' ? ` · ${etiquetaSubtipo(lugar.subtipo)}` : ''}</Chip>
       <h1 id="titulo" tabIndex={-1} className="t-h1">{lugar.nombre}</h1>
       <div className="detalle-datos"><DatosLugar lugar={lugar} /></div>
       <div className="detalle-acciones">

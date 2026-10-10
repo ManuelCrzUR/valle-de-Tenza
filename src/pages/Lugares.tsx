@@ -4,7 +4,7 @@ import { Option, PlaceCard } from '../components/ui'
 import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
 import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
-import { CATEGORIA_POR_ID, LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
+import { etiquetaSubtipo, CATEGORIA_POR_ID, LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
 import { PLANES } from '../data/planes'
 import { LUGAR_NEGOCIO, negocioDeLugar, useDemo } from '../state/demo'
@@ -76,7 +76,7 @@ export default function Lugares() {
                 <PlaceCard
                   chip={CATEGORIA_POR_ID[l.categoria].singular}
                   title={l.nombre}
-                  description={l.subtipo && l.categoria !== 'alojamiento' ? l.subtipo : l.categoria === 'alojamiento' ? l.subtipo || undefined : undefined}
+                  description={l.subtipo ? etiquetaSubtipo(l.subtipo) : undefined}
                   meta={`${NOMBRE_MUNICIPIO[l.municipio]}${reserva ? ' · Recibe reservas' : ''}`}
                   onClick={() => go(`/lugares/${l.id}`)}
                 />

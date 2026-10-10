@@ -1,5 +1,5 @@
 import { ArrowLeft, ExternalLink } from 'lucide-react'
-import { CATEGORIA_POR_ID, esAproximado, tieneUbicacion, tipoReserva } from '../../data/lugares'
+import { etiquetaSubtipo, CATEGORIA_POR_ID, esAproximado, tieneUbicacion, tipoReserva } from '../../data/lugares'
 import type { Lugar } from '../../data/lugares'
 import { Chip } from '../ui'
 import { LinkButton } from '../LinkButton'
@@ -17,7 +17,7 @@ export function FichaLugar({ lugar, onVolver }: { lugar: Lugar; onVolver: () => 
         <span className={`pin${lugar.esServicio ? ' pin-servicio' : ''}${esAproximado(lugar) ? ' pin-aprox' : ''}`} aria-hidden><CategoriaIcono id={lugar.categoria} size={22} /></span>
         <div>
           <h2 id="ficha-titulo" tabIndex={-1} className="t-h2">{lugar.nombre}</h2>
-          <p className="ficha-sub">{cat.singular}{lugar.subtipo && lugar.categoria === 'alojamiento' ? ` · ${lugar.subtipo}` : ''}</p>
+          <p className="ficha-sub">{cat.singular}{lugar.subtipo && lugar.categoria === 'alojamiento' ? ` · ${etiquetaSubtipo(lugar.subtipo)}` : ''}</p>
         </div>
       </div>
       {lugar.conRegistro && <Chip tone="strong">Con registro de turismo</Chip>}

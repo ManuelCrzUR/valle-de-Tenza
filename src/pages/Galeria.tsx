@@ -56,7 +56,7 @@ export default function Galeria() {
           <figure>
             <img src={`${base}${actual.archivo}`} alt={actual.pie} />
             <figcaption>
-              <strong>{actual.pie}</strong> · {NOMBRE_MUNICIPIO[actual.municipio]}<br />
+              <strong>{actual.pie}</strong><br />
               Foto: {actual.url ? <a href={actual.url} target="_blank" rel="noopener noreferrer">{actual.fuente}</a> : actual.fuente}
             </figcaption>
           </figure>

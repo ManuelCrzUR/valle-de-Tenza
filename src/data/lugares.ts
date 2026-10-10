@@ -76,3 +76,12 @@ export function metros(a: [number, number], b: [number, number]): number {
   const h = Math.sin(r(b[0] - a[0]) / 2) ** 2 + Math.cos(r(a[0])) * Math.cos(r(b[0])) * Math.sin(r(b[1] - a[1]) / 2) ** 2
   return 2 * 6371000 * Math.asin(Math.sqrt(h))
 }
+
+// Los subtipos vienen de OpenStreetMap en inglés; se muestran en español. Lo que no esté aquí ya viene en español.
+const SUBTIPOS: Record<string, string> = {
+  peak: 'Cima', viewpoint: 'Mirador', attraction: 'Atracción', park: 'Parque', garden: 'Jardín', monument: 'Monumento', memorial: 'Monumento', artwork: 'Obra de arte',
+  sports_centre: 'Centro deportivo', swimming_pool: 'Piscina', convenience: 'Tienda', supermarket: 'Supermercado', bakery: 'Panadería', butcher: 'Carnicería', greengrocer: 'Verdulería',
+  cafe: 'Café', restaurant: 'Restaurante', fast_food: 'Comidas rápidas', ice_cream: 'Heladería', bar: 'Bar', pharmacy: 'Farmacia', hospital: 'Hospital', library: 'Biblioteca',
+  townhall: 'Alcaldía', hotel: 'Hotel', hostel: 'Hostal', guest_house: 'Casa de huéspedes', iglesia: 'Iglesia',
+}
+export const etiquetaSubtipo = (s: string) => SUBTIPOS[s] ?? (s ? s.charAt(0).toUpperCase() + s.slice(1) : '')

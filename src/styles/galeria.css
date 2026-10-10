@@ -9,10 +9,14 @@
 .visor { border: 0; padding: 0; background: var(--bosque); color: var(--crema); border-radius: var(--radius-lg); width: min(960px, 94vw); max-height: 94vh; overflow: auto; }
 .visor::backdrop { background: color-mix(in srgb, var(--bosque) 78%, transparent); }
 .visor figure { margin: 0; }
-.visor img { display: block; width: 100%; max-height: 70vh; object-fit: contain; background: var(--bosque); }
+.visor img { display: block; width: 100%; max-height: min(70vh, 62dvh); object-fit: contain; background: var(--bosque); }
 .visor figcaption { padding: var(--space-3) var(--space-4); font-size: 15px; line-height: 22px; }
 .visor figcaption a { color: inherit; }
-.visor-barra { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: 0 var(--space-4) var(--space-4); }
+.visor-barra { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); padding: 0 var(--space-3) var(--space-3); }
+.visor-barra span { white-space: nowrap; }
+.visor-barra .vd-btn { padding-inline: 16px; background: var(--surface); border-color: var(--surface); color: var(--ink); }
+.visor-barra .vd-btn:hover { background: var(--arena); }
+@media (max-width: 600px) { .visor { width: 96vw; max-height: 96dvh; } .visor img { max-height: 46dvh; } .visor figcaption { padding: var(--space-2) var(--space-3); font-size: 14px; line-height: 20px; } }
 .visor-x { position: absolute; top: 8px; right: 8px; width: 44px; height: 44px; display: grid; place-items: center; border: 0; border-radius: 50%; cursor: pointer; background: var(--surface); color: var(--ink); }
 
 .rincones { display: grid; gap: var(--space-3); grid-template-columns: repeat(2, 1fr); margin: var(--space-4) 0; }
