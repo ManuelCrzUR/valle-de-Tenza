@@ -1,0 +1,4 @@
+.foto { margin: 0; position: relative; overflow: hidden; background: var(--surface-sunken); }
+.foto img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.foto figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 6px 12px; font-size: 12px; line-height: 16px; background: color-mix(in srgb, var(--bosque) 82%, transparent); color: var(--crema); }
+.foto figcaption a { color: inherit; text-decoration: underline; }

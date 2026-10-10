@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { Montanas } from '../components/Montanas'
+import { Foto } from '../components/Foto'
 import { LinkButton } from '../components/LinkButton'
 import { useUsuario } from '../state/demo'
 import { config } from '../config'
@@ -24,7 +24,7 @@ export default function Prestadores() {
           {BENEFICIOS.map(([t, d], i) => <div key={t} className="aparece" style={{ '--i': i } as CSSProperties}><dt className="t-h3">{t}</dt><dd>{d}</dd></div>)}
         </dl>
         <aside className="panel prest-aside">
-          <Montanas variante="cultura" className="prest-arte" />
+          <Foto n={14} className="prest-arte" />
           <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{config.contacto}</strong>.</p>
         </aside>
       </div>

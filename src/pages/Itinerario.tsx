@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Option, PlaceCard, Button } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
-import { Montanas } from '../components/Montanas'
+import { Foto } from '../components/Foto'
 import { PLANES } from '../data/planes'
 import { CATEGORIA_POR_ID, MUNICIPIOS, NOMBRE_MUNICIPIO, tipoReserva } from '../data/lugares'
 import type { Lugar } from '../data/lugares'
@@ -109,7 +109,7 @@ export default function Itinerario() {
           </section>
         ) : (
           <div className="panel vacio-panel">
-            <Montanas className="vacio-arte" />
+            <Foto n={13} className="vacio-arte" />
             <p>Toca una opción y aquí aparece tu hospedaje y tu ruta.</p>
           </div>
         )}

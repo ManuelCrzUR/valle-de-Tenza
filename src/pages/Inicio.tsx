@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { LinkButton } from '../components/LinkButton'
-import { Montanas } from '../components/Montanas'
+import { Foto } from '../components/Foto'
 import { Chip } from '../components/ui'
 import { usePagina } from '../usePagina'
 
@@ -26,7 +26,7 @@ export default function Inicio() {
             <Link to="/lugares" className="vd-btn vd-btn-ghost">Qué lugares hay</Link>
           </div>
         </div>
-        <Montanas className="hero-arte" />
+        <Foto n={3} className="hero-arte" />
       </section>
 
       <section className="wrap seccion">

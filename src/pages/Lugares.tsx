@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Option, PlaceCard } from '../components/ui'
 import { Montanas } from '../components/Montanas'
+import { Foto } from '../components/Foto'
+import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
 import { CATEGORIA_POR_ID, LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
 import { PLANES } from '../data/planes'
@@ -35,6 +37,7 @@ export default function Lugares() {
   const nuevos = negocios.filter((n) => n.lugarId.startsWith(LUGAR_NEGOCIO) && FILTRO_DE_TIPO[n.tipo] === cat && (!mun || n.municipio === mun))
   const total = lugares.length + nuevos.length
   const filtroActual = FILTROS.find((f) => f.id === cat)!
+  const foto = FOTO_MUNICIPIO[mun] ?? FOTO_FILTRO[cat]   // el municipio elegido manda; Gastronomía sin municipio conserva la ilustración
 
   return (
     <div className="wrap pagina">
@@ -55,7 +58,7 @@ export default function Lugares() {
             </label>
           </div>
         </div>
-        <Montanas key={cat} variante={cat === 'dormir' ? 'cultura' : cat} className="lugares-arte" />
+        {foto ? <Foto key={foto} n={foto} className="lugares-arte" /> : <Montanas key={cat} variante={cat === 'dormir' ? 'cultura' : cat} className="lugares-arte" />}
       </div>
       <p className="lugares-conteo" role="status">{total} {total === 1 ? 'lugar' : 'lugares'}</p>
       {total === 0 ? (
