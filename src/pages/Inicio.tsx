@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { LinkButton } from '../components/LinkButton'
 import { Foto } from '../components/Foto'
+import { FOTOS } from '../data/fotos'
+import '../styles/galeria.css'
 import { Chip } from '../components/ui'
 import { usePagina } from '../usePagina'
 
@@ -39,6 +41,18 @@ export default function Inicio() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="wrap seccion">
+        <h2 className="t-h2">Rincones del Valle</h2>
+        <div className="rincones">
+          {([1, 5, 12, 17, 9, 14] as const).map((n) => (
+            <Link key={n} to={`/galeria?mun=${FOTOS[n].municipio}`} aria-label={`Ver la galería de ${FOTOS[n].pie}`}>
+              <img src={`${import.meta.env.BASE_URL}${FOTOS[n].archivo}`} alt={FOTOS[n].pie} loading="lazy" decoding="async" />
+            </Link>
+          ))}
+        </div>
+        <LinkButton to="/galeria" variant="secondary">Ver las 19 fotos</LinkButton>
       </section>
 
       <section className="wrap seccion promesa">

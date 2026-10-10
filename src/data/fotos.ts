@@ -2,9 +2,10 @@
 // Nunca van en el mapa; solo reemplazan las ilustraciones de marcador en las pantallas.
 import type { Lugar } from './lugares'
 
-export interface FotoInfo { archivo: string; pie: string; fuente: string; url?: string }
+export interface FotoInfo { archivo: string; pie: string; fuente: string; municipio: string; url?: string }
 const SITUR = 'Sistema de Información Turística de Boyacá'
-const f = (n: number, pie: string, fuente: string, url?: string): FotoInfo => ({ archivo: `fotos/${n}.jpg`, pie, fuente, url })
+const MUN: Record<number, string> = { 1: 'somondoco', 2: 'somondoco', 3: 'chivor', 4: 'guayata', 5: 'guayata', 6: 'guayata', 7: 'guayata', 8: 'guayata', 9: 'guayata', 10: 'guayata', 11: 'tenza', 12: 'tenza', 13: 'tenza', 14: 'tenza', 15: 'sutatenza', 16: 'sutatenza', 17: 'sutatenza', 18: 'sutatenza', 19: 'la-capilla' }
+const f = (n: number, pie: string, fuente: string, url?: string): FotoInfo => ({ archivo: `fotos/${n}.jpg`, pie, fuente, url, municipio: MUN[n] })
 
 export const FOTOS = {
   1: f(1, 'Santuario del Santo Cristo, Somondoco', SITUR, 'https://situr.boyaca.gov.co/oriente/municipio-de-somondoco/'),
@@ -45,3 +46,5 @@ const FOTO_LUGAR: Record<string, FotoId> = {
 }
 // Foto del lugar si la hay; si no, la del municipio (el pie dice qué se ve, así no se confunde).
 export const fotoDeLugar = (l: Pick<Lugar, 'id' | 'municipio'>): FotoId | undefined => FOTO_LUGAR[l.id] ?? FOTO_MUNICIPIO[l.municipio]
+
+export const FOTOS_LISTA = (Object.keys(FOTOS) as unknown as FotoId[]).map((n) => ({ n: Number(n) as FotoId, ...FOTOS[Number(n) as FotoId] }))
