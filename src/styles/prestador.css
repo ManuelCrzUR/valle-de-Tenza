@@ -44,3 +44,5 @@
   .pr-cifra { padding: var(--space-4); }
   .pr-lista-res { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+
+.acciones-fila { display: flex; flex-wrap: wrap; gap: var(--space-3); }

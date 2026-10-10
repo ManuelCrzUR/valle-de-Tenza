@@ -17,7 +17,7 @@
 .parada-sel { border-color: var(--secondary); background: var(--surface-sunken); }
 .parada-elegir { flex: 1; min-width: 0; min-height: 44px; display: flex; align-items: center; gap: var(--space-3); text-align: left; font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
 .parada-elegir:focus-visible { outline: 3px solid var(--secondary); outline-offset: 2px; }
-.parada-n { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--primary); color: #fff; }
+.parada-n { flex: none; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--primary); color: var(--on-primary); }
 .parada-txt { display: flex; flex-direction: column; min-width: 0; }
 .parada-txt strong { overflow-wrap: anywhere; }
 .parada-txt small { color: var(--ink-muted); font-size: 14px; }

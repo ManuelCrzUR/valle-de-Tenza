@@ -3,6 +3,7 @@ import { Montanas } from '../components/Montanas'
 import { LinkButton } from '../components/LinkButton'
 import { useUsuario } from '../state/demo'
 import { config } from '../config'
+import '../styles/prestador.css'
 import { usePagina } from '../usePagina'
 
 const BENEFICIOS = [
@@ -28,7 +29,7 @@ export default function Prestadores() {
         </aside>
       </div>
       <p className="sub">Recibe solicitudes de reserva con cuatro módulos: restaurante, caminata, actividad y hotel.</p>
-      <div className="acciones-fila" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+      <div className="acciones-fila">
         {usuario
           ? <LinkButton to="/prestadores/panel" variant="cta">Ir a mi panel</LinkButton>
           : <><LinkButton to="/prestadores/entrar" variant="cta">Crear mi cuenta</LinkButton><LinkButton to="/prestadores/entrar" variant="secondary">Entrar</LinkButton></>}
