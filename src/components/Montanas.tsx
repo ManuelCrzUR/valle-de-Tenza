@@ -1,16 +1,33 @@
-// Ilustración de marca: capas de montaña planas (niebla, teal, bosque) + sol ámbar. Sin degradados.
-export type Variante = 'aventura' | 'gastro' | 'cultura'
+export type Variante =
+  | 'aventura' | 'gastro' | 'cultura'
+  | 'alojamiento' | 'restaurante' | 'comercio' | 'atraccion' | 'monumento' | 'naturaleza'
+  | 'operador' | 'cajero' | 'gasolinera' | 'salud' | 'servicio'
 
 const SOL: Record<Variante, { cx: number; cy: number; r: number }> = {
   aventura: { cx: 440, cy: 120, r: 44 },
   gastro: { cx: 150, cy: 135, r: 40 },
   cultura: { cx: 300, cy: 95, r: 52 },
+  // Nuevas (ajusta posiciones a tu gusto)
+  naturaleza: { cx: 440, cy: 120, r: 44 },
+  atraccion: { cx: 480, cy: 100, r: 38 },
+  operador: { cx: 400, cy: 140, r: 36 },
+  restaurante: { cx: 150, cy: 135, r: 40 },
+  comercio: { cx: 120, cy: 110, r: 34 },
+  alojamiento: { cx: 300, cy: 95, r: 52 },
+  monumento: { cx: 260, cy: 90, r: 46 },
+  cajero: { cx: 340, cy: 110, r: 30 },
+  gasolinera: { cx: 200, cy: 125, r: 32 },
+  salud: { cx: 380, cy: 100, r: 40 },
+  servicio: { cx: 300, cy: 120, r: 36 },
 }
+
+const ESPEJO: Variante[] = ['gastro', 'restaurante', 'comercio', 'gasolinera']
+const BAJA: Variante[] = ['cultura', 'alojamiento', 'monumento', 'servicio']
 
 export function Montanas({ variante = 'aventura', className }: { variante?: Variante; className?: string }) {
   const sol = SOL[variante]
-  const espejo = variante === 'gastro' ? 'translate(600 0) scale(-1 1)' : undefined
-  const baja = variante === 'cultura' ? 'translate(0 14)' : undefined
+  const espejo = ESPEJO.includes(variante) ? 'translate(600 0) scale(-1 1)' : undefined
+  const baja = BAJA.includes(variante) ? 'translate(0 14)' : undefined
   return (
     <svg className={className} viewBox="0 0 600 420" preserveAspectRatio="xMidYMax slice" aria-hidden focusable="false">
       <circle {...sol} fill="#e0902f" className="m-sol" />
