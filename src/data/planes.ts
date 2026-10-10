@@ -7,13 +7,12 @@ export interface Plan {
   opcion: string      // texto de la opción en Itinerario
   categoria: string   // texto del filtro en Lugares
   icono: 'naturaleza' | 'gastronomia' | 'cultura'
-  duracion: string
 }
 
 export const PLANES: Plan[] = [
-  { id: 'aventura', titulo: 'Tu aventura en el Valle', opcion: 'Naturaleza y Aventura', categoria: 'Naturaleza', icono: 'naturaleza', duracion: '2 días' },
-  { id: 'gastro', titulo: 'Tu escapada gastronómica', opcion: 'Descanso y Gastronomía', categoria: 'Gastronomía', icono: 'gastronomia', duracion: '2 días' },
-  { id: 'cultura', titulo: 'Tu ruta cultural', opcion: 'Cultura y Artesanías', categoria: 'Cultura', icono: 'cultura', duracion: '2 días' },
+  { id: 'aventura', titulo: 'Tu aventura en el Valle', opcion: 'Naturaleza y Aventura', categoria: 'Naturaleza', icono: 'naturaleza' },
+  { id: 'gastro', titulo: 'Tu escapada gastronómica', opcion: 'Descanso y Gastronomía', categoria: 'Gastronomía', icono: 'gastronomia' },
+  { id: 'cultura', titulo: 'Tu ruta cultural', opcion: 'Cultura y Artesanías', categoria: 'Cultura', icono: 'cultura' },
 ]
 
 export const getPlan = (id: string | null | undefined) => PLANES.find((p) => p.id === id)

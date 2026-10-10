@@ -1,9 +1,10 @@
-// Reglas del chatbot: la primera cuyo patrón coincida con la pregunta responde.
+// Respaldo del chat cuando se consulta a Auren y no responde (config.usarAuren). El asistente local vive en asistente.ts.
+// La primera regla cuyo patrón coincida con la pregunta responde. Sin precios, cupos ni planes inventados.
 export const RESPUESTAS: [patron: string, respuesta: string][] = [
-  ['hospedaje|dormir|cabaña|posada', 'Tu itinerario incluye un hospedaje sugerido, y puedes reservarlo desde allí. Genéralo en «Armar mi itinerario».'],
-  ['ruta|mapa|lugares', 'Puedes ver los lugares por categoría y tu ruta en el mapa una vez generes el itinerario.'],
-  ['reserv|cupo|disponib', 'Puedes reservar hospedaje, restaurantes, caminatas y actividades con el botón «Reservar» en Lugares, en el Mapa o en tu itinerario. El negocio confirma tu solicitud; si aún no tiene prestador en la app, un embajador la tramita.'],
-  ['precio|costo|cuánto', 'Aún no tengo precios. Un embajador te puede confirmar los valores.'],
+  ['hospedaje|dormir|cabaña|posada', 'Puedes ver los alojamientos en el mapa y en «Lugares», y reservar con el botón «Reservar». Si el lugar aún no tiene prestador en la app, un embajador tramita la solicitud.'],
+  ['ruta|mapa|lugares', 'Arma tu ruta en «Armar mi itinerario» y verás las paradas en el mapa.'],
+  ['reserv|cupo|disponib', 'Puedes reservar hospedaje, restaurantes, caminatas y actividades con el botón «Reservar» en Lugares, en el Mapa o en tu itinerario. Si el lugar aún no tiene prestador en la app, un embajador tramita la solicitud.'],
+  ['precio|costo|cuánto', 'No tengo precios confirmados. Un embajador te puede dar los valores.'],
   ['hola|buenas', '¡Hola! ¿En qué te ayudo con tu viaje al Valle de Tenza?'],
 ]
 export const SIN_RESPUESTA = 'Esa pregunta es mejor para un embajador. Toca «Hablar con un embajador».'

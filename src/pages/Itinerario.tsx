@@ -6,6 +6,7 @@ import { PLANES } from '../data/planes'
 import { CATEGORIA_POR_ID, MUNICIPIOS, NOMBRE_MUNICIPIO, tipoReserva } from '../data/lugares'
 import type { Lugar } from '../data/lugares'
 import { useItinerario } from '../state/itinerario'
+import { MAX_SALTO_M, DIAS_MAX, distanciasRuta, km, ordenRuta } from '../data/generarPlan'
 import { cupoLibre, hoy, negocioDeLugar, useDemo } from '../state/demo'
 import { config } from '../config'
 import { Icon } from '../components/Icon'
@@ -13,6 +14,12 @@ import { usePagina } from '../usePagina'
 import '../styles/itinerario.css'
 
 const sitio = (l: Lugar) => `${CATEGORIA_POR_ID[l.categoria]?.singular ?? l.categoria} · ${NOMBRE_MUNICIPIO[l.municipio] ?? l.municipio}`
+
+function Distancia({ m }: { m?: number }) {
+  if (m === undefined) return null
+  const lejos = m > MAX_SALTO_M
+  return <p className={`it-dist${lejos ? ' it-dist-lejos' : ''}`}>{lejos && <strong>Queda lejos: </strong>}a {km(m)} de la parada anterior</p>
+}
 
 function Acciones({ l, cta }: { l: Lugar; cta?: boolean }) {
   return (
@@ -25,7 +32,7 @@ function Acciones({ l, cta }: { l: Lugar; cta?: boolean }) {
 
 export default function Itinerario() {
   usePagina('Tu itinerario')
-  const { itinerario, eleccion, elegir, setMunicipio, otro } = useItinerario()
+  const { itinerario, eleccion, elegir, setMunicipio, setDias, otro } = useItinerario()
   const demo = useDemo()
   const plan = itinerario?.plan
   const hosp = itinerario?.hospedaje
@@ -40,6 +47,12 @@ export default function Itinerario() {
     }
   }
 
+  const pasos = itinerario ? ordenRuta(itinerario) : []
+  const dist = distanciasRuta(pasos)
+  const medidas = dist.filter((d): d is number => d !== undefined)
+  const total = medidas.length ? medidas.reduce((a, b) => a + b, 0) : undefined
+  const diasSel = eleccion?.dias ?? 2
+
   return (
     <div className="wrap pagina pagina-split">
       <div className="split-lado">
@@ -52,6 +65,11 @@ export default function Itinerario() {
         </div>
         {eleccion && (
           <div className="it-controles">
+            <div role="group" aria-label="Días" className="it-dias">
+              {Array.from({ length: DIAS_MAX }, (_, i) => i + 1).map((n) => (
+                <Option key={n} selected={diasSel === n} onClick={() => setDias(n)}>{n} {n === 1 ? 'día' : 'días'}</Option>
+              ))}
+            </div>
             <label htmlFor="it-municipio">Municipio base</label>
             <select id="it-municipio" className="vd-input" value={eleccion.municipio} onChange={(e) => setMunicipio(e.target.value)}>
               <option value="">El mejor para este plan</option>
@@ -64,42 +82,58 @@ export default function Itinerario() {
 
       <div className="split-main" aria-live="polite">
         {itinerario && plan ? (
-          <section key={`${plan.id}-${eleccion?.semilla}-${eleccion?.municipio}`} className="panel resultado" aria-label={plan.titulo}>
+          <section key={`${plan.id}-${eleccion?.semilla}-${eleccion?.municipio}-${eleccion?.dias}`} className="panel resultado" aria-label={plan.titulo}>
             <h2 className="t-h2">{plan.titulo}</h2>
-            <p className="sub">Municipio base: {NOMBRE_MUNICIPIO[itinerario.municipio] ?? itinerario.municipio} · {plan.duracion}</p>
-            {!hosp && !itinerario.paradas.length && <p className="it-aviso">No encontramos lugares con ubicación para este plan. Prueba con otro municipio o plan.</p>}
-            <div className="resultado-grid">
-              <div className="it-bloque">
-                <h3 className="t-h3">Dónde dormir</h3>
-                {hosp ? (
-                  <PlaceCard chip={chip} chipTone={tone} chipIcon={icono} title={hosp.nombre}
-                    description={hosp.extra?.descripcion} meta={sitio(hosp)}>
-                    <Acciones l={hosp} cta />
-                  </PlaceCard>
-                ) : <p className="it-aviso">No encontramos alojamiento registrado cerca de esta ruta.</p>}
-                {itinerario.comida && (
-                  <>
-                    <h3 className="t-h3">Dónde comer</h3>
-                    <PlaceCard title={itinerario.comida.nombre} description={itinerario.comida.extra?.descripcion} meta={sitio(itinerario.comida)}>
-                      <Acciones l={itinerario.comida} />
-                    </PlaceCard>
-                  </>
-                )}
+            <p className="sub">
+              Centrada en {NOMBRE_MUNICIPIO[itinerario.municipio] ?? itinerario.municipio} · {itinerario.dias.length} {itinerario.dias.length === 1 ? 'día' : 'días'}
+              {total !== undefined && ` · ~${km(total)} en total`}
+            </p>
+            {eleccion?.ruta && <p className="it-aviso" role="status">Esta ruta la armó el asistente del chat. Si cambias el plan, el municipio o los días, la reemplazamos por una nueva.</p>}
+            {itinerario.avisos.length > 0 && (
+              <div className="it-aviso it-avisos" role="status">
+                <ul>{itinerario.avisos.map((a) => <li key={a}>{a}</li>)}</ul>
               </div>
-              <div>
-                <h3 className="t-h3">Ruta sugerida</h3>
-                {itinerario.paradas.length ? (
-                  <ol className="it-ruta-lista ruta" style={{ listStyle: 'none' }}>
-                    {itinerario.paradas.map((x) => (
-                      <li key={x.id}>
-                        <span>{x.nombre}</span><small>{sitio(x)}</small>
-                        <Acciones l={x} />
-                      </li>
-                    ))}
-                  </ol>
-                ) : <p className="it-aviso">No hay paradas disponibles para este plan en el municipio elegido.</p>}
+            )}
+            {!pasos.length && <p className="it-aviso">No encontramos lugares con ubicación para este plan. Prueba con otro municipio o plan.</p>}
+            {itinerario.dias.map((d) => (
+              <div key={d.n} className="it-dia">
+                <h3 className="t-h3">Día {d.n}</h3>
+                <ol className="it-ruta-lista ruta" style={{ listStyle: 'none' }}>
+                  {pasos.map((p, i) => p.dia === d.n && (
+                    <li key={`${p.rol}-${p.lugar.id}`} className="it-paso">
+                      {p.rol === 'parada' && (
+                        <>
+                          <span>{p.lugar.nombre}</span><small>{sitio(p.lugar)}</small>
+                          <Distancia m={dist[i]} />
+                          <Acciones l={p.lugar} />
+                        </>
+                      )}
+                      {p.rol === 'comida' && (
+                        <>
+                          <h4 className="it-rol">Dónde comer</h4>
+                          <Distancia m={dist[i]} />
+                          <PlaceCard title={p.lugar.nombre} description={p.lugar.extra?.descripcion} meta={sitio(p.lugar)}>
+                            <Acciones l={p.lugar} />
+                          </PlaceCard>
+                        </>
+                      )}
+                      {p.rol === 'hospedaje' && (
+                        <>
+                          <h4 className="it-rol">Dónde dormir</h4>
+                          <Distancia m={dist[i]} />
+                          <PlaceCard chip={chip} chipTone={tone} chipIcon={icono} title={p.lugar.nombre}
+                            description={p.lugar.extra?.descripcion} meta={sitio(p.lugar)}>
+                            <Acciones l={p.lugar} cta />
+                          </PlaceCard>
+                        </>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+                {!d.paradas.length && !d.comida && <p className="it-aviso">No hay paradas disponibles para este día.</p>}
               </div>
-            </div>
+            ))}
+            {!hosp && pasos.length > 0 && <p className="it-aviso">No encontramos alojamiento registrado cerca de esta ruta.</p>}
             <p className="embajador"><Icon name="embajador" size={24} />
               <span><strong>Tu embajador.</strong> Red de confianza del Valle de Tenza en {config.ciudadEmbajadores}.</span></p>
             <div className="it-pie">

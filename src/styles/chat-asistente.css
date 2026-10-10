@@ -1,0 +1,14 @@
+/* Asistente local del chat: texto de varias líneas, tarjetas de lugares, botones y sugerencias. */
+.chat-texto { white-space: pre-line; overflow-wrap: anywhere; }
+.vd-msg-bot:has(.chat-tarjetas, .chat-acciones) { max-width: 100%; }
+.chat-tarjetas { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-3); }
+.chat-tarjeta { background: var(--surface-sunken); border: 1px solid var(--line); border-radius: var(--radius-md); padding: var(--space-3); display: flex; flex-direction: column; gap: var(--space-2); }
+.chat-tarjeta-titulo { font-weight: 700; color: var(--heading); overflow-wrap: anywhere; }
+.chat-tarjeta-detalle { font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.chat-botones { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-2); }
+.chat-botones .vd-btn { min-height: var(--touch-min); padding: 8px 16px; font-size: 15px; flex: 0 1 auto; }
+.chat-sugerencias { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chat-chip { font: inherit; font-size: 15px; font-weight: 500; min-height: var(--touch-min); padding: 8px 16px; border-radius: var(--radius-pill);
+  border: 2px solid var(--secondary); background: var(--surface-raised); color: var(--heading); cursor: pointer; text-align: left; }
+.chat-chip:hover { background: var(--secondary-soft); color: var(--on-secondary-soft); }
+.chat-chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
