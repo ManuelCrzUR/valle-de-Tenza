@@ -1,6 +1,6 @@
 # Valle Directo
 
-Web app para armar un itinerario al Valle de Tenza (Boyacá). Vite + React + TypeScript; se publica en GitHub Pages.
+Web app para armar un itinerario al Valle de Tenza (Boyacá). Vite + React + TypeScript; se publica en Vercel.
 
 ## Desarrollo
 
@@ -30,7 +30,7 @@ El chat llama a `/api/chat` (`api/chat.ts`, función de Vercel), que reenvía la
 
 - **Desarrollo:** copia `.env.example` a `.env.local`, completa el token y corre `npm run dev` (sirve `/api/chat` con la misma función).
 - **Vercel:** *Settings → Environment Variables*.
-- **Sin backend** (por ejemplo en GitHub Pages) o si Auren falla, el chat responde con las reglas locales de `src/data/respuestas.ts`.
+- **Sin backend** (por ejemplo en desarrollo local sin `.env.local`) o si Auren falla, el chat responde con las reglas locales de `src/data/respuestas.ts`.
 - Límites: 500 caracteres por mensaje y 20 mensajes cada 10 minutos por IP (de mejor esfuerzo).
 - El contenido que debe conocer el bot está en [docs/auren-conocimiento-valle.md](docs/auren-conocimiento-valle.md).
 
@@ -62,8 +62,35 @@ scraper/.venv/bin/python scraper/probar.py                      # pruebas sin re
 - **Almacenamiento:** todo se guarda en el `localStorage` del navegador (`src/state/demo.ts`). Es una **DEMO**: no es segura, no se comparte entre dispositivos y las contraseñas no deben ser reales.
 - **Para operar de verdad:** reemplaza solo `src/state/demo.ts` por un backend (por ejemplo, Supabase).
 
+## Pruebas
+
+```
+npm run test      # vitest (generador de itinerarios)
+```
+
+## Base de datos (Supabase)
+
+```
+npx supabase start                              # Postgres local en Docker
+npx supabase db reset && npx supabase test db   # migraciones + pruebas pgTAP
+```
+
+Después de cada corrida del scraper, carga los lugares en Supabase (upsert idempotente por `id`):
+
+```
+SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run cargar
+```
+
+La `service_role` solo va en la terminal o en secretos; nunca en el front ni en el repo.
+
+**Secretos de GitHub** (*Settings → Secrets and variables → Actions*), usados por los workflows de `.github/workflows/`:
+
+- `SUPABASE_URL`: URL del proyecto (ping y respaldo).
+- `SUPABASE_ANON_KEY`: llave anon (ping cada 3 días).
+- `SUPABASE_DB_URL`: cadena de conexión a Postgres (respaldo diario, artifact de 30 días).
+
 ## Publicación
 
-Cada push a `main` ejecuta `.github/workflows/deploy.yml` y publica en GitHub Pages. En el repositorio: *Settings → Pages → Source: GitHub Actions*. Las rutas usan hash (`/#/mapa`) porque GitHub Pages no tiene fallback para SPA.
+El despliegue es único, en **Vercel**. `vercel.json` define las cabeceras de caché para `/assets/*` y `/fotos/*`. Variables en Vercel: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUREN_DEMO_TOKEN`. Las rutas usan hash (`/#/mapa`).
 
 `mvp/` conserva el HTML original como referencia.

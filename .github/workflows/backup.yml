@@ -1,0 +1,25 @@
+name: Respaldo de Supabase
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 03:00 hora de Bogotá
+  workflow_dispatch:
+jobs:
+  respaldo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+      - name: Volcar esquema y datos
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f esquema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" --data-only -f datos.sql
+          gzip -9 esquema.sql datos.sql
+      - uses: actions/upload-artifact@v4
+        with:
+          name: respaldo-supabase-${{ github.run_id }}
+          path: |
+            esquema.sql.gz
+            datos.sql.gz
+          retention-days: 30
