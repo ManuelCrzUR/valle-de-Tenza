@@ -9,6 +9,7 @@ import { DIAS_ISO, NOMBRE_MODO, NOMBRE_TIPO_ALERTA, etiquetaDias, fechaVerificad
 import type { ModoTransporte, TipoAlerta } from '../state/logistica'
 import { hoy, salir, useSesionLista, useUsuario } from '../state/reservas'
 import CoordinadorMetricas from './CoordinadorMetricas'
+import CoordinadorResenas from './CoordinadorResenas'
 import { AccesoLugares, AjustesPanel, EmbajadoresPanel, EventosPanel } from './CoordinadorContenido'
 import { usePagina } from '../usePagina'
 import '../styles/prestador.css'
@@ -58,6 +59,7 @@ export default function Coordinador() {
       <Rutas />
       <Alertas />
       <Negocios />
+      <CoordinadorResenas />
       <AccesoLugares />
       <EventosPanel />
       <EmbajadoresPanel />

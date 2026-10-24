@@ -286,6 +286,8 @@ function guardarMias(l: Guardada[]) {
   try { localStorage.setItem(KEY_MIAS, JSON.stringify(l)) } catch { /* sin almacenamiento: no se recuerda */ }
   oyentesMias.forEach((f) => f())
 }
+/** Teléfono con que se reservó ese código en este navegador, si está guardado. */
+export const contactoGuardado = (codigo: string): string => leerMias().find((x) => x.codigo === codigo.trim().toUpperCase())?.contacto ?? ''
 const recordar = (g: Guardada) => guardarMias([...leerMias().filter((x) => x.codigo !== g.codigo), g])
 
 export async function crearReserva(r: ReservaNueva): Promise<Resultado & { reserva?: { codigo: string; estado: EstadoReserva } }> {

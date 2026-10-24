@@ -8,6 +8,7 @@ import { Icon } from '../components/Icon'
 import { getLugar, NOMBRE_MUNICIPIO } from '../data/lugares'
 import { useOperacion, useMisReservasEstado, buscarReserva, cancelarMiReserva, LUGAR_NEGOCIO } from '../state/reservas'
 import type { EstadoReserva } from '../state/reservas'
+import { hoy } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import { fechaLarga } from './Reservar'
 import '../styles/reservas.css'
@@ -15,6 +16,11 @@ import '../styles/prestador.css'
 
 const TONO: Record<EstadoReserva, ChipProps['tone']> = { pendiente: 'soft', confirmada: 'success', rechazada: 'danger', cancelada: 'danger', vencida: 'danger' }
 const ETIQUETA: Record<EstadoReserva, string> = { pendiente: 'Pendiente', confirmada: 'Confirmada', rechazada: 'Rechazada', cancelada: 'Cancelada', vencida: 'Vencida' }
+
+// Último día de la visita + 1: desde ahí se puede reseñar (igual que la base: fecha + noches).
+function finDeVisita(fecha: string, noches?: number) {
+  const d = new Date(`${fecha}T12:00:00`); d.setDate(d.getDate() + (noches ?? 0)); return d.toLocaleDateString('en-CA')
+}
 
 export default function MisReservas() {
   usePagina('Mis reservas')
@@ -75,6 +81,7 @@ export default function MisReservas() {
                   {r.estado === 'pendiente' && <span className="res-nota">Pendiente hasta que el negocio o un embajador la gestione.</span>}
                   <div className="res-acciones">
                     {link && <LinkButton to={link} variant="ghost">Ver lugar</LinkButton>}
+                    {r.estado === 'confirmada' && hoy() >= finDeVisita(r.fecha, r.noches) && <LinkButton to={`/resena/${r.codigo}`} variant="secondary">Dejar una reseña</LinkButton>}
                     {activa && confirmando !== r.id && (
                       <Button variant="secondary" onClick={() => setConfirmando(r.id)} aria-label={`Cancelar reserva en ${nombre}`}>Cancelar</Button>
                     )}

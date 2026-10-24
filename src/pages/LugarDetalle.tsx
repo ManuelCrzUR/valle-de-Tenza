@@ -9,10 +9,12 @@ import { DatosLugar } from '../components/mapa/DatosLugar'
 import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, TIPOS_RESERVA, getLugar, tieneUbicacion, tipoReserva, useCatalogo } from '../data/lugares'
 import { fechaLarga } from '../state/contenido'
 import { LUGAR_NEGOCIO, useOperacion } from '../state/reservas'
+import { ResenasLugar } from '../components/ResenasLugar'
 import { useItinerario } from '../state/itinerario'
 import NoEncontrado from './NoEncontrado'
 import { usePagina } from '../usePagina'
 import '../styles/lugares.css'
+import '../styles/resenas.css'
 
 export default function LugarDetalle() {
   const { id } = useParams()
@@ -37,6 +39,7 @@ export default function LugarDetalle() {
           {negocio.descripcion && <div><dt>Sobre el lugar</dt><dd>{negocio.descripcion}</dd></div>}
           <div><dt>Cupo diario</dt><dd>{negocio.cupoDiario} {negocio.cupoDiario === 1 ? 'persona' : 'personas'} por día</dd></div>
         </dl>
+        <ResenasLugar lugarId={negocio.lugarId} />
         <div className="detalle-acciones">
           <LinkButton to={`/reservar/${negocio.lugarId}`} variant="cta">Reservar</LinkButton>
         </div>
@@ -63,6 +66,7 @@ export default function LugarDetalle() {
           <p className="detalle-acceso-ver">{lugar.verificadoEn ? `Verificado el ${fechaLarga(lugar.verificadoEn)}` : 'Sin verificar'}</p>
         </section>
       )}
+      <ResenasLugar lugarId={lugar.id} />
       <div className="detalle-acciones">
         {tipoReserva(lugar) && <LinkButton to={`/reservar/${lugar.id}`} variant="cta">Reservar</LinkButton>}
         {tieneUbicacion(lugar) && <LinkButton to={`/mapa?lugar=${lugar.id}`} variant="secondary">Ver en el mapa</LinkButton>}

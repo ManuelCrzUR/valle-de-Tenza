@@ -8,6 +8,7 @@ import { cambiarEstado, cupoLibre, digitosWhatsapp, enlaceWhatsapp, fechaCorta, 
 import type { EstadoReserva, Negocio, Operacion, Reserva } from '../state/reservas'
 import { useMetricasPrestador, useOcupacion } from '../state/metricas'
 import type { OcupacionDia } from '../state/metricas'
+import { PedirResenas, ResenasRecibidas } from './PrestadorResenas'
 import { usePagina } from '../usePagina'
 import '../styles/prestador.css'
 
@@ -33,6 +34,8 @@ export default function PrestadorPanel() {
       </div>
       <Negocios />
       <Reservas />
+      <PedirResenas />
+      <ResenasRecibidas />
     </div>
   )
 }
