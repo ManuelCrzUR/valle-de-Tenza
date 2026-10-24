@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Car, Bus, CloudRain } from 'lucide-react'
+import { Car, Bus, CalendarDays, CloudRain } from 'lucide-react'
 import { Option, PlaceCard, Button, TextField } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Foto } from '../components/Foto'
@@ -15,6 +15,8 @@ import type { Alerta, DiaClima, Tramo } from '../state/logistica'
 import { MAX_SALTO_M, DIAS_MAX, distanciasRuta, km, ordenRuta } from '../data/generarPlan'
 import type { Dia, PasoRuta } from '../data/generarPlan'
 import { cupoLibre, cupoVerificadoHoy, fechaCorta, hoy, negocioDeLugar, useOperacion } from '../state/reservas'
+import { eventosEntre, useEventos } from '../state/contenido'
+import type { Evento } from '../state/contenido'
 import { config } from '../config'
 import { Icon } from '../components/Icon'
 import { usePagina } from '../usePagina'
@@ -37,10 +39,10 @@ function Distancia({ m, tramo }: { m?: number; tramo?: Tramo }) {
 const esMirador = (l: Lugar) => l.categoria === 'naturaleza' || (l.categoria === 'atraccion' && /mirador|viewpoint|cerro|peak|cima/i.test(l.subtipo))
 
 // Avisos del día: alertas de vía vigentes en sus municipios y lluvia probable en días con caminatas o miradores.
-function avisosDelDia(d: Dia, pasos: PasoRuta[], base: string, fecha: string, alertas: Alerta[], clima: DiaClima[], nombre: (s: string) => string): { clave: string; texto: string; alerta?: Alerta }[] {
+function avisosDelDia(d: Dia, pasos: PasoRuta[], base: string, fecha: string, alertas: Alerta[], clima: DiaClima[], nombre: (s: string) => string, eventos: Evento[] = []): { clave: string; texto: string; alerta?: Alerta; evento?: boolean }[] {
   const delDia = pasos.filter((p) => p.dia === d.n)
   const muns = new Set([base, ...delDia.map((p) => p.lugar.municipio)])
-  const out: { clave: string; texto: string; alerta?: Alerta }[] = alertas
+  const out: { clave: string; texto: string; alerta?: Alerta; evento?: boolean }[] = alertas
     .filter((a) => a.municipio && muns.has(a.municipio) && alertaEnFecha(a, fecha))
     .map((a) => ({ clave: a.id, alerta: a, texto: `${NOMBRE_TIPO_ALERTA[a.tipo]} en ${nombre(a.municipio!)}: ${a.mensaje}` }))
   const aire = new Set(delDia.filter((p) => p.rol === 'parada' && esMirador(p.lugar)).map((p) => p.lugar.municipio))
@@ -48,6 +50,9 @@ function avisosDelDia(d: Dia, pasos: PasoRuta[], base: string, fecha: string, al
     const c = clima.find((x) => x.municipio === m && x.fecha === fecha)
     return c && (c.prob_lluvia_max ?? 0) >= 70 ? [{ m, p: c.prob_lluvia_max as number }] : []
   })
+  for (const e of eventosEntre(fecha, fecha, undefined, eventos).filter((x) => muns.has(x.municipio))) {
+    out.push({ clave: `evento-${e.id}`, evento: true, texto: `Ese día hay ${e.nombre} en ${nombre(e.municipio)}.` })
+  }
   if (lluviosos.length) out.push({ clave: 'lluvia', texto: `Probabilidad alta de lluvia ese día (${lluviosos.map((x) => `${nombre(x.m)} ${x.p} %`).join(', ')}): las caminatas y los miradores pueden complicarse. Lleva impermeable o cambia el orden.` })
   return out
 }
@@ -98,6 +103,7 @@ export default function Itinerario() {
   const { municipios: MUNICIPIOS } = useCatalogo()
   const { itinerario, eleccion, elegir, setMunicipio, setDias, setFecha, setPersonas, setMovilidad, otro } = useItinerario()
   const { rutas, alertas, clima, tramoEntre } = useLogistica()
+  const eventos = useEventos()
   const nombreMun = (slug: string) => MUNICIPIOS.find((m) => m.slug === slug)?.nombre ?? NOMBRE_MUNICIPIO[slug] ?? slug
   const op = useOperacion()
   const plan = itinerario?.plan
@@ -183,9 +189,9 @@ export default function Itinerario() {
               <div key={d.n} className="it-dia">
                 <h3 className="t-h3">Día {d.n}{fecha && <span className="it-fecha"> · {fechaCorta(fechaDelDia(fecha, d.n))}</span>}</h3>
                 {d.n === 1 && <PasoCero movilidad={eleccion?.movilidad} base={itinerario.municipio} rutas={rutas} nombre={nombreMun} carro={tramoEntre('bogota', `mun:${itinerario.municipio}`)} />}
-                {fecha && avisosDelDia(d, pasos, itinerario.municipio, fechaDelDia(fecha, d.n), alertas, clima, nombreMun).map((a) => (
+                {fecha && avisosDelDia(d, pasos, itinerario.municipio, fechaDelDia(fecha, d.n), alertas, clima, nombreMun, eventos).map((a) => (
                   <p key={a.clave} className="it-aviso it-dia-aviso" role="status">
-                    {a.alerta ? <AlertaIcono tipo={a.alerta.tipo} /> : <CloudRain size={20} aria-hidden />}<span>{a.texto}</span>
+                    {a.alerta ? <AlertaIcono tipo={a.alerta.tipo} /> : a.evento ? <CalendarDays size={20} aria-hidden /> : <CloudRain size={20} aria-hidden />}<span>{a.texto}</span>
                   </p>
                 ))}
                 <ol className="it-ruta-lista ruta" style={{ listStyle: 'none' }}>

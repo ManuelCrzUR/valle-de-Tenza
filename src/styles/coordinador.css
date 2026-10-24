@@ -4,3 +4,5 @@
 .co-salida { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); list-style: none; }
 .co-dias { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .co-dias .vd-opt { min-width: 56px; justify-content: center; }
+.co-franjas { display: flex; flex-direction: column; gap: var(--space-3); border: 0; padding: 0; margin: 0; min-width: 0; }
+.co-franja { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-md); }

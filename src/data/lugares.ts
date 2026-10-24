@@ -23,6 +23,10 @@ export interface Lugar {
   esServicio: boolean
   conRegistro: boolean
   fuentes: string[]
+  /** Cómo se llega, propiedad privada, guía, dificultad. Solo viene de Supabase (lo llena el coordinador). */
+  acceso?: string
+  /** AAAA-MM-DD de la última verificación del acceso. */
+  verificadoEn?: string
   extra?: { descripcion?: string; nivel?: string; habitaciones?: number; camas?: number; web?: string; horario?: string }
 }
 export interface MunicipioMapa { slug: string; nombre: string; centro: [number, number] | null; caja: [number, number, number, number] | null }
@@ -66,6 +70,7 @@ const aLugar = (f: Fila): Lugar => ({
   id: f.id, nombre: f.nombre, categoria: f.categoria, subtipo: f.subtipo ?? '', municipio: f.municipio,
   lat: f.lat, lon: f.lon, precision: f.precision, direccion: f.direccion ?? '', vereda: f.vereda ?? undefined,
   plan: f.plan, esServicio: !!f.es_servicio, conRegistro: !!f.con_registro, fuentes: f.fuentes ?? [], extra: f.extra ?? undefined,
+  acceso: f.acceso?.trim() || undefined, verificadoEn: f.verificado_en ?? undefined,
 })
 const aMunicipio = (f: Fila): MunicipioMapa => ({ slug: f.slug, nombre: f.nombre, centro: f.centro ?? null, caja: f.caja ?? null })
 

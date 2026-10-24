@@ -8,6 +8,7 @@ import type { Database } from '../lib/database.types'
 import { DIAS_ISO, NOMBRE_MODO, NOMBRE_TIPO_ALERTA, etiquetaDias, fechaVerificada, refrescarLogistica, useRol } from '../state/logistica'
 import type { ModoTransporte, TipoAlerta } from '../state/logistica'
 import { hoy, salir, useSesionLista, useUsuario } from '../state/reservas'
+import { AccesoLugares, AjustesPanel, EmbajadoresPanel, EventosPanel } from './CoordinadorContenido'
 import { usePagina } from '../usePagina'
 import '../styles/prestador.css'
 import '../styles/coordinador.css'
@@ -51,10 +52,14 @@ export default function Coordinador() {
           <Button variant="secondary" onClick={salir}>Cerrar sesión</Button>
         </div>
       </div>
-      <p className="sub">Rutas de transporte, salidas, avisos de la vía y revisión de negocios. Lo que guardas se ve de inmediato en la app.</p>
+      <p className="sub">Rutas de transporte, salidas, avisos de la vía, revisión de negocios, acceso a lugares, eventos, embajadores y ajustes del sitio. Lo que guardas se ve de inmediato en la app.</p>
       <Rutas />
       <Alertas />
       <Negocios />
+      <AccesoLugares />
+      <EventosPanel />
+      <EmbajadoresPanel />
+      <AjustesPanel />
     </div>
   )
 }

@@ -6,7 +6,8 @@ import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
 import { fotoDeLugar } from '../data/fotos'
 import { DatosLugar } from '../components/mapa/DatosLugar'
-import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, TIPOS_RESERVA, getLugar, tieneUbicacion, tipoReserva } from '../data/lugares'
+import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, TIPOS_RESERVA, getLugar, tieneUbicacion, tipoReserva, useCatalogo } from '../data/lugares'
+import { fechaLarga } from '../state/contenido'
 import { LUGAR_NEGOCIO, useOperacion } from '../state/reservas'
 import { useItinerario } from '../state/itinerario'
 import NoEncontrado from './NoEncontrado'
@@ -15,7 +16,8 @@ import '../styles/lugares.css'
 
 export default function LugarDetalle() {
   const { id } = useParams()
-  const lugar = getLugar(id)
+  const { lugares } = useCatalogo()
+  const lugar = lugares.find((l) => l.id === id) ?? getLugar(id)
   const { negocios } = useOperacion()
   const negocio = !lugar && id?.startsWith(LUGAR_NEGOCIO) ? negocios.find((n) => n.lugarId === id) : undefined
   const { elegir } = useItinerario()
@@ -53,6 +55,13 @@ export default function LugarDetalle() {
       <Chip tone="soft">{CATEGORIA_POR_ID[lugar.categoria].singular}{lugar.subtipo && lugar.categoria === 'alojamiento' ? ` · ${etiquetaSubtipo(lugar.subtipo)}` : ''}</Chip>
       <h1 id="titulo" tabIndex={-1} className="t-h1">{lugar.nombre}</h1>
       <div className="detalle-datos"><DatosLugar lugar={lugar} /></div>
+      {lugar.acceso && (
+        <section className="detalle-acceso" aria-labelledby="h-acceso">
+          <h2 id="h-acceso" className="t-h3">Cómo llegar a este lugar</h2>
+          <p className="detalle-acceso-texto">{lugar.acceso}</p>
+          <p className="detalle-acceso-ver">{lugar.verificadoEn ? `Verificado el ${fechaLarga(lugar.verificadoEn)}` : 'Sin verificar'}</p>
+        </section>
+      )}
       <div className="detalle-acciones">
         {tipoReserva(lugar) && <LinkButton to={`/reservar/${lugar.id}`} variant="cta">Reservar</LinkButton>}
         {tieneUbicacion(lugar) && <LinkButton to={`/mapa?lugar=${lugar.id}`} variant="secondary">Ver en el mapa</LinkButton>}

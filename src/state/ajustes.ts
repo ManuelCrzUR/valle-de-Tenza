@@ -45,8 +45,11 @@ const oyentes = new Set<() => void>()
 function cargar() {
   if (iniciada || !supabase) return
   iniciada = true
+  traer()
+}
+function traer() {
   const limite = new Promise<never>((_, no) => setTimeout(() => no(new Error('tiempo agotado')), 4000))
-  Promise.race([supabase.from('ajustes').select('clave, valor'), limite])
+  Promise.race([supabase!.from('ajustes').select('clave, valor'), limite])
     .then(({ data, error }) => {
       if (error) throw error
       ajustes = construir(Object.fromEntries((data ?? []).map((f) => [f.clave, f.valor])))
@@ -54,6 +57,9 @@ function cargar() {
     })
     .catch((e) => console.warn('Ajustes: se usan los valores de respaldo.', e?.message ?? e))
 }
+
+/** Vuelve a leer los ajustes (lo usa el panel del coordinador tras guardar). */
+export const refrescarAjustes = () => { if (supabase) traer() }
 
 const suscribir = (o: () => void) => {
   oyentes.add(o)

@@ -5,6 +5,8 @@ import { Foto } from '../components/Foto'
 import { FOTOS } from '../data/fotos'
 import '../styles/galeria.css'
 import { Chip } from '../components/ui'
+import { NOMBRE_MUNICIPIO } from '../data/lugares'
+import { eventosEntre, fechaLarga, finDeSemana, rangoFechas, useEventos } from '../state/contenido'
 import { usePagina } from '../usePagina'
 
 const PASOS = [
@@ -16,6 +18,12 @@ const PASOS = [
 
 export default function Inicio() {
   usePagina('Viaja al Valle de Tenza')
+  const todos = useEventos()
+  const hoyF = new Date().toLocaleDateString('en-CA')
+  const fin = finDeSemana()
+  // Los del fin de semana (vie a dom) y los que ya están en curso hoy.
+  const eventos = [...new Map([...eventosEntre(fin.desde, fin.hasta, undefined, todos), ...eventosEntre(hoyF, hoyF, undefined, todos)].map((e) => [e.id, e])).values()]
+    .sort((a, b) => a.desde.localeCompare(b.desde))
   return (
     <>
       <section className="hero wrap">
@@ -31,6 +39,22 @@ export default function Inicio() {
         </div>
         <Foto n={3} className="hero-arte" />
       </section>
+
+      {eventos.length > 0 && (
+        <section className="wrap seccion" aria-labelledby="h-eventos">
+          <h2 id="h-eventos" className="t-h2">Este fin de semana en el Valle</h2>
+          <ul className="eventos">
+            {eventos.map((e) => (
+              <li key={e.id} className="evento">
+                <h3 className="t-h3">{e.nombre}</h3>
+                <p className="evento-meta"><Chip tone="strong">{NOMBRE_MUNICIPIO[e.municipio] ?? e.municipio}</Chip> <span>{rangoFechas(e)}</span></p>
+                {e.descripcion && <p>{e.descripcion}</p>}
+                {e.verificadoEn && <p className="evento-ver">Verificado el {fechaLarga(e.verificadoEn)}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="wrap seccion">
         <h2 className="t-h2">Así funciona</h2>
