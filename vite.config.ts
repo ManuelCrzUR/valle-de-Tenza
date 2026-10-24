@@ -27,9 +27,8 @@ function apiDev(): Plugin {
   }
 }
 
-// base './' para servir bajo usuario.github.io/<repo>/
 export default defineConfig({
-  base: './',
+  base: '/',
   plugins: [react(), apiDev()],
   test: { exclude: ['tests/e2e/**', 'node_modules/**', 'dist/**'] },
 })

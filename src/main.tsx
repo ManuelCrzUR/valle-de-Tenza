@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'
+import './lib/enlacesViejos'
+import { BrowserRouter } from 'react-router-dom'
 import App from './App'
 import { ItinerarioProvider } from './state/itinerario'
 import './styles/tokens.css'
@@ -9,8 +10,8 @@ import './styles/app.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <HashRouter>
+    <BrowserRouter>
       <ItinerarioProvider><App /></ItinerarioProvider>
-    </HashRouter>
+    </BrowserRouter>
   </StrictMode>,
 )

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Bus, Car, Clock, ShieldCheck, ShieldOff } from 'lucide-react'
 import { Chip } from '../components/ui'
 import { Atribucion } from '../components/Atribucion'
@@ -111,7 +112,7 @@ export default function ComoLlegar() {
         <ul className="cl-destinos" aria-label={`Tiempos desde ${nombre(origen)}`}>
           {destinos.map(({ m, t }) => (
             <li key={m.slug}>
-              <span>{m.nombre}</span>
+              <Link to={`/municipios/${m.slug}`}>{m.nombre}</Link>
               <strong>{t ? `${duracionLarga(minutos(t.duracion_s))} · ${Math.round(t.distancia_m / 100) / 10} km`.replace('.', ',') : POR_CONFIRMAR}</strong>
             </li>
           ))}

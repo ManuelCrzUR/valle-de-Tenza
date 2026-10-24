@@ -15,7 +15,7 @@ const tel = () => `3${Math.floor(100000000 + Math.random() * 899999999)}`
 const NOMBRE = `E2E ${corrida}`
 
 async function reservar(page: Page, nombre: string, telefono: string, personas: number, FECHA_: string = FECHA) {
-  await page.goto(`/#/reservar/${NEGOCIO}?fecha=${FECHA_}&personas=${personas}`)
+  await page.goto(`/reservar/${NEGOCIO}?fecha=${FECHA_}&personas=${personas}`)
   await expect(page.getByLabel('Fecha de llegada')).toHaveValue(FECHA_)
   await page.getByLabel('Tu nombre').fill(nombre)
   await page.getByLabel('Teléfono o WhatsApp').fill(telefono)
@@ -26,7 +26,7 @@ async function entrarComoPrestador(browser: Browser) {
   const ctx = await browser.newContext()
   const page = await ctx.newPage()
   await fetch(`${MAILPIT}/api/v1/messages`, { method: 'DELETE' })
-  await page.goto('/#/prestadores/entrar')
+  await page.goto('/prestadores/entrar')
   await page.getByLabel('Correo').fill('prestador@prueba.local')
   await page.getByRole('button', { name: 'Enviarme el enlace' }).click()
   await expect(page.getByText('Te enviamos un enlace a prestador@prueba.local')).toBeVisible()
@@ -39,7 +39,7 @@ async function entrarComoPrestador(browser: Browser) {
     return enlace
   }, { timeout: 15_000 }).not.toBe('')
   await page.goto(enlace)
-  await expect(page).toHaveURL(/#\/prestadores\/panel$/)
+  await expect(page).toHaveURL(/\/prestadores\/panel$/)
   await expect(page).not.toHaveURL(/code=/)
   await expect(page.getByRole('heading', { name: 'Calendario de cupos · próximos 30 días' })).toBeVisible()
   return { ctx, page }
@@ -71,7 +71,7 @@ test('el prestador ve la solicitud en vivo y el viajero la encuentra con código
   // Contexto C: otro navegador, sin nada guardado.
   const ctxC = await browser.newContext({ viewport: { width: 375, height: 800 } })
   const otro = await ctxC.newPage()
-  await otro.goto('/#/reservas')
+  await otro.goto('/reservas')
   await otro.getByLabel('Código de la reserva').fill(codigo)
   await otro.getByLabel('Teléfono o WhatsApp').fill(telefono)
   await otro.getByRole('button', { name: 'Buscar', exact: true }).click()

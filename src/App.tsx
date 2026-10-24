@@ -15,6 +15,7 @@ const Reservar = lazy(() => import('./pages/Reservar'))
 const MisReservas = lazy(() => import('./pages/MisReservas'))
 const PrestadorAcceso = lazy(() => import('./pages/PrestadorAcceso'))
 const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
+const Municipio = lazy(() => import('./pages/Municipio'))
 const ComoLlegar = lazy(() => import('./pages/ComoLlegar'))
 const Coordinador = lazy(() => import('./pages/Coordinador'))
 const Galeria = lazy(() => import('./pages/Galeria'))
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="i/:id" element={<ItinerarioCompartido />} />
         <Route path="lugares" element={<Lugares />} />
         <Route path="lugares/:id" element={<LugarDetalle />} />
+        <Route path="municipios/:slug" element={<Municipio />} />
         <Route path="mapa" element={<Mapa />} />
         <Route path="como-llegar" element={<ComoLlegar />} />
         <Route path="coordinador" element={<Coordinador />} />

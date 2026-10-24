@@ -4,7 +4,7 @@ import type { Eleccion } from './itinerario'
 // Compartir un itinerario (RPC `compartir_itinerario` / `ver_itinerario`) y demanda anónima (`registrar_demanda`).
 // Nada de esto guarda datos personales: solo la elección del itinerario.
 
-export function enlaceDe(id: string) { return `${location.origin}${location.pathname}#/i/${id}` }
+export function enlaceDe(id: string) { return `${location.origin}/i/${id}` }
 
 function mensaje(error: { message?: string } | null): string {
   const m = error?.message ?? ''

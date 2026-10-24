@@ -167,7 +167,7 @@ export async function entrarConEnlace(correo: string): Promise<Resultado> {
   if (!supabase) return SIN_CONEXION
   const c = correo.trim().toLowerCase()
   if (!/^\S+@\S+\.\S+$/.test(c)) return { ok: false, error: 'Escribe un correo válido.' }
-  const { error } = await supabase.auth.signInWithOtp({ email: c, options: { emailRedirectTo: `${location.origin}${location.pathname}#/prestadores/panel` } })
+  const { error } = await supabase.auth.signInWithOtp({ email: c, options: { emailRedirectTo: `${location.origin}/prestadores/panel` } })
   return error ? fallo(error, 'No se pudo enviar el enlace. Inténtalo de nuevo.') : { ok: true }
 }
 export const salir = async () => { await supabase?.auth.signOut() }

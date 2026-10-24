@@ -55,6 +55,7 @@ export default function LugarDetalle() {
       <Chip tone="soft">{CATEGORIA_POR_ID[lugar.categoria].singular}{lugar.subtipo && lugar.categoria === 'alojamiento' ? ` · ${etiquetaSubtipo(lugar.subtipo)}` : ''}</Chip>
       <h1 id="titulo" tabIndex={-1} className="t-h1">{lugar.nombre}</h1>
       <div className="detalle-datos"><DatosLugar lugar={lugar} /></div>
+      {NOMBRE_MUNICIPIO[lugar.municipio] && <p><Link to={`/municipios/${lugar.municipio}`}>Más sobre {NOMBRE_MUNICIPIO[lugar.municipio]}: qué hay, cómo llegar y eventos</Link></p>}
       {lugar.acceso && (
         <section className="detalle-acceso" aria-labelledby="h-acceso">
           <h2 id="h-acceso" className="t-h3">Cómo llegar a este lugar</h2>

@@ -42,7 +42,7 @@ test('compartir un itinerario y abrirlo en otro navegador; la demanda se registr
   const a = await ctxA.newPage()
   const consola: string[] = []
   a.on('console', (m) => { if (m.type() === 'error') consola.push(m.text()) })
-  await a.goto('/#/itinerario')
+  await a.goto('/itinerario')
   await a.getByRole('group', { name: 'Plan' }).getByRole('button').first().click()
   await expect(a.locator('.resultado')).toBeVisible()
   await expect(a.getByRole('list', { name: 'Resumen del itinerario' }).or(a.getByLabel('Resumen del itinerario'))).toContainText('Hospedaje')
@@ -59,7 +59,7 @@ test('compartir un itinerario y abrirlo en otro navegador; la demanda se registr
   const campo = a.getByLabel('Enlace para compartir')
   await expect(campo).toBeVisible()
   const enlace = await campo.inputValue()
-  expect(enlace).toMatch(/#\/i\/[A-Za-z0-9]{8}$/)
+  expect(enlace).toMatch(/\/i\/[A-Za-z0-9]{8}$/)
   compartidos.push(enlace.slice(-8))
   await expect(a.getByText(/Enlace copiado|No pudimos copiarlo/)).toBeVisible()
   await sinScrollHorizontal(a)
@@ -70,7 +70,7 @@ test('compartir un itinerario y abrirlo en otro navegador; la demanda se registr
   const ctxB = await browser.newContext({ viewport: { width: 375, height: 800 } })
   const b = await ctxB.newPage()
   await b.goto(enlace)
-  await expect(b).toHaveURL(/#\/itinerario$/)
+  await expect(b).toHaveURL(/\/itinerario$/)
   await expect(b.locator('.resultado')).toBeVisible()
   await b.waitForLoadState('networkidle')
   await expect.poll(() => paradasPorDia(b), { timeout: 15_000 }).toEqual(esperado)
@@ -78,7 +78,7 @@ test('compartir un itinerario y abrirlo en otro navegador; la demanda se registr
   await b.screenshot({ path: 'test-results/compartido-375.png', fullPage: true })
 
   // Un enlace que no existe muestra un mensaje claro.
-  await b.goto('/#/i/NoExiste')
+  await b.goto('/i/NoExiste')
   await expect(b.getByText('No encontramos este itinerario')).toBeVisible()
 
   expect(consola.filter((t) => !/favicon|tile|openstreetmap/i.test(t))).toEqual([])
