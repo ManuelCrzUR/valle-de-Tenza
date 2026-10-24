@@ -4,12 +4,15 @@ import { useNavigate } from 'react-router-dom'
 import { Button, ChatBubble, TextField } from '../components/ui'
 import { Icon } from '../components/Icon'
 import { responder as respaldo } from '../data/respuestas'
-import { responder, EJEMPLOS } from '../data/asistente'
-import type { Accion, Contexto, Respuesta } from '../data/asistente'
+import { responder, EJEMPLOS, consultarEventosSupabase } from '../data/asistente'
+import type { Accion, Contexto, Respuesta, DatosVivos } from '../data/asistente'
 import { getLugar, tieneUbicacion } from '../data/lugares'
 import { useItinerario } from '../state/itinerario'
-import { useOperacion } from '../state/reservas'
-import { preguntar, ChatError } from '../chatApi'
+import { useOperacion, digitosWhatsapp, enlaceWhatsapp } from '../state/reservas'
+import { useLogistica, cargarTramos, tramoActual } from '../state/logistica'
+import { NOMBRE_MUNICIPIO } from '../data/lugares'
+import { supabase } from '../lib/supabase'
+import { preguntar, construirContextoAuren, ChatError } from '../chatApi'
 import { config } from '../config'
 import { useAjustes } from '../state/ajustes'
 import { usePagina } from '../usePagina'
@@ -19,6 +22,21 @@ type Msg = { from: 'bot' | 'me' | 'ambassador'; text: string; resp?: Respuesta }
 
 const MAX = 500
 const MSG_LIMITE = 'Has enviado muchos mensajes seguidos. Espera unos minutos o habla con un embajador.'
+
+type Embajador = { id: string; nombre: string; municipio: string; whatsapp: string }
+/** Embajadores activos cuya franja incluye la hora actual (rpc). undefined = consultando; [] = ninguno o sin conexión. */
+function useEmbajadoresEnLinea(): Embajador[] | undefined {
+  const [lista, setLista] = useState<Embajador[] | undefined>(supabase ? undefined : [])
+  useEffect(() => {
+    if (!supabase) return
+    let vivo = true
+    const leer = () => supabase!.rpc('embajadores_disponibles').then(({ data, error }) => { if (vivo) setLista(error ? [] : (data ?? [])) })
+    void leer()
+    const t = setInterval(leer, 60_000)
+    return () => { vivo = false; clearInterval(t) }
+  }, [])
+  return lista
+}
 
 export default function Chat() {
   usePagina('Chatbot y embajador')
@@ -31,6 +49,8 @@ export default function Chat() {
   const nav = useNavigate()
   const { usarRuta } = useItinerario()
   const operacion = useOperacion()
+  const logistica = useLogistica()
+  const embajadores = useEmbajadoresEnLinea()
   const ctx = useRef<Partial<Contexto>>({})
   const [pensando, setPensando] = useState(false)
   const log = useRef<HTMLDivElement>(null)
@@ -42,16 +62,28 @@ export default function Chat() {
   const enviarTexto = async (t: string) => {
     if (!t || pensando) return
     add({ from: 'me', text: t }); setQ('')
-    if (!config.usarAuren) {
-      const r = responder(t, { operacion, ...ctx.current })
-      ctx.current = { ...ctx.current, ...r.contexto }
-      add({ from: 'bot', text: r.texto, resp: r })
-      return
-    }
     setPensando(true)
     const ctl = new AbortController(); abortar.current = ctl
+    const vivos: DatosVivos = {
+      rutas: logistica.rutas, alertas: logistica.alertas, clima: logistica.clima, sinConexion: logistica.sinConexion,
+      tramoEntre: tramoActual, cargarTramos, consultarEventos: consultarEventosSupabase,
+    }
+    if (!config.usarAuren) {
+      try {
+        const r = await responder(t, { operacion, vivos, ...ctx.current })
+        ctx.current = { ...ctx.current, ...r.contexto }
+        add({ from: 'bot', text: r.texto, resp: r })
+      } catch {
+        add({ from: 'bot', text: 'No pude armar la respuesta ahora. Intenta de nuevo o habla con un embajador.' })
+      } finally {
+        setPensando(false)
+      }
+      return
+    }
     try {
-      add({ from: 'bot', text: await preguntar(t, ctl.signal) })
+      const hoyF = new Date().toLocaleDateString('en-CA')
+      const eventos = await consultarEventosSupabase(hoyF, new Date(Date.now() + 7 * 864e5).toLocaleDateString('en-CA')).catch(() => [])
+      add({ from: 'bot', text: await preguntar(t, ctl.signal, construirContextoAuren(operacion, logistica.alertas, eventos)) })
     } catch (err) {
       if ((err as Error).name === 'AbortError') return
       // Si la IA no responde, caemos a las reglas locales para no dejar al viajero sin respuesta.
@@ -95,7 +127,7 @@ export default function Chat() {
                     })}
                   </ul>
                 )}
-                {m.resp?.acciones && m.resp.ruta && (
+                {m.resp?.acciones && (
                   <div className="chat-botones">
                     {m.resp.acciones.map((a, j) => <Button key={a.tipo} variant={j === 0 ? 'primary' : 'secondary'} onClick={() => hacer(a, m.resp!)}>{a.etiqueta}</Button>)}
                   </div>
@@ -127,6 +159,24 @@ export default function Chat() {
           <Button variant="secondary" icon="embajador" onClick={() => add({ from: 'ambassador', text: textoEmbajador })}>
             Hablar con un embajador
           </Button>
+          <section className="chat-en-linea" aria-live="polite" aria-labelledby="en-linea">
+            <h3 id="en-linea" className="t-h4">Embajadores disponibles ahora</h3>
+            {embajadores === undefined ? <p>Consultando…</p>
+              : embajadores.length === 0 ? <p>Ahora no hay embajadores en línea{horario ? `. Horario de oficina: ${horario}` : ''}.</p>
+              : (
+                <ul className="chat-embajadores">
+                  {embajadores.map((e) => {
+                    const num = digitosWhatsapp(e.whatsapp)
+                    return (
+                      <li key={e.id}>
+                        <span><strong>{e.nombre}</strong> · {NOMBRE_MUNICIPIO[e.municipio] ?? e.municipio}</span>
+                        {num && <a className="vd-btn vd-btn-primary chat-wa" href={enlaceWhatsapp(num, 'Hola, vengo de Valle Directo y quiero ayuda con mi viaje.')} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>}
+                      </li>
+                    )
+                  })}
+                </ul>
+              )}
+          </section>
         </aside>
       </div>
     </div>

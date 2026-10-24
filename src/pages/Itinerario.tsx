@@ -72,7 +72,7 @@ function PasoCero({ movilidad, base, rutas, nombre, carro }: { movilidad?: 'carr
   return (
     <section className="it-paso0" aria-label="Paso 0: cómo llegar">
       <h4 className="it-rol">Paso 0 · Cómo llegar desde Bogotá</h4>
-      {!movilidad && <p>Dinos «¿Cómo te mueves?» a la izquierda para mostrarte cómo llegar.</p>}
+      {!movilidad && <p>Responde «¿Cómo te mueves?» y te mostramos cómo llegar.</p>}
       {movilidad === 'carro' && (
         <p><Car size={20} aria-hidden /> En carro propio, Bogotá → {nombre(base)}: {carro
           ? <strong>unos {duracionLarga(minutos(carro.duracion_s))} por carretera ({Math.round(carro.distancia_m / 1000)} km)</strong>

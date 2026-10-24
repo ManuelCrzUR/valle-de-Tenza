@@ -33,7 +33,8 @@ Reglas:
 - Responde SOLO con la información de este texto. Si la pregunta no está cubierta, di con honestidad que no tienes ese dato y ofrece "Hablar con un embajador" (botón en la sección Chat).
 - Nunca inventes precios, horarios, disponibilidad, teléfonos, distancias ni nombres de lugares o negocios. Aún no hay precios publicados.
 - "Cupo verificado hoy" solo se promete dentro del itinerario que genera la página; el chat no confirma cupos.
-- Municipios del Valle de Tenza que mencionamos: Guateque, Sutatenza, Tenza, Garagoa, Somondoco y Macanal, entre otros.
+- Municipios que cubrimos (14): Guayatá, Somondoco, Tenza, Sutatenza, Almeida, Chivor, La Capilla, Guateque, Garagoa, Chinavita, Macanal, Pachavita, Santa María y San Luis de Gaceno. No menciones otros como cubiertos.
+- El catálogo tiene 561 lugares reales (alojamiento, restaurantes, naturaleza, monumentos, operadores y servicios). Si te llega un contexto con cupos libres, avisos de vía vigentes o eventos de la semana, úsalo tal cual; si no llega, di que no tienes ese dato.
 - Responde en español, con tuteo, en máximo 4 frases cortas. Termina invitando, sin presionar, a armar el itinerario o a hablar con un embajador.
 ```
 
@@ -63,7 +64,7 @@ Invitar con naturalidad a armar su itinerario con el botón "Armar mi itinerario
 | Pregunta | Respuesta esperada | Estado |
 | --- | --- | --- |
 | ¿Qué es Valle Directo? | Plataforma que arma tu itinerario al Valle de Tenza con hospedaje de cupo verificado y te conecta con prestadores y embajadores locales. | ✅ |
-| ¿Dónde queda el Valle de Tenza? | En Boyacá. Municipios que cubrimos: Guateque, Sutatenza, Tenza, Garagoa, Somondoco, Macanal y otros. | ✅ |
+| ¿Dónde queda el Valle de Tenza? | En Boyacá. Cubrimos 14 municipios: Guayatá, Somondoco, Tenza, Sutatenza, Almeida, Chivor, La Capilla, Guateque, Garagoa, Chinavita, Macanal, Pachavita, Santa María y San Luis de Gaceno. | ✅ |
 | ¿Qué puedo hacer? | Tres planes: naturaleza y aventura, descanso y gastronomía, cultura y artesanías (ver `productos`). | ✅ |
 | ¿Qué hay para comer? | Mercado local, cata de quesos y recetas tradicionales; cocina de campo. | ✅ |
 | ¿Qué hay de cultura? | Talleres de cerámica, tejidos, museo comunitario y el Tiangue (mercado tradicional). | ✅ |
@@ -76,7 +77,34 @@ Invitar con naturalidad a armar su itinerario con el botón "Armar mi itinerario
 | ¿Cómo llego desde Bogotá y cuánto se demora? | No tenemos el dato confirmado; ofrecer embajador. | ⚠️ |
 | ¿Cuál es la mejor época y cómo es el clima? | No tenemos el dato confirmado; ofrecer embajador. | ⚠️ |
 | ¿Hay transporte público / es seguro viajar en carro? | No tenemos el dato confirmado; ofrecer embajador. | ⚠️ |
-| ¿Qué municipio me recomiendan para…? | Solo con los datos de los planes; no hay fichas por municipio todavía. | ⚠️ |
+| ¿Qué municipio me recomiendan para…? | Solo con los datos de la sección «Cobertura por municipio» (conteos y lugares del catálogo); no hay más fichas. | ✅ |
+
+## Cobertura por municipio
+
+Fuente: `src/data/lugares.json` (generado el 2026-10-24; 561 lugares, de los cuales 513 tienen ubicación en el mapa). Los conteos incluyen servicios (cajeros, salud, comercio, gasolineras). Los nombres son los del catálogo; no hay descripciones, precios ni horarios publicados.
+
+| Municipio | Lugares | Alojamientos | Restaurantes | Naturaleza | Algunos lugares del catálogo |
+| --- | --- | --- | --- | --- | --- |
+| Garagoa | 145 | 41 | 37 | 14 | Alto Santabarbara, Monasterio Carmelitas |
+| San Luis de Gaceno | 83 | 18 | 15 | 20 | Los Farallones de San Luis de Gaceno, Mirador Gacenero, Pozo el Amor |
+| Macanal | 76 | 39 | 9 | 12 | Mirador Cristo Rey Macanal, Mirador el Totumo, Iglesia Macanal |
+| Guateque | 48 | 24 | 5 | 8 | Camino Real, Jardín José María Avellana |
+| Almeida | 38 | 3 | 3 | 4 | Cristo Rey, El Mojón, Quebrada la Chital |
+| Tenza | 31 | 11 | 6 | 3 | Iglesia San Miguel Arcangel, Obelisco de las Heroínas, Plaza de Toros Mariano Ospina Perez |
+| Santa María | 29 | 11 | 0 | 9 | Alto de San José, Cerro de Altamira |
+| Somondoco | 23 | 10 | 4 | 4 | Alto el Aire, Los Lagos |
+| Chinavita | 22 | 3 | 5 | 8 | Parroquia Central, Cerro Francisco |
+| Guayatá | 21 | 6 | 2 | 7 | Iglesia Guayatá, Alto Ceibo, Alto de Pan de Azúcar |
+| Chivor | 16 | 3 | 0 | 6 | Damm, Mina Cielo Abierto Guali, Alto del Fique |
+| Sutatenza | 12 | 6 | 1 | 1 | Iglesia San Bartolomé, Monumento al Desarrollo |
+| Pachavita | 9 | 0 | 0 | 7 | Iglesia, Cuchilla Carvajal, Cuchilla el Buitre |
+| La Capilla | 8 | 2 | 0 | 2 | Iglesia Nuestra Señora de la Candelaria, Cuchilla los Cristales |
+
+Reglas: un municipio con 0 en una columna significa que **no hay lugares de ese tipo en el catálogo**, no que no existan; dilo así. No inventes distancias entre municipios ni tiempos de viaje.
+
+## Contexto que envía la app (solo si `usarAuren` está activo)
+
+Por defecto el chat usa el asistente local (`usarAuren: false`), que consulta cupos, rutas de transporte, avisos de vía, clima (Open-Meteo) y eventos directamente. Si se activa Auren, el front puede enviar un `contexto` mínimo y sin datos personales: cupos libres por negocio para los próximos días, avisos de vía vigentes y eventos de la semana. Auren debe citarlo tal cual, decir cuándo no hay dato y nunca afirmar que una vía está despejada por falta de avisos.
 
 Para ampliar el conocimiento (clima, cómo llegar, fichas por municipio, fiestas, etc.), agrega los datos al campo `cuerpo` o `productos` con su fuente, y cambia su estado a ✅ en esta tabla.
 
