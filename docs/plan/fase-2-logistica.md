@@ -22,36 +22,36 @@ programados o por el coordinador, nunca llamando APIs externas desde el navegado
 
 ## Datos
 
-- [ ] Si la Fase 4 aún no agregó Guateque, insertarlo en `municipios` (centro y caja, sin lugares) para que las
+- [x] Si la Fase 4 aún no agregó Guateque, insertarlo en `municipios` (centro y caja, sin lugares) para que las
   rutas tengan destino; el scraper lo completará después.
-- [ ] `supabase/seed.sql` con el **esqueleto** de rutas Bogotá (Terminal Salitre) → Guateque para Flota Valle de
+- [x] `supabase/seed.sql` con el **esqueleto** de rutas Bogotá (Terminal Salitre) → Guateque para Flota Valle de
   Tenza y Flota La Macarena con `precio_desde_cop`, `duracion_min` y `salidas` en **null** y `verificado_en` null:
   la app los muestra como «por confirmar» hasta que el coordinador los llene. No inventar horarios ni precios.
-- [ ] `scripts/tramos-osrm.ts`: calcula con el servidor demo de OSRM (`router.project-osrm.org/table/v1/driving`)
+- [x] `scripts/tramos-osrm.ts`: calcula con el servidor demo de OSRM (`router.project-osrm.org/table/v1/driving`)
   la matriz entre los centros de los municipios y entre lugares a menos de 15 km en línea recta. Lotes de máximo 50
   coordenadas, 1 petición por segundo, `User-Agent` propio (`ValleDirecto/1.0 (+repo)`). Solo recalcula pares nuevos.
   Se corre a mano o por `workflow_dispatch` cuando cambia el catálogo. Guarda con `service_role`.
-- [ ] `.github/workflows/clima.yml`: cada 3 horas consulta Open-Meteo una vez **por municipio** (14 llamadas máx.) con
+- [x] `.github/workflows/clima.yml`: cada 3 horas consulta Open-Meteo una vez **por municipio** (14 llamadas máx.) con
   `daily=precipitation_probability_max,temperature_2m_min,temperature_2m_max&timezone=America/Bogota&forecast_days=7`
   y hace upsert en `clima`. Muy por debajo del límite gratuito de 10.000 llamadas al día.
 
 ## Front
 
-- [ ] **Página `/como-llegar`** (`src/pages/ComoLlegar.tsx`): enlace desde la portada, el itinerario y
+- [x] **Página `/como-llegar`** (`src/pages/ComoLlegar.tsx`): enlace desde la portada, el itinerario y
   el menú de escritorio; en la navegación inferior de celular solo si cabe sin bajar de 44 px por botón: desde Bogotá (empresa,
   terminal, duración, precio desde, salidas, «verificado el …» o «por confirmar»), en carro propio (tiempo desde
   el tramo `bogota → mun:guateque` si existe) y entre municipios (tabla de tiempos desde `tramos`).
-- [ ] **Avisos en el mapa:** capa con las alertas vigentes (icono por tipo) en `MapaLugares.tsx`; las que tienen
+- [x] **Avisos en el mapa:** capa con las alertas vigentes (icono por tipo) en `MapaLugares.tsx`; las que tienen
   municipio se pintan en su centro.
-- [ ] **Itinerario:**
+- [x] **Itinerario:**
   - Nueva pregunta «¿Cómo te mueves?» (carro propio / transporte público) en el ItinerarioProvider.
   - Paso 0 del día 1: «Cómo llegar» con la ruta que aplica.
   - Distancias entre paradas desde `tramos` (minutos por carretera); si no hay tramo, la línea recta actual con la
     etiqueta «aprox.». Quitar la palabra «km en línea recta» donde ya haya tiempo real.
   - Aviso por día si hay alerta vigente en el municipio o `prob_lluvia_max ≥ 70 %` en días con caminatas o miradores.
-- [ ] **Panel del coordinador (mínimo):** `/coordinador` con formularios para rutas, salidas y alertas. Solo rol
+- [x] **Panel del coordinador (mínimo):** `/coordinador` con formularios para rutas, salidas y alertas. Solo rol
   `coordinador` (la ruta redirige si no lo es). La Fase 3 lo amplía con métricas.
-- [ ] **Atribución** visible: «Rutas: © OSRM, datos © colaboradores de OpenStreetMap (ODbL)» y «Clima: Open-Meteo (CC-BY 4.0)».
+- [x] **Atribución** visible: «Rutas: © OSRM, datos © colaboradores de OpenStreetMap (ODbL)» y «Clima: Open-Meteo (CC-BY 4.0)».
 
 ## Prueba de cierre
 
@@ -70,3 +70,13 @@ solo desde scripts o GitHub Actions; RLS y pgTAP para cada tabla; la página Có
 Al terminar corre build, test y supabase test db, ejecuta tramos-osrm.ts contra la base local y dime cuántos
 pares calculó y cuánto tardó.
 ```
+
+## Estado del cierre (local)
+
+- [x] 1. 14.820 tramos calculados (107 peticiones, 106 s); el itinerario muestra «a N min por carretera» (Bogotá → Guateque: 155 min).
+- [x] 2. Una alerta creada en `/coordinador` aparece en el mapa y en el día del itinerario sin desplegar (Realtime + refresco al foco).
+- [x] 3. `clima` con 7 días para los 8 municipios con centro (corrida local de `npm run clima`). **Pendiente del usuario:** correr `clima.yml` en Actions tras configurar `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`.
+- [x] 4. Ninguna petición del navegador a `router.project-osrm.org` ni `api.open-meteo.com` (verificado con Playwright).
+
+Notas: el navegador nunca descarga toda la tabla `tramos` (solo `mun:*`/`bogota` y los pares de la ruta mostrada),
+para cuidar el egress gratuito. Factor de ruta medido para la Fase 3: 2,23 (mediana carretera / línea recta).
