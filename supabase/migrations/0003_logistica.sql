@@ -186,3 +186,6 @@ $$;
 
 revoke all on function public.verificar_negocio(uuid, boolean), public.liberar_lugar_negocio(uuid) from public;
 grant execute on function public.verificar_negocio(uuid, boolean), public.liberar_lugar_negocio(uuid) to authenticated;
+
+-- Las alertas nuevas llegan en vivo (Realtime respeta RLS: el público solo recibe las vigentes).
+alter publication supabase_realtime add table public.alertas_via;

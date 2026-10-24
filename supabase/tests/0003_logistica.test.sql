@@ -14,8 +14,8 @@ insert into public.rutas_transporte (id, origen, destino, empresa, modo, activa)
   ('d0000000-0000-4000-8000-000000000002', 'bogota', 'tenza', 'Flota Inactiva', 'bus', false);
 insert into public.salidas (ruta_id, hora) values ('d0000000-0000-4000-8000-000000000001', '06:00');
 insert into public.salidas (ruta_id, hora) values ('d0000000-0000-4000-8000-000000000002', '07:00');
-insert into public.tramos (origen, destino, distancia_m, duracion_s) values ('mun:tenza', 'bogota', 1000, 60);
-insert into public.clima (municipio, fecha, prob_lluvia_max) values ('tenza', current_date, 40);
+insert into public.tramos (origen, destino, distancia_m, duracion_s) values ('prueba:origen', 'prueba:destino', 1000, 60);
+insert into public.clima (municipio, fecha, prob_lluvia_max) values ('tenza', date '2000-01-01', 40);
 insert into public.alertas_via (id, tipo, mensaje, desde, hasta) values
   ('e0000000-0000-4000-8000-000000000001', 'derrumbe', 'vigente', now() - interval '1 hour', now() + interval '1 hour'),
   ('e0000000-0000-4000-8000-000000000002', 'obra',     'vencida', now() - interval '2 days', now() - interval '1 day'),
@@ -32,8 +32,8 @@ set local role anon;
 select is((select count(*)::int from public.rutas_transporte where id in
   ('d0000000-0000-4000-8000-000000000001', 'd0000000-0000-4000-8000-000000000002')), 1, 'anon lee solo rutas activas');
 select is((select count(*)::int from public.salidas), 1, 'anon lee solo salidas de rutas activas');
-select is((select count(*)::int from public.tramos where origen = 'mun:tenza'), 1, 'anon lee tramos');
-select is((select count(*)::int from public.clima where municipio = 'tenza'), 1, 'anon lee clima');
+select is((select count(*)::int from public.tramos where origen = 'prueba:origen'), 1, 'anon lee tramos');
+select is((select count(*)::int from public.clima where municipio = 'tenza' and fecha = date '2000-01-01'), 1, 'anon lee clima');
 select is((select count(*)::int from public.alertas_via where id::text like 'e0000000%'), 2, 'anon ve las alertas vigentes (con y sin fin)');
 select is((select count(*)::int from public.alertas_via where mensaje = 'vencida'), 0, 'anon no ve alertas vencidas');
 select is((select count(*)::int from public.alertas_via where mensaje = 'futura'), 0, 'anon no ve alertas futuras');
