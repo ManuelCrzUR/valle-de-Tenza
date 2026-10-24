@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Button, Chip, Option, TextField } from '../components/ui'
-import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, TIPOS_RESERVA, tipoReserva } from '../data/lugares'
+import { NOMBRE_MUNICIPIO, TIPOS_RESERVA, tipoReserva, useCatalogo } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
 import { cambiarEstado, cupoLibre, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useDemo, useUsuario } from '../state/demo'
 import type { EstadoReserva, Negocio, Reserva } from '../state/demo'
@@ -83,6 +83,7 @@ function Negocios({ usuarioId }: { usuarioId: string }) {
 }
 
 function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo: () => void }) {
+  const { lugares: LUGARES, municipios: MUNICIPIOS } = useCatalogo()
   const { negocios } = useDemo()
   const reclamados = useMemo(() => new Set(negocios.filter((n) => n.id !== editando?.id).map((n) => n.lugarId)), [negocios, editando])
   const [modo, setModo] = useState<'mapa' | 'nuevo'>(editando && editando.lugarId.startsWith(LUGAR_NEGOCIO) ? 'nuevo' : editando ? 'mapa' : 'mapa')
@@ -99,7 +100,7 @@ function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo:
     const q = norm(busca.trim())
     if (q.length < 2) return []
     return LUGARES.filter((l) => tipoReserva(l) !== null && !reclamados.has(l.id) && norm(l.nombre).includes(q)).slice(0, 8)
-  }, [busca, reclamados])
+  }, [LUGARES, busca, reclamados])
 
   const elegir = (id: string) => {
     const l = LUGARES.find((x) => x.id === id)

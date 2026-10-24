@@ -4,15 +4,15 @@ import { useSearchParams } from 'react-router-dom'
 import { X } from 'lucide-react'
 import { Option } from '../components/ui'
 import { FOTOS_LISTA } from '../data/fotos'
-import { MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
+import { NOMBRE_MUNICIPIO, useCatalogo } from '../data/lugares'
 import { usePagina } from '../usePagina'
 import '../styles/galeria.css'
 
 const base = import.meta.env.BASE_URL
-const CON_FOTOS = MUNICIPIOS.filter((m) => FOTOS_LISTA.some((f) => f.municipio === m.slug))
-
 export default function Galeria() {
   usePagina('Galería del Valle')
+  const { municipios } = useCatalogo()
+  const CON_FOTOS = municipios.filter((m) => FOTOS_LISTA.some((f) => f.municipio === m.slug))
   const [params, setParams] = useSearchParams()
   const mun = params.get('mun') ?? ''
   const fotos = FOTOS_LISTA.filter((f) => !mun || f.municipio === mun)

@@ -3,7 +3,7 @@ import { Option, PlaceCard, Button } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Foto } from '../components/Foto'
 import { PLANES } from '../data/planes'
-import { CATEGORIA_POR_ID, MUNICIPIOS, NOMBRE_MUNICIPIO, tipoReserva } from '../data/lugares'
+import { CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, tipoReserva, useCatalogo } from '../data/lugares'
 import type { Lugar } from '../data/lugares'
 import { useItinerario } from '../state/itinerario'
 import { MAX_SALTO_M, DIAS_MAX, distanciasRuta, km, ordenRuta } from '../data/generarPlan'
@@ -32,6 +32,7 @@ function Acciones({ l, cta }: { l: Lugar; cta?: boolean }) {
 
 export default function Itinerario() {
   usePagina('Tu itinerario')
+  const { municipios: MUNICIPIOS } = useCatalogo()
   const { itinerario, eleccion, elegir, setMunicipio, setDias, otro } = useItinerario()
   const demo = useDemo()
   const plan = itinerario?.plan

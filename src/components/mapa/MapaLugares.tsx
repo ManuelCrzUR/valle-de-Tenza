@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { List, SlidersHorizontal } from 'lucide-react'
-import { CATEGORIAS, LUGARES, tieneUbicacion } from '../../data/lugares'
+import { CATEGORIAS, tieneUbicacion, useCatalogo } from '../../data/lugares'
 import type { CategoriaId, Lugar } from '../../data/lugares'
 import { useMedia } from '../../useMedia'
 import { LeyendaMapa } from './LeyendaMapa'
@@ -13,6 +13,7 @@ import MapaLeaflet from './MapaLeaflet'
 const TODAS = CATEGORIAS.map((c) => c.id)
 
 export default function MapaLugares() {
+  const { lugares: LUGARES } = useCatalogo()
   const [params, setParams] = useSearchParams()
   const escritorio = useMedia('(min-width: 1024px)')
   const [panel, setPanel] = useState<'leyenda' | 'lista'>('leyenda')
@@ -32,7 +33,7 @@ export default function MapaLugares() {
   }
   const fijarCats = (ids: CategoriaId[]) => cambiar({ cat: ids.length === TODAS.length ? null : ids.length ? ids.join(',') : 'ninguna' })
 
-  const delMunicipio = useMemo(() => LUGARES.filter((l) => !municipio || l.municipio === municipio), [municipio])
+  const delMunicipio = useMemo(() => LUGARES.filter((l) => !municipio || l.municipio === municipio), [LUGARES, municipio])
   const conteo = useMemo(() => {
     const c: Partial<Record<CategoriaId, number>> = {}
     for (const l of delMunicipio) c[l.categoria] = (c[l.categoria] ?? 0) + 1

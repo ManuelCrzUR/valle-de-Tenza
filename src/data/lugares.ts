@@ -1,5 +1,7 @@
 // Lugares reales del Valle de Tenza. El JSON lo genera scraper/ejecutar.py (no editar a mano).
+import { useSyncExternalStore } from 'react'
 import datos from './lugares.json'
+import { supabase } from '../lib/supabase'
 
 export type CategoriaId =
   | 'alojamiento' | 'restaurante' | 'comercio' | 'atraccion' | 'monumento' | 'naturaleza'
@@ -50,6 +52,54 @@ export const tieneUbicacion = (l: Lugar): l is Lugar & { lat: number; lon: numbe
 export const esAproximado = (l: Lugar) => l.precision !== null && l.precision !== 'exacta'
 
 export const getLugar = (id: string | undefined) => LUGARES.find((l) => l.id === id)
+
+// ---------- Catálogo desde Supabase ----------
+// Se consulta una sola vez por sesión y se comparte entre componentes. Si no hay backend, falla o tarda, queda el JSON.
+interface Catalogo { lugares: Lugar[]; municipios: MunicipioMapa[]; origen: 'json' | 'supabase' }
+type Fila = Record<string, any>
+
+let catalogo: Catalogo = { lugares: LUGARES, municipios: MUNICIPIOS, origen: 'json' }
+let iniciada = false
+const oyentes = new Set<() => void>()
+
+const aLugar = (f: Fila): Lugar => ({
+  id: f.id, nombre: f.nombre, categoria: f.categoria, subtipo: f.subtipo ?? '', municipio: f.municipio,
+  lat: f.lat, lon: f.lon, precision: f.precision, direccion: f.direccion ?? '', vereda: f.vereda ?? undefined,
+  plan: f.plan, esServicio: !!f.es_servicio, conRegistro: !!f.con_registro, fuentes: f.fuentes ?? [], extra: f.extra ?? undefined,
+})
+const aMunicipio = (f: Fila): MunicipioMapa => ({ slug: f.slug, nombre: f.nombre, centro: f.centro ?? null, caja: f.caja ?? null })
+
+async function traerTodo(tabla: string): Promise<Fila[]> {
+  const filas: Fila[] = []
+  for (let desde = 0; ; desde += 1000) {
+    const { data, error } = await supabase!.from(tabla).select('*').range(desde, desde + 999)
+    if (error) throw error
+    filas.push(...(data as Fila[]))
+    if (data.length < 1000) return filas
+  }
+}
+
+function cargarCatalogo() {
+  if (iniciada || !supabase) return
+  iniciada = true
+  const limite = new Promise<never>((_, no) => setTimeout(() => no(new Error('tiempo agotado')), 4000))
+  Promise.race([Promise.all([traerTodo('municipios'), traerTodo('lugares')]), limite])
+    .then(([ms, ls]) => {
+      if (!ms.length || !ls.length) return
+      catalogo = { municipios: ms.map(aMunicipio), lugares: ls.map(aLugar), origen: 'supabase' }
+      oyentes.forEach((o) => o())
+    })
+    .catch((e) => console.warn('Catálogo: se usa el JSON local.', e?.message ?? e))
+}
+
+const suscribir = (o: () => void) => {
+  oyentes.add(o)
+  cargarCatalogo()
+  return () => { oyentes.delete(o) }
+}
+const instantanea = () => catalogo
+
+export const useCatalogo = (): Catalogo => useSyncExternalStore(suscribir, instantanea, instantanea)
 
 // ---------- Reservas ----------
 export type TipoReserva = 'hotel' | 'restaurante' | 'caminata' | 'actividad'

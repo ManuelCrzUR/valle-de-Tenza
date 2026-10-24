@@ -4,7 +4,7 @@ import { Option, PlaceCard } from '../components/ui'
 import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
 import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
-import { etiquetaSubtipo, CATEGORIA_POR_ID, LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
+import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, useCatalogo } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
 import { PLANES } from '../data/planes'
 import { LUGAR_NEGOCIO, negocioDeLugar, useDemo } from '../state/demo'
@@ -25,6 +25,7 @@ export default function Lugares() {
   const [params, setParams] = useSearchParams()
   const go = useNavigate()
   const { negocios } = useDemo()
+  const { lugares: LUGARES, municipios: MUNICIPIOS } = useCatalogo()
   const cat = FILTROS.find((f) => f.id === params.get('cat'))?.id ?? 'aventura'
   const mun = MUNICIPIOS.some((m) => m.slug === params.get('mun')) ? params.get('mun')! : ''
   const cambiar = (cambios: Record<string, string>) => {

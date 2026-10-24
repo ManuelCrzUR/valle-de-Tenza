@@ -1,4 +1,4 @@
-import { CATEGORIAS, MUNICIPIOS } from '../../data/lugares'
+import { CATEGORIAS, useCatalogo } from '../../data/lugares'
 import type { CategoriaId } from '../../data/lugares'
 import { CategoriaIcono } from './iconos'
 
@@ -14,13 +14,14 @@ interface Props {
 
 // Leyenda = filtro. Cada fila es un botón (aria-pressed) con ícono + nombre + cantidad: no depende del color.
 export function LeyendaMapa({ activas, conteo, municipio, onToggle, onTodas, onNinguna, onMunicipio }: Props) {
+  const { municipios } = useCatalogo()
   return (
     <div className="leyenda">
       <label className="leyenda-mun">
         <span className="vd-field-label">Municipio</span>
         <select className="vd-input" value={municipio} onChange={(e) => onMunicipio(e.target.value)}>
           <option value="">Los 7 municipios</option>
-          {MUNICIPIOS.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
+          {municipios.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
         </select>
       </label>
       <div className="leyenda-cab">
