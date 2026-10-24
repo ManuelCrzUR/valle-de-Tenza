@@ -1,15 +1,17 @@
 import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { PlaceCard } from '../components/ui'
 import type { ChipProps } from '../components/ui'
-import { Button } from '../components/ui'
+import { Button, TextField } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Icon } from '../components/Icon'
 import { getLugar, NOMBRE_MUNICIPIO } from '../data/lugares'
-import { useOperacion, useMisReservasEstado, cancelarMiReserva, LUGAR_NEGOCIO } from '../state/reservas'
+import { useOperacion, useMisReservasEstado, buscarReserva, cancelarMiReserva, LUGAR_NEGOCIO } from '../state/reservas'
 import type { EstadoReserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import { fechaLarga } from './Reservar'
 import '../styles/reservas.css'
+import '../styles/prestador.css'
 
 const TONO: Record<EstadoReserva, ChipProps['tone']> = { pendiente: 'soft', confirmada: 'success', rechazada: 'danger', cancelada: 'danger', vencida: 'danger' }
 const ETIQUETA: Record<EstadoReserva, string> = { pendiente: 'Pendiente', confirmada: 'Confirmada', rechazada: 'Rechazada', cancelada: 'Cancelada', vencida: 'Vencida' }
@@ -25,6 +27,19 @@ export default function MisReservas() {
     const r = await cancelarMiReserva(codigo, contacto)
     setError(r.ok ? '' : r.error)
     setConfirmando(null)
+  }
+  const [codigo, setCodigo] = useState('')
+  const [tel, setTel] = useState('')
+  const [buscando, setBuscando] = useState(false)
+  const [msg, setMsg] = useState<{ ok: boolean; texto: string } | null>(null)
+  const buscar = async (e: FormEvent) => {
+    e.preventDefault()
+    if (!codigo.trim() || !tel.trim()) return setMsg({ ok: false, texto: 'Escribe el código y el teléfono con que reservaste.' })
+    setBuscando(true); setMsg(null)
+    const r = await buscarReserva(codigo.trim().toUpperCase(), tel.trim())
+    setBuscando(false)
+    if (r.ok) { setMsg({ ok: true, texto: `Encontramos tu reserva ${r.reserva?.codigo} y la agregamos a tu lista.` }); setCodigo(''); setTel('') }
+    else setMsg({ ok: false, texto: r.error })
   }
   const nombreLugar = (lugarId: string) =>
     getLugar(lugarId)?.nombre ?? demo.negocios.find((n) => n.lugarId === lugarId)?.nombre ?? 'Lugar'
@@ -77,6 +92,14 @@ export default function MisReservas() {
           })}
         </ul>
       )}
+      <form className="res-buscar" onSubmit={buscar} noValidate aria-labelledby="h-buscar">
+        <h2 id="h-buscar" className="t-h3">Buscar mi reserva</h2>
+        <p className="res-nota">¿Reservaste desde otro navegador? Escribe tu código y el teléfono que dejaste.</p>
+        <TextField label="Código de la reserva" value={codigo} onChange={(e) => setCodigo(e.target.value)} autoComplete="off" autoCapitalize="characters" required />
+        <TextField label="Teléfono o WhatsApp" type="tel" value={tel} onChange={(e) => setTel(e.target.value)} autoComplete="tel" required />
+        <div aria-live="polite">{msg && <p className={msg.ok ? 'pr-ok' : 'res-error'}>{msg.texto}</p>}</div>
+        <Button type="submit" variant="primary" disabled={buscando || demo.sinConexion}>{buscando ? 'Buscando…' : 'Buscar'}</Button>
+      </form>
       <p className="res-nota">Las reservas se guardan solo en este navegador.</p>
     </div>
   )

@@ -56,8 +56,8 @@ export default function Inicio() {
       </section>
 
       <section className="wrap seccion promesa">
-        <Chip tone="strong" icon="cupo-verificado">Cupo verificado hoy</Chip>
-        <p className="t-h2">Todo lo que ves en la app es cierto ese día. La plata del viaje se queda en los negocios del Valle.</p>
+        <Chip tone="strong">Reserva directa</Chip>
+        <p className="t-h2">Los negocios actualizan su cupo cada día; si no lo hacen, te lo decimos. La plata del viaje se queda en los negocios del Valle.</p>
       </section>
 
       <section className="wrap seccion seccion-prest">

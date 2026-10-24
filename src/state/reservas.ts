@@ -2,7 +2,7 @@
 // Los viajeros no tienen cuenta: reservan y consultan solo por funciones `rpc` con código + contacto.
 import { useEffect, useState, useSyncExternalStore } from 'react'
 import type { TipoReserva } from '../data/lugares'
-import { supabase } from '../lib/supabase'
+import { supabase, limpiarCodigoDeUrl } from '../lib/supabase'
 import type { Database } from '../lib/database.types'
 
 type Tablas = Database['public']['Tables']
@@ -104,6 +104,23 @@ function suscribirOperacion(cb: () => void) {
 export const useOperacion = (): Operacion => useSyncExternalStore(suscribirOperacion, () => op, () => INICIAL)
 export const operacionActual = (): Operacion => op
 
+// «Cupo verificado hoy» solo si el prestador tocó su cupo en las últimas 24 h; si no, «Cupo por confirmar».
+export const cupoVerificadoHoy = (n: Negocio): boolean => {
+  const t = Date.parse(n.cupoActualizado)
+  return Number.isFinite(t) && Date.now() - t < 24 * 3600 * 1000
+}
+
+// Número para wa.me (solo dígitos, con 57 si es celular colombiano de 10 dígitos); null si no sirve.
+export function digitosWhatsapp(contacto: string): string | null {
+  const t = contacto.trim()
+  if (!/^\+?[\d\s().-]+$/.test(t)) return null
+  const d = t.replace(/\D/g, '')
+  if (d.length === 10) return `57${d}`
+  return d.length >= 11 && d.length <= 15 ? d : null
+}
+export const enlaceWhatsapp = (numero: string, texto: string) => `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`
+export const fechaCorta = (f: string) => new Date(`${f}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long' })
+
 export const negocioDeLugar = (negocios: Negocio[], lugarId: string) => negocios.find((n) => n.lugarId === lugarId)
 
 // Cupo libre del negocio en una fecha (AAAA-MM-DD): coalesce(cupo del día, cupo diario) menos lo ocupado; 0 si está cerrado.
@@ -129,7 +146,8 @@ function iniciarAuth() {
   if (authIniciada || !supabase) return
   authIniciada = true
   supabase.auth.onAuthStateChange((_ev, s) => {
-    if (!s) return ponerSesion({ lista: true })
+    if (!s) { if (_ev === 'INITIAL_SESSION') limpiarCodigoDeUrl(); return ponerSesion({ lista: true }) }
+    limpiarCodigoDeUrl()
     const u = aUsuario(s.user)
     ponerSesion({ usuario: sesion.usuario?.id === u.id ? { ...u, nombre: sesion.usuario.nombre } : u, lista: true })
     // El nombre del perfil se lee fuera del callback de Auth (no se deben hacer consultas dentro de él).
@@ -184,6 +202,26 @@ export async function quitarNegocio(id: string): Promise<Resultado> {
   alCambiarNegocios.forEach((f) => f()); refrescarOperacion()
   return { ok: true }
 }
+// Cierra una fecha o cambia su cupo. Sin cupo propio y sin cerrar, el día vuelve al cupo diario (se borra la fila).
+export async function guardarCupoDia(negocioId: string, fecha: string, { cupo, cerrado }: { cupo?: number | null; cerrado?: boolean }): Promise<Resultado> {
+  if (!supabase) return SIN_CONEXION
+  if (cupo != null && !(Number.isInteger(cupo) && cupo >= 0)) return { ok: false, error: 'El cupo debe ser un número entero, 0 o más.' }
+  const { error } = !cerrado && cupo == null
+    ? await supabase.from('cupo_dia').delete().eq('negocio_id', negocioId).eq('fecha', fecha)
+    : await supabase.from('cupo_dia').upsert({ negocio_id: negocioId, fecha, cupo: cupo ?? null, cerrado: !!cerrado }, { onConflict: 'negocio_id,fecha' })
+  if (error) return fallo(error)
+  alCambiarNegocios.forEach((f) => f()); refrescarOperacion()
+  return { ok: true }
+}
+// Número de WhatsApp del negocio, armado por una función de servidor; null si no hay.
+export async function whatsappDeNegocio(id: string): Promise<string | null> {
+  if (!supabase) return null
+  const { data, error } = await supabase.rpc('whatsapp_negocio', { p_negocio: id })
+  if (error || !data) return null
+  const d = String(data).replace(/\D/g, '')
+  return d.length >= 7 ? (d.length === 10 ? `57${d}` : d) : null
+}
+
 // El prestador solo puede pasar pendiente→confirmada|rechazada y confirmada→cancelada (lo exige la base).
 export async function cambiarEstado(id: string, estado: EstadoReserva): Promise<Resultado> {
   if (!supabase) return SIN_CONEXION
@@ -213,9 +251,10 @@ export function useMisNegocios(): Carga<Negocio[]> & { negocios: Negocio[] } {
   return { ...e, negocios: e.datos }
 }
 
-export function useReservasDeMisNegocios(): Carga<Reserva[]> & { reservas: Reserva[] } {
+export function useReservasDeMisNegocios(): Carga<Reserva[]> & { reservas: Reserva[]; aviso: string; limpiarAviso: () => void } {
   const uid = useUsuario()?.id
   const [e, setE] = useState<Carga<Reserva[]>>({ datos: [], cargando: true, error: '' })
+  const [aviso, setAviso] = useState('')
   useEffect(() => {
     if (!supabase || !uid) { setE({ datos: [], cargando: false, error: '' }); return }
     let vivo = true
@@ -225,10 +264,16 @@ export function useReservasDeMisNegocios(): Carga<Reserva[]> & { reservas: Reser
     }
     cargar()
     alCambiarReservas.add(cargar)
-    const ch = supabase.channel(`reservas-${uid}`).on('postgres_changes', { event: '*', schema: 'public', table: 'reservas' }, cargar).subscribe()
+    const ch = supabase.channel(`reservas-${uid}`).on('postgres_changes', { event: '*', schema: 'public', table: 'reservas' }, (p) => {
+      if (p.eventType === 'INSERT') {
+        const n = p.new as { nombre?: string; fecha?: string }
+        if (n.nombre && n.fecha && vivo) setAviso(`Nueva solicitud de ${n.nombre} para el ${fechaCorta(n.fecha)}`)
+      }
+      cargar()
+    }).subscribe()
     return () => { vivo = false; alCambiarReservas.delete(cargar); supabase!.removeChannel(ch) }
   }, [uid])
-  return { ...e, reservas: e.datos }
+  return { ...e, reservas: e.datos, aviso, limpiarAviso: () => setAviso('') }
 }
 
 // ---------- Viajero (sin cuenta) ----------
@@ -268,6 +313,7 @@ export async function buscarReserva(codigo: string, contacto: string): Promise<R
   const { data, error } = await supabase.rpc('mi_reserva', { p_codigo: codigo, p_contacto: contacto })
   if (error) return fallo(error)
   if (!data?.length) return { ok: false, error: 'No encontramos una reserva con ese código y ese teléfono.' }
+  recordar({ codigo: data[0].codigo, contacto })
   return { ok: true, reserva: deMi(data[0], contacto) }
 }
 export async function cancelarMiReserva(codigo: string, contacto: string): Promise<Resultado> {

@@ -1,13 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { useParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { TextField, Button, Chip } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Icon } from '../components/Icon'
 import { Cargando } from '../components/Cargando'
 import { getLugar, tipoReserva, TIPOS_RESERVA, NOMBRE_MUNICIPIO } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
-import { useOperacion, crearReserva, cupoLibre, negocioDeLugar, LUGAR_NEGOCIO, hoy } from '../state/reservas'
+import { useOperacion, crearReserva, cupoLibre, enlaceWhatsapp, negocioDeLugar, whatsappDeNegocio, LUGAR_NEGOCIO, hoy } from '../state/reservas'
 import type { EstadoReserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import NoEncontrado from './NoEncontrado'
@@ -27,12 +27,25 @@ export default function Reservar() {
   const info = lugar
     ? { nombre: lugar.nombre, tipo: tipoReserva(lugar), municipio: NOMBRE_MUNICIPIO[lugar.municipio] ?? lugar.municipio }
     : negocioPropio ? { nombre: negocioPropio.nombre, tipo: negocioPropio.tipo as TipoReserva | null, municipio: NOMBRE_MUNICIPIO[negocioPropio.municipio] ?? negocioPropio.municipio } : undefined
-  const [v, setV] = useState<Campos>(VACIOS)
+  const [params] = useSearchParams()
+  const [v, setV] = useState<Campos>(() => {
+    const f = params.get('fecha') ?? ''
+    const p = Number(params.get('personas'))
+    return { ...VACIOS, ...(/^\d{4}-\d{2}-\d{2}$/.test(f) && f >= hoy() ? { fecha: f } : {}), ...(Number.isInteger(p) && p >= 1 && p <= 50 ? { personas: String(p) } : {}) }
+  })
   const [errores, setErrores] = useState<Partial<Record<keyof Campos, string>>>({})
   const [errorGeneral, setErrorGeneral] = useState('')
-  type Hecha = { codigo: string; estado: EstadoReserva; fecha: string; hora?: string; noches?: number; personas: number; nombre: string; contacto: string; conNegocio: boolean }
+  type Hecha = { codigo: string; estado: EstadoReserva; fecha: string; hora?: string; noches?: number; personas: number; nombre: string; contacto: string; conNegocio: boolean; negocioId?: string }
   const [hecha, setHecha] = useState<Hecha | null>(null)
   const [enviando, setEnviando] = useState(false)
+  const [wa, setWa] = useState<string | null>(null)
+  const negocioHecha = hecha?.negocioId
+  useEffect(() => {
+    let vivo = true
+    setWa(null)
+    if (negocioHecha) whatsappDeNegocio(negocioHecha).then((n) => { if (vivo) setWa(n) })
+    return () => { vivo = false }
+  }, [negocioHecha])
   usePagina(hecha ? 'Solicitud enviada' : info ? `Reservar ${info.nombre}` : 'Reservar')
 
   if (id?.startsWith(LUGAR_NEGOCIO) && !info && demo.cargando) return <Cargando />
@@ -74,7 +87,7 @@ export default function Reservar() {
     const r = await crearReserva(datos)
     setEnviando(false)
     if (!r.ok || !r.reserva) { setErrorGeneral(r.ok ? 'No se pudo enviar la solicitud.' : r.error); return }
-    setHecha({ ...datos, ...r.reserva, conNegocio: !!negocio })
+    setHecha({ ...datos, ...r.reserva, conNegocio: !!negocio, negocioId: negocio?.id })
   }
 
   const volver = id.startsWith(LUGAR_NEGOCIO) ? null : `/lugares/${id}`
@@ -103,6 +116,12 @@ export default function Reservar() {
         </dl>
         <p className="res-nota">Guarda tu código: con él y tu teléfono puedes consultar o cancelar la solicitud.</p>
         <div className="res-acciones">
+          {wa && (
+            <a className="vd-btn vd-btn-cta" target="_blank" rel="noopener noreferrer"
+              href={enlaceWhatsapp(wa, `Hola, soy ${hecha.nombre}. Hice una solicitud de reserva en ${info.nombre} para el ${fechaLarga(hecha.fecha)}, ${hecha.personas} ${hecha.personas === 1 ? 'persona' : 'personas'}${hecha.noches ? `, ${hecha.noches} ${hecha.noches === 1 ? 'noche' : 'noches'}` : ''}${hecha.hora ? `, a las ${hecha.hora}` : ''}. Código: ${hecha.codigo}.`)}>
+              Avisar al negocio por WhatsApp
+            </a>
+          )}
           <LinkButton to="/reservas" variant="primary">Ver mis reservas</LinkButton>
           {!hecha.conNegocio && <LinkButton to="/chat" variant="secondary" icon="chat">Hablar con un embajador</LinkButton>}
           {volver && <LinkButton to={volver} variant="ghost">Volver al lugar</LinkButton>}
@@ -131,6 +150,7 @@ export default function Reservar() {
           <label htmlFor="res-nota" className="vd-field-label">Nota (opcional)</label>
           <textarea id="res-nota" className="vd-input res-area" rows={3} maxLength={500} value={v.nota} onChange={set('nota')} />
         </div>
+        <p className="res-privacidad">Guardamos tu nombre, teléfono y los datos de la solicitud solo para gestionar tu reserva. Solo los ve el negocio y el equipo de Valle Directo, y se borran a los 12 meses. <Link to="/privacidad" target="_blank" rel="noopener">Aviso de privacidad</Link></p>
         <div aria-live="assertive">{errorGeneral && <p className="res-error"><Icon name="alerta" size={18} />{errorGeneral}</p>}</div>
         <div className="res-acciones">
           <Button type="submit" variant="cta" disabled={enviando || demo.sinConexion}>{enviando ? 'Enviando…' : 'Enviar solicitud'}</Button>

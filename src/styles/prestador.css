@@ -46,3 +46,26 @@
 }
 
 .acciones-fila { display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+/* Aviso en vivo y calendario de cupos */
+.pr-vivo { width: 100%; }
+.pr-aviso-vivo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); margin: 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); background: var(--accent-soft); color: var(--on-accent-soft); border: 1px solid var(--accent); font-weight: 700; }
+.pr-aviso-vivo span { flex: 1 1 200px; overflow-wrap: anywhere; }
+.pr-cal { width: 100%; display: flex; flex-direction: column; gap: var(--space-3); }
+.pr-cal h3 { margin: 0; }
+.pr-cal-semana, .pr-cal-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 2px; }
+.pr-cal-semana span { text-align: center; font-size: 13px; color: var(--ink-muted); font-weight: 700; }
+.pr-dia { min-height: 56px; min-width: 0; padding: 4px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; font: inherit; color: var(--ink); background: var(--surface-raised); border: 1px solid var(--line-strong); border-radius: var(--radius-md); cursor: pointer; }
+.pr-dia strong { font-size: 16px; line-height: 20px; }
+.pr-dia small { font-size: 11px; line-height: 14px; color: var(--ink-muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pr-dia-parcial { background: var(--accent-soft); }
+.pr-dia-lleno { background: var(--surface-sunken); border-style: dashed; }
+.pr-dia-cerrado { background: var(--surface-sunken); border-style: dashed; text-decoration: line-through; }
+.pr-dia-cerrado small, .pr-dia-lleno small { text-decoration: none; font-weight: 700; }
+.pr-dia[aria-pressed="true"] { border: 3px solid var(--secondary); }
+.pr-dia:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.pr-cal-form { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: var(--space-4); margin-top: var(--space-3); }
+.pr-cal-form h4 { margin: 0; }
+.pr-cal-form h4::first-letter { text-transform: uppercase; }
+.pr-check { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; font-weight: 600; }
+.pr-check input { width: 24px; height: 24px; flex: none; accent-color: var(--primary); }

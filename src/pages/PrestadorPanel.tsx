@@ -4,8 +4,8 @@ import { Navigate } from 'react-router-dom'
 import { Button, Chip, Option, TextField } from '../components/ui'
 import { NOMBRE_MUNICIPIO, TIPOS_RESERVA, tipoReserva, useCatalogo } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
-import { cambiarEstado, cupoLibre, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useMisNegocios, useOperacion, useReservasDeMisNegocios, useSesionLista, useUsuario } from '../state/reservas'
-import type { EstadoReserva, Negocio, Reserva } from '../state/reservas'
+import { cambiarEstado, cupoLibre, digitosWhatsapp, enlaceWhatsapp, fechaCorta, guardarCupoDia, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useMisNegocios, useOperacion, useReservasDeMisNegocios, useSesionLista, useUsuario } from '../state/reservas'
+import type { EstadoReserva, Negocio, Operacion, Reserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import '../styles/prestador.css'
 
@@ -205,7 +205,7 @@ function contactoEnlace(c: string) {
 function Reservas() {
   const op = useOperacion()
   const { negocios: mios, cargando: cargandoN } = useMisNegocios()
-  const { reservas: todas, cargando: cargandoR, error: errorCarga } = useReservasDeMisNegocios()
+  const { reservas: todas, cargando: cargandoR, error: errorCarga, aviso, limpiarAviso } = useReservasDeMisNegocios()
   const [negId, setNegId] = useState('')
   const [filtro, setFiltro] = useState<EstadoReserva | 'todas'>('todas')
   const [error, setError] = useState('')
@@ -227,6 +227,14 @@ function Reservas() {
   return (
     <section className="pr-seccion" aria-labelledby="h-reservas">
       <h2 id="h-reservas" className="t-h2">Reservas</h2>
+      <div aria-live="polite" className="pr-vivo">
+        {aviso && (
+          <p className="pr-aviso-vivo">
+            <span>{aviso}</span>
+            <Button variant="ghost" onClick={limpiarAviso} aria-label="Cerrar aviso">Entendido</Button>
+          </p>
+        )}
+      </div>
       {cargandoN || cargandoR ? (
         <p className="pr-nota" role="status">Cargando reservas…</p>
       ) : errorCarga ? (
@@ -248,6 +256,7 @@ function Reservas() {
             <div className="pr-cifra"><strong>{confirmadasHoy}</strong><span>Confirmadas hoy</span></div>
             <div className="pr-cifra"><strong>{cupoLibre(op, negocio, hoyStr)}</strong><span>Cupo libre hoy</span></div>
           </div>
+          <CalendarioCupo op={op} negocio={negocio} />
           <div className="pr-filtros" role="group" aria-label="Filtrar por estado">
             {ESTADOS.map((e) => <Option key={e.id} selected={filtro === e.id} onClick={() => setFiltro(e.id)}>{e.etiqueta}</Option>)}
           </div>
@@ -259,7 +268,7 @@ function Reservas() {
             </div>
           ) : (
             <ul className="pr-lista">
-              {visibles.map((r) => <FilaReserva key={r.id} r={r} onMover={mover} />)}
+              {visibles.map((r) => <FilaReserva key={r.id} r={r} lugar={negocio.nombre} onMover={mover} />)}
             </ul>
           )}
         </>
@@ -268,7 +277,88 @@ function Reservas() {
   )
 }
 
-function FilaReserva({ r, onMover }: { r: Reserva; onMover: (id: string, e: EstadoReserva) => Promise<void> }) {
+// ---------- Calendario de 30 días ----------
+const DIAS_SEMANA = ['L', 'M', 'X', 'J', 'V', 'S', 'D']
+function diasDesdeHoy(n: number): string[] {
+  return Array.from({ length: n }, (_, i) => { const d = new Date(); d.setDate(d.getDate() + i); return d.toLocaleDateString('en-CA') })
+}
+function CalendarioCupo({ op, negocio }: { op: Operacion; negocio: Negocio }) {
+  const dias = useMemo(() => diasDesdeHoy(30), [])
+  const [sel, setSel] = useState<string | null>(null)
+  const [cupo, setCupo] = useState('')
+  const [cerrado, setCerrado] = useState(false)
+  const [error, setError] = useState('')
+  const [ok, setOk] = useState('')
+  const [guardando, setGuardando] = useState(false)
+  const estado = (f: string) => {
+    const dia = op.cupos.find((c) => c.negocio_id === negocio.id && c.fecha === f)
+    const total = dia?.cerrado ? 0 : dia?.cupo ?? negocio.cupoDiario
+    return { dia, total, libre: cupoLibre(op, negocio, f), cerrado: !!dia?.cerrado }
+  }
+  const elegir = (f: string) => {
+    const { dia } = estado(f)
+    setSel(f); setCupo(dia?.cupo != null ? String(dia.cupo) : ''); setCerrado(!!dia?.cerrado); setError(''); setOk('')
+  }
+  const guardar = async (c: { cupo?: number | null; cerrado?: boolean }) => {
+    if (!sel) return
+    setGuardando(true); setError(''); setOk('')
+    const r = await guardarCupoDia(negocio.id, sel, c)
+    setGuardando(false)
+    if (r.ok) setOk(`Guardado: ${fechaCorta(sel)}.`); else setError(r.error)
+  }
+  const enviar = (e: FormEvent) => {
+    e.preventDefault()
+    const n = cupo.trim() === '' ? null : Number(cupo)
+    if (n !== null && !(Number.isInteger(n) && n >= 0)) return setError('El cupo debe ser un número entero, 0 o más.')
+    guardar({ cupo: n, cerrado })
+  }
+  const vacios = (new Date(`${dias[0]}T12:00:00`).getDay() + 6) % 7   // lunes primero
+  const e = sel ? estado(sel) : null
+  return (
+    <div className="pr-cal" role="group" aria-labelledby="h-cal">
+      <h3 id="h-cal" className="t-h3">Calendario de cupos · próximos 30 días</h3>
+      <p className="pr-nota">Toca un día para cerrarlo o cambiar su cupo. Sin cambios, vale tu cupo diario ({negocio.cupoDiario}).</p>
+      <div className="pr-cal-semana" aria-hidden="true">{DIAS_SEMANA.map((d) => <span key={d}>{d}</span>)}</div>
+      <div className="pr-cal-grid">
+        {Array.from({ length: vacios }, (_, i) => <span key={`v${i}`} />)}
+        {dias.map((f) => {
+          const x = estado(f)
+          const txt = x.cerrado ? 'Cerrado' : x.libre === 0 ? 'Lleno' : `${x.libre} ${x.libre === 1 ? 'libre' : 'libres'}`
+          const clase = x.cerrado ? 'pr-dia-cerrado' : x.libre === 0 ? 'pr-dia-lleno' : x.libre < x.total ? 'pr-dia-parcial' : ''
+          return (
+            <button key={f} type="button" className={`pr-dia ${clase}`} aria-pressed={sel === f} onClick={() => elegir(f)} aria-label={`${fechaCorta(f)}: ${txt}`}>
+              <strong>{Number(f.slice(8))}</strong><small>{txt}</small>
+            </button>
+          )
+        })}
+      </div>
+      <div aria-live="polite">
+        {sel && e && (
+          <form className="pr-form pr-cal-form" onSubmit={enviar} noValidate aria-label={`Cupo del ${fechaCorta(sel)}`}>
+            <h4 className="t-h3">{fechaCorta(sel)}</h4>
+            <p className="pr-nota">{e.cerrado ? 'Día cerrado.' : `Quedan ${e.libre} de ${e.total} cupos.`}</p>
+            <TextField label="Cupo de este día (personas)" type="number" min={0} step={1} inputMode="numeric" value={cupo} onChange={(ev) => setCupo(ev.target.value)} hint={`Vacío = cupo diario (${negocio.cupoDiario}).`} />
+            <label className="pr-check"><input type="checkbox" checked={cerrado} onChange={(ev) => setCerrado(ev.target.checked)} /> Cerrar este día (no recibe reservas)</label>
+            <div className="pr-acciones">
+              <Button type="submit" variant="cta" disabled={guardando}>{guardando ? 'Guardando…' : 'Guardar día'}</Button>
+              <Button variant="ghost" onClick={() => { setCupo(''); setCerrado(false); guardar({ cupo: null, cerrado: false }) }} disabled={guardando}>Volver al cupo diario</Button>
+            </div>
+          </form>
+        )}
+        {error && <p className="pr-error" role="alert">{error}</p>}
+        {ok && <p className="pr-ok">{ok}</p>}
+      </div>
+    </div>
+  )
+}
+
+function mensajeViajero(r: Reserva, lugar: string): string {
+  const f = fechaCorta(r.fecha)
+  return r.estado === 'confirmada'
+    ? `Hola ${r.nombre}, tu reserva en ${lugar} para el ${f} (${r.personas} ${r.personas === 1 ? 'persona' : 'personas'}) quedó confirmada. Código: ${r.codigo}.`
+    : `Hola ${r.nombre}, lamentamos avisarte que no pudimos confirmar tu solicitud en ${lugar} para el ${f}. Código: ${r.codigo}. Puedes intentar otra fecha en Valle Directo.`
+}
+function FilaReserva({ r, lugar, onMover }: { r: Reserva; lugar: string; onMover: (id: string, e: EstadoReserva) => Promise<void> }) {
   const c = contactoEnlace(r.contacto)
   const fecha = new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
   const cerrada = r.estado === 'rechazada' || r.estado === 'cancelada' || r.estado === 'vencida'
@@ -297,6 +387,14 @@ function FilaReserva({ r, onMover }: { r: Reserva; onMover: (id: string, e: Esta
         {r.estado !== 'confirmada' && r.estado !== 'cancelada' && <Button variant="primary" onClick={() => onMover(r.id, 'confirmada')} aria-label={`Confirmar reserva de ${r.nombre}`}>Confirmar</Button>}
         {!cerrada && <Button variant="secondary" onClick={() => onMover(r.id, 'rechazada')} aria-label={`Rechazar reserva de ${r.nombre}`}>Rechazar</Button>}
       </div>
+      {(r.estado === 'confirmada' || r.estado === 'rechazada') && (() => {
+        const num = digitosWhatsapp(r.contacto)
+        return num ? (
+          <div className="pr-acciones">
+            <a className="vd-btn vd-btn-secondary" href={enlaceWhatsapp(num, mensajeViajero(r, lugar))} target="_blank" rel="noopener noreferrer" aria-label={`Avisar a ${r.nombre} por WhatsApp`}>Avisar al viajero</a>
+          </div>
+        ) : null
+      })()}
     </li>
   )
 }

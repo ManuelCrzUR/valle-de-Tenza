@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
-import { Option, PlaceCard, Button } from '../components/ui'
+import { Option, PlaceCard, Button, TextField } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Foto } from '../components/Foto'
 import { PLANES } from '../data/planes'
 import { CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, tipoReserva, useCatalogo } from '../data/lugares'
 import type { Lugar } from '../data/lugares'
-import { useItinerario } from '../state/itinerario'
+import { PERSONAS_MAX, useItinerario } from '../state/itinerario'
 import { MAX_SALTO_M, DIAS_MAX, distanciasRuta, km, ordenRuta } from '../data/generarPlan'
-import { cupoLibre, hoy, negocioDeLugar, useOperacion } from '../state/reservas'
+import { cupoLibre, cupoVerificadoHoy, fechaCorta, hoy, negocioDeLugar, useOperacion } from '../state/reservas'
 import { config } from '../config'
 import { Icon } from '../components/Icon'
 import { usePagina } from '../usePagina'
@@ -21,10 +21,10 @@ function Distancia({ m }: { m?: number }) {
   return <p className={`it-dist${lejos ? ' it-dist-lejos' : ''}`}>{lejos && <strong>Queda lejos: </strong>}a {km(m)} de la parada anterior</p>
 }
 
-function Acciones({ l, cta }: { l: Lugar; cta?: boolean }) {
+function Acciones({ l, cta, query }: { l: Lugar; cta?: boolean; query: string }) {
   return (
     <div className="it-acciones">
-      {tipoReserva(l) && <LinkButton to={`/reservar/${l.id}`} variant={cta ? 'cta' : 'secondary'}>Reservar</LinkButton>}
+      {tipoReserva(l) && <LinkButton to={`/reservar/${l.id}${query}`} variant={cta ? 'cta' : 'secondary'}>Reservar</LinkButton>}
       <Link className="it-enlace" to={`/lugares/${l.id}`}>Ver detalle</Link>
     </div>
   )
@@ -33,18 +33,25 @@ function Acciones({ l, cta }: { l: Lugar; cta?: boolean }) {
 export default function Itinerario() {
   usePagina('Tu itinerario')
   const { municipios: MUNICIPIOS } = useCatalogo()
-  const { itinerario, eleccion, elegir, setMunicipio, setDias, otro } = useItinerario()
+  const { itinerario, eleccion, elegir, setMunicipio, setDias, setFecha, setPersonas, otro } = useItinerario()
   const op = useOperacion()
   const plan = itinerario?.plan
   const hosp = itinerario?.hospedaje
 
+  const fecha = eleccion?.fecha ?? ''
+  const personas = eleccion?.personas ?? 2
+  const query = eleccion ? `?fecha=${fecha}&personas=${personas}` : ''
   let chip = 'Cupo por confirmar'
   let tone: 'strong' | 'soft' = 'soft'
-  let icono: 'cupo-verificado' | undefined
+  let etiquetaCupo = ''
   if (hosp) {
     const n = negocioDeLugar(op.negocios, hosp.id)
     if (n) {
-      if (cupoLibre(op, n, hoy()) > 0) { chip = 'Cupo disponible'; tone = 'strong'; icono = 'cupo-verificado' } else chip = 'Sin cupo hoy'
+      etiquetaCupo = cupoVerificadoHoy(n) ? 'Cupo verificado hoy' : 'Cupo por confirmar'
+      if (fecha) {
+        const libre = cupoLibre(op, n, fecha)
+        if (libre > 0) { chip = `Quedan ${libre} ${libre === 1 ? 'cupo' : 'cupos'} el ${fechaCorta(fecha)}`; tone = 'strong' } else chip = 'Sin cupo ese día'
+      }
     }
   }
 
@@ -76,6 +83,8 @@ export default function Itinerario() {
               <option value="">El mejor para este plan</option>
               {MUNICIPIOS.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
             </select>
+            <TextField label="¿Cuándo vas?" type="date" min={hoy()} value={fecha} onChange={(e) => e.target.value && e.target.value >= hoy() && setFecha(e.target.value)} hint="Fecha de llegada." />
+            <TextField label="¿Cuántos van?" type="number" inputMode="numeric" min={1} max={PERSONAS_MAX} value={personas} onChange={(e) => e.target.value && setPersonas(Number(e.target.value))} hint={`De 1 a ${PERSONAS_MAX} personas.`} />
             <Button variant="secondary" onClick={otro}>Generar otro</Button>
           </div>
         )}
@@ -106,7 +115,7 @@ export default function Itinerario() {
                         <>
                           <span>{p.lugar.nombre}</span><small>{sitio(p.lugar)}</small>
                           <Distancia m={dist[i]} />
-                          <Acciones l={p.lugar} />
+                          <Acciones l={p.lugar} query={query} />
                         </>
                       )}
                       {p.rol === 'comida' && (
@@ -114,7 +123,7 @@ export default function Itinerario() {
                           <h4 className="it-rol">Dónde comer</h4>
                           <Distancia m={dist[i]} />
                           <PlaceCard title={p.lugar.nombre} description={p.lugar.extra?.descripcion} meta={sitio(p.lugar)}>
-                            <Acciones l={p.lugar} />
+                            <Acciones l={p.lugar} query={query} />
                           </PlaceCard>
                         </>
                       )}
@@ -122,9 +131,10 @@ export default function Itinerario() {
                         <>
                           <h4 className="it-rol">Dónde dormir</h4>
                           <Distancia m={dist[i]} />
-                          <PlaceCard chip={chip} chipTone={tone} chipIcon={icono} title={p.lugar.nombre}
+                          <PlaceCard chip={chip} chipTone={tone} title={p.lugar.nombre}
                             description={p.lugar.extra?.descripcion} meta={sitio(p.lugar)}>
-                            <Acciones l={p.lugar} cta />
+                            {etiquetaCupo && <p className="it-cupo-et">{etiquetaCupo}</p>}
+                            <Acciones l={p.lugar} cta query={query} />
                           </PlaceCard>
                         </>
                       )}

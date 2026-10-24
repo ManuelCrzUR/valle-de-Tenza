@@ -40,3 +40,4 @@
 .it-dist-lejos { color: var(--ink); font-weight: 700; }
 .it-dist-lejos::before { content: "\26A0\FE0E "; }
 .parada-dia { font-weight: 700; padding-top: var(--space-2); list-style: none; }
+.it-cupo-et { margin: var(--space-2) 0 0; font-size: 14px; font-weight: 700; color: var(--ink-muted); }

@@ -22,3 +22,7 @@
   .res-fila { grid-template-columns: 1fr 1fr; }
   .res-lista { grid-template-columns: 1fr 1fr; }
 }
+.res-privacidad { margin: 0; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.res-privacidad a { color: var(--link); font-weight: 700; text-underline-offset: 3px; }
+.res-buscar { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+.res-buscar h2 { margin: 0; }
