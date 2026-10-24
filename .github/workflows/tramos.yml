@@ -1,0 +1,25 @@
+name: Tramos (OSRM)
+on:
+  workflow_dispatch:
+    inputs:
+      todo:
+        description: Recalcular todos los pares (no solo los nuevos)
+        type: boolean
+        default: false
+jobs:
+  tramos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Calcular tramos
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TODO: ${{ inputs.todo }}
+        run: |
+          if [ "$TODO" = "true" ]; then node scripts/tramos-osrm.ts --todo; else node scripts/tramos-osrm.ts; fi

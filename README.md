@@ -99,6 +99,17 @@ La `service_role` solo va en la terminal o en secretos; nunca en el front ni en 
 - `SUPABASE_ANON_KEY`: llave anon (ping cada 3 días).
 - `SUPABASE_DB_URL`: cadena de conexión a Postgres (respaldo diario, artifact de 30 días).
 
+## Logística
+
+Tiempos por carretera (OSRM) y pronóstico (Open-Meteo) se calculan solo desde scripts, nunca desde el navegador, y se guardan en `tramos` y `clima`:
+
+```
+SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run tramos   # solo pares nuevos; `-- --todo` recalcula todos
+SUPABASE_URL=... SUPABASE_SERVICE_ROLE_KEY=... npm run clima    # 7 días por municipio con centro
+```
+
+`tramos` respeta el servidor demo de OSRM (≤ 50 coordenadas por petición, 1 petición por segundo) y se corre a mano o con el workflow `Tramos (OSRM)` cuando cambia el catálogo. `clima` corre cada 3 horas con el workflow `Clima`. Ambos workflows necesitan los secretos `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` (la `service_role` solo vive en secretos). Atribución: rutas © OSRM y colaboradores de OpenStreetMap (ODbL); clima Open-Meteo (CC-BY 4.0).
+
 ## Publicación
 
 El despliegue es único, en **Vercel**. `vercel.json` define las cabeceras de caché para `/assets/*` y `/fotos/*`. Variables en Vercel: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` y `AUREN_DEMO_TOKEN`. Las rutas usan hash (`/#/mapa`).
