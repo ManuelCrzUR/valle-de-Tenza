@@ -40,3 +40,12 @@ insert into public.negocios (id, perfil_id, lugar_id, nombre, tipo, municipio, c
 values ('33333333-3333-4333-8333-333333333333', '11111111-1111-4111-8111-111111111111', null,
         'Hostal de prueba', 'hotel', 'tenza', 4, '573000000000')
 on conflict do nothing;
+
+-- Fase 2: rutas de transporte Bogotá → Guateque. Sin horarios ni precios inventados:
+-- se completan al confirmarlos con las empresas (fuente 'por confirmar', verificado_en null).
+insert into public.rutas_transporte (origen, destino, empresa, modo, terminal, duracion_min, precio_desde_cop,
+                                     notas, fuente, verificado_en, activa)
+select 'bogota', 'guateque', e, 'bus', 'Terminal Salitre', null, null, null, 'por confirmar', null, true
+from (values ('Flota Valle de Tenza'), ('Flota La Macarena')) v(e)
+where not exists (select 1 from public.rutas_transporte r
+                  where r.origen = 'bogota' and r.destino = 'guateque' and r.empresa = v.e);

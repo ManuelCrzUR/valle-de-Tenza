@@ -23,7 +23,53 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "cupo_dia": {
+            "alertas_via": {
+                  Row: {
+                    "creada_por": string | null,"desde": string,"fuente": string | null,"hasta": string | null,"id": string,"mensaje": string,"municipio": string | null,"tipo": Database["public"]['Enums']["tipo_alerta"],"tramo_desde": string | null,"tramo_hasta": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "creada_por"?: string | null,"desde"?: string,"fuente"?: string | null,"hasta"?: string | null,"id"?: string,"mensaje": string,"municipio"?: string | null,"tipo": Database["public"]['Enums']["tipo_alerta"],"tramo_desde"?: string | null,"tramo_hasta"?: string | null
+                  }
+                  Update: {
+                    "creada_por"?: string | null,"desde"?: string,"fuente"?: string | null,"hasta"?: string | null,"id"?: string,"mensaje"?: string,"municipio"?: string | null,"tipo"?: Database["public"]['Enums']["tipo_alerta"],"tramo_desde"?: string | null,"tramo_hasta"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "alertas_via_creada_por_fkey"
+      columns: ["creada_por"]
+isOneToOne: false
+      referencedRelation: "perfiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "alertas_via_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
+    }
+                  ]
+                },"clima": {
+                  Row: {
+                    "actualizado": string,"fecha": string,"municipio": string,"prob_lluvia_max": number | null,"temp_max": number | null,"temp_min": number | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actualizado"?: string,"fecha": string,"municipio": string,"prob_lluvia_max"?: number | null,"temp_max"?: number | null,"temp_min"?: number | null
+                  }
+                  Update: {
+                    "actualizado"?: string,"fecha"?: string,"municipio"?: string,"prob_lluvia_max"?: number | null,"temp_max"?: number | null,"temp_min"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "clima_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
+    }
+                  ]
+                },"cupo_dia": {
                   Row: {
                     "cerrado": boolean,"cupo": number | null,"fecha": string,"negocio_id": string
                   }
@@ -201,6 +247,54 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"rutas_transporte": {
+                  Row: {
+                    "activa": boolean,"destino": string,"duracion_min": number | null,"empresa": string,"fuente": string | null,"id": string,"modo": Database["public"]['Enums']["modo_transporte"],"notas": string | null,"origen": string,"precio_desde_cop": number | null,"terminal": string | null,"verificado_en": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "activa"?: boolean,"destino": string,"duracion_min"?: number | null,"empresa": string,"fuente"?: string | null,"id"?: string,"modo": Database["public"]['Enums']["modo_transporte"],"notas"?: string | null,"origen": string,"precio_desde_cop"?: number | null,"terminal"?: string | null,"verificado_en"?: string | null
+                  }
+                  Update: {
+                    "activa"?: boolean,"destino"?: string,"duracion_min"?: number | null,"empresa"?: string,"fuente"?: string | null,"id"?: string,"modo"?: Database["public"]['Enums']["modo_transporte"],"notas"?: string | null,"origen"?: string,"precio_desde_cop"?: number | null,"terminal"?: string | null,"verificado_en"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"salidas": {
+                  Row: {
+                    "dias_semana": (number)[],"hora": string,"id": string,"ruta_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "dias_semana"?: (number)[],"hora": string,"id"?: string,"ruta_id": string
+                  }
+                  Update: {
+                    "dias_semana"?: (number)[],"hora"?: string,"id"?: string,"ruta_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "salidas_ruta_id_fkey"
+      columns: ["ruta_id"]
+isOneToOne: false
+      referencedRelation: "rutas_transporte"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"tramos": {
+                  Row: {
+                    "calculado_en": string,"destino": string,"distancia_m": number,"duracion_s": number,"fuente": string,"origen": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "calculado_en"?: string,"destino": string,"distancia_m": number,"duracion_s": number,"fuente"?: string,"origen": string
+                  }
+                  Update: {
+                    "calculado_en"?: string,"destino"?: string,"distancia_m"?: number,"duracion_s"?: number,"fuente"?: string,"origen"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Views: {
@@ -255,6 +349,9 @@ isOneToOne: false
 "hoy_bogota":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
+"liberar_lugar_negocio":
+{ Args: { "p_negocio": string }; Returns: undefined
+                           },
 "mi_reserva":
 { Args: { "p_codigo": string,"p_contacto": string }; Returns: {
               "actualizada": string,"codigo": string,"creada": string,"estado": Database["public"]['Enums']["estado_reserva"],"fecha": string,"hora": string,"lugar_id": string,"negocio_id": string,"negocio_nombre": string,"noches": number,"nombre": string,"nota": string,"personas": number,"tipo": Database["public"]['Enums']["tipo_reserva"]
@@ -269,12 +366,15 @@ isOneToOne: false
 "vencer_reservas":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
+"verificar_negocio":
+{ Args: { "p_negocio": string,"p_verificado": boolean }; Returns: undefined
+                           },
 "whatsapp_negocio":
 { Args: { "p_negocio": string }; Returns: string
                            }
           }
           Enums: {
-            "estado_reserva": "pendiente"|"confirmada"|"rechazada"|"cancelada"|"vencida","precision_ubicacion": "exacta"|"direccion"|"vereda"|"cabecera","rol_usuario": "prestador"|"coordinador"|"admin","tipo_reserva": "hotel"|"restaurante"|"caminata"|"actividad"
+            "estado_reserva": "pendiente"|"confirmada"|"rechazada"|"cancelada"|"vencida","modo_transporte": "bus"|"colectivo"|"taxi"|"carro_propio","precision_ubicacion": "exacta"|"direccion"|"vereda"|"cabecera","rol_usuario": "prestador"|"coordinador"|"admin","tipo_alerta": "cierre"|"paso_restringido"|"derrumbe"|"obra"|"otro","tipo_reserva": "hotel"|"restaurante"|"caminata"|"actividad"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -394,7 +494,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "estado_reserva": ["pendiente", "confirmada", "rechazada", "cancelada", "vencida"],"precision_ubicacion": ["exacta", "direccion", "vereda", "cabecera"],"rol_usuario": ["prestador", "coordinador", "admin"],"tipo_reserva": ["hotel", "restaurante", "caminata", "actividad"]
+            "estado_reserva": ["pendiente", "confirmada", "rechazada", "cancelada", "vencida"],"modo_transporte": ["bus", "colectivo", "taxi", "carro_propio"],"precision_ubicacion": ["exacta", "direccion", "vereda", "cabecera"],"rol_usuario": ["prestador", "coordinador", "admin"],"tipo_alerta": ["cierre", "paso_restringido", "derrumbe", "obra", "otro"],"tipo_reserva": ["hotel", "restaurante", "caminata", "actividad"]
           }
         }
 } as const
