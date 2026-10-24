@@ -6,6 +6,7 @@ import { defineConfig, devices } from '@playwright/test'
 //   API_URL, SERVICE_ROLE_KEY y MAILPIT_URL (o INBUCKET_URL) para leer el correo y limpiar datos.
 export default defineConfig({
   testDir: 'tests/e2e',
+  testIgnore: 'offline.spec.ts',   // necesita build + service worker: npm run e2e:offline
   timeout: 90_000,
   workers: 1,
   reporter: [['list']],
