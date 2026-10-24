@@ -19,3 +19,6 @@ supabase/.branches/
 # playwright
 test-results/
 playwright-report/
+
+# Lighthouse CI
+.lighthouseci/

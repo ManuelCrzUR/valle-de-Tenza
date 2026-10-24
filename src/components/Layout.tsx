@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { TabBar } from './ui'
 import type { TabBarItem } from './ui'
@@ -8,6 +9,7 @@ import { AvisoVersion } from './AvisoVersion'
 import { EstadoConexion } from './EstadoConexion'
 import { useAjustes } from '../state/ajustes'
 import { useUsuario } from '../state/reservas'
+import { antesDeEnviar } from '../analitica'
 
 const NAV: TabBarItem[] = [
   { id: 'itinerario', label: 'Itinerario', icon: 'itinerario' },
@@ -68,6 +70,7 @@ export function Layout() {
       <div className="tabbar-fixed">
         <TabBar items={NAV} value={NAV.some((n) => n.id === seg) ? seg : ''} onChange={(id) => go(`/${id}`)} />
       </div>
+      <Analytics beforeSend={antesDeEnviar} />
     </div>
   )
 }

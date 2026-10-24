@@ -19,6 +19,7 @@ import { cupoLibre, cupoVerificadoHoy, fechaCorta, hoy, negocioDeLugar, useOpera
 import { eventosEntre, useEventos } from '../state/contenido'
 import type { Evento } from '../state/contenido'
 import { compartirItinerario, registrarDemanda } from '../state/compartir'
+import { evento } from '../analitica'
 import { config } from '../config'
 import { claveEleccion as claveRuta, guardarParaSinSenal, planGuardado, useOnline, useRutaGuardada } from '../state/offline'
 import type { Progreso } from '../state/offline'
@@ -147,7 +148,7 @@ export default function Itinerario() {
   const diasSel = eleccion?.dias ?? 2
   const resultadoRef = useRef<HTMLDivElement>(null)
   const irAlResultado = useRef(false)
-  const elegirPlan = (id: Parameters<typeof elegir>[0]) => { irAlResultado.current = window.matchMedia('(max-width: 767px)').matches; elegir(id) }
+  const elegirPlan = (id: Parameters<typeof elegir>[0]) => { irAlResultado.current = window.matchMedia('(max-width: 767px)').matches; evento('plan_elegido', { plan: id }); elegir(id) }
   useEffect(() => {
     if (!irAlResultado.current || !itinerario) return
     irAlResultado.current = false
@@ -159,7 +160,10 @@ export default function Itinerario() {
   const munResuelto = itinerario?.municipio ?? ''
   useEffect(() => {
     if (!eleccion || !itinerario) return
-    const t = setTimeout(() => { void registrarDemanda(eleccion, munResuelto) }, 3000)
+    const t = setTimeout(() => {
+      void registrarDemanda(eleccion, munResuelto)
+      evento('itinerario_visto', { plan: eleccion.planId, municipio: munResuelto, dias: itinerario.dias.length, personas: eleccion.personas, transporte: eleccion.movilidad })
+    }, 3000)
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eleccion?.planId, munResuelto, eleccion?.dias, eleccion?.personas, eleccion?.fecha, eleccion?.movilidad, !!itinerario])
@@ -184,7 +188,7 @@ export default function Itinerario() {
   const compartirNativo = async () => {
     const url = await obtenerEnlace()
     if (!url) return
-    try { await navigator.share({ title: plan?.titulo ?? 'Mi itinerario', text: 'Mira este itinerario por el Valle de Tenza', url }) } catch { /* canceló o no pudo: quedan los otros botones */ }
+    try { await navigator.share({ title: plan?.titulo ?? 'Mi itinerario', text: 'Mira este itinerario por el Valle de Tenza', url }); if (eleccion) evento('compartido', { plan: eleccion.planId }) } catch { /* canceló o no pudo: quedan los otros botones */ }
   }
   const compartirWhatsApp = async () => {
     const w = enlace && enlace.clave === claveEleccion ? null : window.open('', '_blank')   // se abre ya, dentro del toque, y se redirige al tener el enlace
@@ -192,11 +196,12 @@ export default function Itinerario() {
     if (!url) { w?.close(); return }
     const destino = `https://wa.me/?text=${encodeURIComponent(`Mi itinerario por el Valle de Tenza: ${url}`)}`
     if (w) w.location.href = destino; else window.open(destino, '_blank', 'noopener')
+    if (eleccion) evento('compartido', { plan: eleccion.planId })
   }
   const copiarEnlace = async () => {
     const url = await obtenerEnlace()
     if (!url) return
-    try { await navigator.clipboard.writeText(url); setAviso('Enlace copiado') } catch { setAviso('No pudimos copiarlo solo: selecciona el enlace de abajo y cópialo.') }
+    try { await navigator.clipboard.writeText(url); setAviso('Enlace copiado'); if (eleccion) evento('compartido', { plan: eleccion.planId }) } catch { setAviso('No pudimos copiarlo solo: selecciona el enlace de abajo y cópialo.') }
   }
   const etiquetaCarretera = itinerario && itinerario.segundosCarretera > 0 ? `${itinerario.aprox ? '~' : ''}${duracionLarga(Math.max(1, Math.round(itinerario.segundosCarretera / 60)))}${itinerario.aprox ? ' (aprox.)' : ''}` : 'Sin recorridos largos'
   const estadoHospedaje = itinerario?.avisoHospedaje ?? (hosp && tone === 'strong' ? 'Hospedaje con cupo' : 'Cupo por confirmar')

@@ -10,6 +10,7 @@ import type { TipoReserva } from '../data/lugares'
 import { useOperacion, crearReserva, cupoLibre, enlaceWhatsapp, negocioDeLugar, whatsappDeNegocio, LUGAR_NEGOCIO, hoy } from '../state/reservas'
 import type { EstadoReserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
+import { evento } from '../analitica'
 import { useOnline } from '../state/offline'
 import NoEncontrado from './NoEncontrado'
 import '../styles/reservas.css'
@@ -50,6 +51,8 @@ export default function Reservar() {
     return () => { vivo = false }
   }, [negocioHecha])
   usePagina(hecha ? 'Solicitud enviada' : info ? `Reservar ${info.nombre}` : 'Reservar')
+  const tipoAbierto = info?.tipo
+  useEffect(() => { if (tipoAbierto) evento('reservar_abierto', { tipo: tipoAbierto }) }, [tipoAbierto])
 
   if (id?.startsWith(LUGAR_NEGOCIO) && !info && demo.cargando) return <Cargando />
   if (id?.startsWith(LUGAR_NEGOCIO) && !info && demo.sinConexion) {
@@ -91,6 +94,7 @@ export default function Reservar() {
     setEnviando(false)
     if (!r.ok || !r.reserva) { setErrorGeneral(r.ok ? 'No se pudo enviar la solicitud.' : r.error); return }
     setHecha({ ...datos, ...r.reserva, conNegocio: !!negocio, negocioId: negocio?.id })
+    evento('reserva_enviada', { tipo, personas: pers })
   }
 
   const volver = id.startsWith(LUGAR_NEGOCIO) ? null : `/lugares/${id}`
