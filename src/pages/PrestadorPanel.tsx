@@ -6,6 +6,8 @@ import { NOMBRE_MUNICIPIO, TIPOS_RESERVA, tipoReserva, useCatalogo } from '../da
 import type { TipoReserva } from '../data/lugares'
 import { cambiarEstado, cupoLibre, digitosWhatsapp, enlaceWhatsapp, fechaCorta, guardarCupoDia, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useMisNegocios, useOperacion, useReservasDeMisNegocios, useSesionLista, useUsuario } from '../state/reservas'
 import type { EstadoReserva, Negocio, Operacion, Reserva } from '../state/reservas'
+import { useMetricasPrestador, useOcupacion } from '../state/metricas'
+import type { OcupacionDia } from '../state/metricas'
 import { usePagina } from '../usePagina'
 import '../styles/prestador.css'
 
@@ -256,6 +258,7 @@ function Reservas() {
             <div className="pr-cifra"><strong>{confirmadasHoy}</strong><span>Confirmadas hoy</span></div>
             <div className="pr-cifra"><strong>{cupoLibre(op, negocio, hoyStr)}</strong><span>Cupo libre hoy</span></div>
           </div>
+          <MetricasNegocio negocio={negocio} reservas={reservas} />
           <CalendarioCupo op={op} negocio={negocio} />
           <div className="pr-filtros" role="group" aria-label="Filtrar por estado">
             {ESTADOS.map((e) => <Option key={e.id} selected={filtro === e.id} onClick={() => setFiltro(e.id)}>{e.etiqueta}</Option>)}
@@ -396,5 +399,84 @@ function FilaReserva({ r, lugar, onMover }: { r: Reserva; lugar: string; onMover
         ) : null
       })()}
     </li>
+  )
+}
+
+// ---------- Métricas: solicitudes por estado, ocupación de 30 días, tasa y tiempo de respuesta ----------
+const ESTADOS_RESUMEN: { id: EstadoReserva; plural: string }[] = [
+  { id: 'pendiente', plural: 'Pendientes' }, { id: 'confirmada', plural: 'Confirmadas' }, { id: 'rechazada', plural: 'Rechazadas' },
+  { id: 'cancelada', plural: 'Canceladas' }, { id: 'vencida', plural: 'Vencidas' },
+]
+function textoRespuesta(horas: number | null): string {
+  if (horas === null) return 'sin datos'
+  if (horas < 1) return `responde en ~${Math.max(1, Math.round(horas * 60))} min`
+  return `responde en ~${Math.round(horas)} h`
+}
+function MetricasNegocio({ negocio, reservas }: { negocio: Negocio; reservas: Reserva[] }) {
+  const ocupacion = useOcupacion(negocio.id)
+  const metricas = useMetricasPrestador()
+  const m = metricas.datos.find((x) => x.negocioId === negocio.id)
+  const cuenta = (e: EstadoReserva) => reservas.filter((r) => r.estado === e).length
+  return (
+    <div className="pr-metricas" role="group" aria-labelledby="h-metricas">
+      <h3 id="h-metricas" className="t-h3">Solicitudes y ocupación</h3>
+      <div className="pr-cifras pr-cifras-5" role="list" aria-label="Solicitudes por estado">
+        {ESTADOS_RESUMEN.map((e) => <div key={e.id} role="listitem" className="pr-cifra"><strong>{cuenta(e.id)}</strong><span>{e.plural}</span></div>)}
+      </div>
+      <div aria-live="polite">
+        {metricas.error && <p className="pr-error">{metricas.error}</p>}
+        {!metricas.error && (
+          <p className="pr-nota" role="status">
+            {metricas.cargando ? 'Calculando tu tasa de confirmación…' : <>
+              <strong>Tasa de confirmación:</strong> {m?.tasaConfirmacion != null ? `${Math.round(m.tasaConfirmacion * 100)} %` : 'sin datos'}
+              {' · '}<strong>Tiempo de respuesta:</strong> {textoRespuesta(m?.respuestaHoras ?? null)}
+            </>}
+          </p>
+        )}
+      </div>
+      {ocupacion.cargando ? <p className="pr-nota" role="status">Cargando la ocupación…</p>
+        : ocupacion.error ? <p className="pr-error" role="alert">{ocupacion.error}</p>
+        : ocupacion.datos.length === 0 ? <p className="pr-nota">Aún no hay datos de ocupación para este negocio.</p>
+        : <GraficoOcupacion dias={ocupacion.datos} nombre={negocio.nombre} />}
+    </div>
+  )
+}
+
+const BARRA = 22, SEP = 6, ALTO = 110, BASE = 20
+function GraficoOcupacion({ dias, nombre }: { dias: OcupacionDia[]; nombre: string }) {
+  const ancho = dias.length * (BARRA + SEP)
+  const frase = (d: OcupacionDia) =>
+    `${fechaCorta(d.fecha)}: ${d.cupo === 0 ? 'cerrado o sin cupo' : `${d.ocupado} de ${d.cupo} cupos ocupados${d.ocupado >= d.cupo ? ', lleno' : ''}`}`
+  const llenos = dias.filter((d) => d.cupo > 0 && d.ocupado >= d.cupo).length
+  const conReservas = dias.filter((d) => d.ocupado > 0).length
+  const resumen = `Ocupación de ${nombre} en los próximos ${dias.length} días: ${conReservas} ${conReservas === 1 ? 'día con reservas' : 'días con reservas'}, ${llenos} ${llenos === 1 ? 'día lleno' : 'días llenos'}.`
+  return (
+    <figure className="pr-grafico">
+      <figcaption className="pr-nota"><strong>Ocupación de los próximos {dias.length} días</strong> · alto de la barra = personas ocupadas / cupo del día</figcaption>
+      <div className="pr-grafico-scroll" tabIndex={0} role="region" aria-label="Gráfico de ocupación por día, desplazable">
+        <svg role="img" aria-label={resumen} width={ancho} height={ALTO + BASE} viewBox={`0 0 ${ancho} ${ALTO + BASE}`}>
+          {dias.map((d, i) => {
+            const x = i * (BARRA + SEP) + SEP / 2
+            const prop = d.cupo > 0 ? Math.min(1, d.ocupado / d.cupo) : 0
+            const lleno = d.cupo > 0 && d.ocupado >= d.cupo
+            return (
+              <g key={d.fecha}>
+                <title>{frase(d)}</title>
+                <rect x={x} y={0} width={BARRA} height={ALTO} rx={3} className={d.cupo === 0 ? 'pr-bar-cerrado' : 'pr-bar-pista'} />
+                {prop > 0 && <rect x={x} y={ALTO - ALTO * prop} width={BARRA} height={ALTO * prop} rx={3} className={lleno ? 'pr-bar-lleno' : 'pr-bar-ocupado'} />}
+                {d.cupo === 0 && <text x={x + BARRA / 2} y={ALTO / 2} className="pr-bar-x" textAnchor="middle">×</text>}
+                <text x={x + BARRA / 2} y={ALTO + 14} className="pr-bar-dia" textAnchor="middle">{Number(d.fecha.slice(8))}</text>
+              </g>
+            )
+          })}
+        </svg>
+      </div>
+      <p className="pr-nota pr-leyenda">Verde: ocupado · Naranja: lleno · × : cerrado o sin cupo. Desliza el gráfico para ver todos los días.</p>
+      <div className="sr-only"><table>
+        <caption>{resumen}</caption>
+        <thead><tr><th scope="col">Fecha</th><th scope="col">Ocupado</th><th scope="col">Cupo</th></tr></thead>
+        <tbody>{dias.map((d) => <tr key={d.fecha}><th scope="row">{fechaCorta(d.fecha)}</th><td>{d.ocupado}</td><td>{d.cupo}</td></tr>)}</tbody>
+      </table></div>
+    </figure>
   )
 }

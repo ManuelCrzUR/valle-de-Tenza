@@ -6,3 +6,19 @@
 .co-dias .vd-opt { min-width: 56px; justify-content: center; }
 .co-franjas { display: flex; flex-direction: column; gap: var(--space-3); border: 0; padding: 0; margin: 0; min-width: 0; }
 .co-franja { display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-md); }
+
+/* Demanda y operación */
+.co-bloque { gap: var(--space-3); }
+.co-bloque-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.co-bloque-cab .vd-btn { min-height: var(--touch-min); }
+.co-tabla-scroll { overflow-x: auto; max-width: 100%; }
+.co-tabla { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px; }
+.co-tabla th, .co-tabla td { text-align: left; padding: var(--space-2) var(--space-2); border-bottom: 1px solid var(--line); vertical-align: middle; }
+.co-tabla th { color: var(--ink-muted); font-weight: 700; font-size: 13px; }
+.co-celda-barra { display: flex; flex-direction: column; gap: 2px; min-width: 64px; }
+.co-barra { width: 100%; height: 8px; display: block; }
+.co-barra-pista { fill: var(--surface-sunken); }
+.co-barra-valor { fill: var(--secondary); }
+.co-fila-alerta td { background: var(--accent-soft); color: var(--on-accent-soft); font-weight: 700; }
+.co-inactivo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised); }
+.co-inactivo .vd-btn { min-height: var(--touch-min); }

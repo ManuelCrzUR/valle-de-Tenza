@@ -69,3 +69,19 @@
 .pr-cal-form h4::first-letter { text-transform: uppercase; }
 .pr-check { display: flex; align-items: center; gap: var(--space-3); min-height: 44px; font-weight: 600; }
 .pr-check input { width: 24px; height: 24px; flex: none; accent-color: var(--primary); }
+
+/* Métricas del prestador: gráfico SVG propio (scroll horizontal solo dentro del gráfico) */
+.pr-metricas { width: 100%; min-width: 0; max-width: 100%; display: flex; flex-direction: column; gap: var(--space-3); }
+.pr-cifras-5 { grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); }
+.pr-cifras-5 .pr-cifra strong { font-size: 24px; line-height: 30px; }
+.pr-grafico { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.pr-grafico-scroll { overflow-x: auto; max-width: 100%; padding-bottom: var(--space-2); border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-raised); padding: var(--space-3); }
+.pr-grafico-scroll:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.pr-grafico svg { display: block; max-width: none; }
+.pr-bar-pista { fill: var(--surface-sunken); stroke: var(--line-strong); stroke-width: 1; }
+.pr-bar-cerrado { fill: none; stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 3; }
+.pr-bar-ocupado { fill: var(--secondary); }
+.pr-bar-lleno { fill: var(--accent); stroke: var(--accent-text); stroke-width: 1; }
+.pr-bar-dia { fill: var(--ink-muted); font-size: 11px; }
+.pr-bar-x { fill: var(--ink-muted); font-size: 16px; }
+.pr-leyenda { font-size: 13px; color: var(--ink-muted); }
