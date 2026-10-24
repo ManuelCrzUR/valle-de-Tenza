@@ -24,7 +24,7 @@ npx supabase db reset && npx supabase test db   # migraciones + pruebas pgTAP
 | Ruta | Qué es |
 | --- | --- |
 | `src/pages/*.tsx` | Una pantalla por ruta, cargadas con `lazy` en `src/App.tsx` |
-| `src/state/demo.ts` | Almacén DEMO en `localStorage` (cuentas, negocios, reservas). Se reemplaza en la Fase 1 |
+| `src/state/reservas.ts` | Operación con Supabase: negocios, cupos, reservas, sesión (Realtime). Reemplazó a `demo.ts` en la Fase 1 |
 | `src/state/itinerario.tsx` | Contexto del itinerario elegido (plan, municipio, días, semilla) |
 | `src/data/lugares.ts` / `lugares.json` | Catálogo de lugares y municipios |
 | `src/data/generarPlan.ts` | Generador determinista de itinerarios |
