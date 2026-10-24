@@ -69,3 +69,11 @@
 .it-error { color: var(--accent-text); font-weight: 700; }
 .it-enlace-campo { width: 100%; }
 .it-enlace-campo .vd-input { width: 100%; }
+
+.it-presupuesto { display: grid; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.it-presupuesto h3 { margin: 0; }
+.it-presupuesto ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.it-presupuesto small { display: block; color: var(--ink-muted); overflow-wrap: anywhere; }
+.it-pres-fila { display: flex; justify-content: space-between; gap: var(--space-3); flex-wrap: wrap; }
+.it-pres-fila strong { overflow-wrap: anywhere; }
+.it-pres-total { margin: 0; overflow-wrap: anywhere; }

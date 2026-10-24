@@ -12,6 +12,7 @@ import { Atribucion } from '../components/Atribucion'
 import { AlertaIcono } from '../components/mapa/iconosAlerta'
 import { NOMBRE_TIPO_ALERTA, alertaEnFecha, dinero, duracionLarga, fechaDelDia, fechaVerificada, minutos, cargarTramos, useLogistica } from '../state/logistica'
 import type { Alerta, DiaClima, Tramo } from '../state/logistica'
+import { calcularPresupuesto, cop } from '../data/presupuesto'
 import { MAX_SALTO_M, DIAS_MAX, distanciasRuta, km, ordenRuta } from '../data/generarPlan'
 import type { Dia, PasoRuta } from '../data/generarPlan'
 import { cupoLibre, cupoVerificadoHoy, fechaCorta, hoy, negocioDeLugar, useOperacion } from '../state/reservas'
@@ -132,6 +133,16 @@ export default function Itinerario() {
   }
 
   const pasos = itinerario ? ordenRuta(itinerario) : []
+  const presupuesto = itinerario ? (() => {
+    const aBase = rutas.filter((r) => r.origen === 'bogota' && r.destino === itinerario.municipio)
+    const lista = aBase.length ? aBase : rutas.filter((r) => r.origen === 'bogota' && r.destino === 'guateque')
+    return calcularPresupuesto({
+      movilidad: eleccion?.movilidad, personas, dias: itinerario.dias.length,
+      transporte: { directa: aBase.length > 0, precios: lista.map((r) => r.precioDesdeCop) },
+      hospedaje: hosp ? { precio: negocioDeLugar(op.negocios, hosp.id)?.precioDesdeCop ?? null } : null,
+      comidas: itinerario.dias.flatMap((d) => d.comida ? [{ precio: negocioDeLugar(op.negocios, d.comida.id)?.precioDesdeCop ?? null }] : []),
+    })
+  })() : null
   const dist = distanciasRuta(pasos)
   const diasSel = eleccion?.dias ?? 2
   const resultadoRef = useRef<HTMLDivElement>(null)
@@ -315,6 +326,25 @@ export default function Itinerario() {
               </div>
             ))}
             {!hosp && pasos.length > 0 && <p className="it-aviso">No encontramos alojamiento registrado cerca de esta ruta.</p>}
+            {presupuesto && (
+              <section className="it-presupuesto" aria-label="Presupuesto estimado">
+                <h3 className="t-h3">Presupuesto estimado</h3>
+                <ul>
+                  {presupuesto.lineas.map((l) => (
+                    <li key={l.concepto}>
+                      <div className="it-pres-fila"><span>{l.concepto}</span><strong>{l.valor !== null ? cop(l.valor) : l.nota.startsWith('Gasolina') || l.nota.startsWith('Elige') ? '—' : 'sin precio publicado'}</strong></div>
+                      <small>{l.nota}</small>
+                    </li>
+                  ))}
+                </ul>
+                <p className="it-pres-total">
+                  {presupuesto.total > 0
+                    ? <>{presupuesto.faltantes.length ? 'Desde ' : 'Total: desde '}<strong>{cop(presupuesto.total)}</strong>{presupuesto.faltantes.length > 0 && <>, sin contar: {presupuesto.faltantes.join(', ')}</>}</>
+                    : <>Todavía no hay precios publicados para calcular un total{presupuesto.faltantes.length > 0 && <>: falta {presupuesto.faltantes.join(', ')}</>}.</>}
+                </p>
+                <small>Son precios «desde» publicados por transportadores y negocios; no incluyen extras ni imprevistos.</small>
+              </section>
+            )}
             <Atribucion />
             <p className="embajador"><Icon name="embajador" size={24} />
               <span><strong>Tu embajador.</strong> Red de confianza del Valle de Tenza en {config.ciudadEmbajadores}.</span></p>
