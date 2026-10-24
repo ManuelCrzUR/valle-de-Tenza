@@ -15,6 +15,7 @@ const MisReservas = lazy(() => import('./pages/MisReservas'))
 const PrestadorAcceso = lazy(() => import('./pages/PrestadorAcceso'))
 const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
 const Galeria = lazy(() => import('./pages/Galeria'))
+const Privacidad = lazy(() => import('./pages/Privacidad'))
 const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="prestadores/panel" element={<PrestadorPanel />} />
         <Route path="reservar/:id" element={<Reservar />} />
         <Route path="reservas" element={<MisReservas />} />
+        <Route path="privacidad" element={<Privacidad />} />
         <Route path="*" element={<NoEncontrado />} />
       </Route>
     </Routes>

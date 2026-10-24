@@ -59,6 +59,12 @@ export default function Inicio() {
         <Chip tone="strong" icon="cupo-verificado">Cupo verificado hoy</Chip>
         <p className="t-h2">Todo lo que ves en la app es cierto ese día. La plata del viaje se queda en los negocios del Valle.</p>
       </section>
+
+      <section className="wrap seccion seccion-prest">
+        <h2 className="t-h2">¿Tienes un hospedaje, restaurante o guías en el Valle?</h2>
+        <p className="sub">Recibe solicitudes de reserva directas de viajeros, sin intermediarios externos.</p>
+        <LinkButton to="/prestadores" variant="secondary">Conoce Valle Directo para prestadores</LinkButton>
+      </section>
     </>
   )
 }

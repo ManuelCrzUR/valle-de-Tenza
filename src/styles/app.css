@@ -31,8 +31,6 @@ main { flex: 1; }
 .appbar { position: sticky; top: 0; z-index: 10; background: var(--surface); border-bottom: 1px solid var(--line); }
 .appbar-in { height: var(--appbar-height); display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); }
 .appbar-logo { display: inline-flex; border-radius: var(--radius-md); text-decoration: none; }
-.appbar-prest { font-weight: 700; font-size: 15px; color: var(--secondary); padding: 12px 4px; text-decoration: none; }
-.appbar-prest:hover { text-decoration: underline; }
 .topnav { display: none; }
 .topnav a { font-weight: 700; font-size: 16px; color: var(--ink-muted); text-decoration: none; padding: 8px 2px; border-bottom: 3px solid transparent; }
 .topnav a:hover { color: var(--heading); }
@@ -48,7 +46,14 @@ main { flex: 1; }
 .footer-datos { display: grid; gap: var(--space-4); }
 .footer-datos dt { font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #e0902f; }
 .footer-datos dd { margin-top: 2px; }
+.footer-nav { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+.footer-nav a { display: inline-flex; align-items: center; min-height: var(--touch-min); font-weight: 700; color: #f6f3ec; text-decoration: underline; text-underline-offset: 3px; }
+.footer-nav a:hover { color: #e0902f; }
 .footer-nota { font-size: 14px; color: #a2b9af; }
+
+/* Inicio: invitación a prestadores al final de la portada */
+.seccion-prest { padding-bottom: var(--space-7); align-items: flex-start; }
+.seccion-prest .sub { max-width: 52ch; }
 
 /* Páginas */
 .pagina { padding-block: var(--space-6) 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-3); }
@@ -120,7 +125,7 @@ main { flex: 1; }
 @media (min-width: 1024px) {
   html { scroll-padding-bottom: 0; }
   .shell { padding-bottom: 0; }
-  .tabbar-fixed, .appbar-prest { display: none; }
+  .tabbar-fixed { display: none; }
   .topnav { display: flex; align-items: center; gap: var(--space-5); }
   .hero { grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); align-items: center; gap: var(--space-7); padding-block: var(--space-7); }
   .hero-arte { --bleed: clamp(var(--space-6), calc((100vw - var(--content-max)) / 2 + var(--space-6)), 160px); aspect-ratio: auto; height: clamp(380px, 36vw, 500px); border-radius: var(--radius-xl) 0 0 var(--radius-xl); width: calc(100% + var(--bleed)); max-width: none; margin-right: calc(-1 * var(--bleed)); }

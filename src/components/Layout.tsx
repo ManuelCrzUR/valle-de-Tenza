@@ -31,9 +31,7 @@ export function Layout() {
           <nav className="topnav" aria-label="Principal">
             {NAV.map((n) => <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
             <NavLink to="/galeria">Galería</NavLink>
-            <NavLink to={prest.to}>{prest.texto}</NavLink>
           </nav>
-          <Link to={prest.to} className="appbar-prest">{prest.texto}</Link>
         </div>
       </header>
 
@@ -49,6 +47,10 @@ export function Layout() {
             <div><dt>Horario de embajadores</dt><dd>{config.horario}</dd></div>
             <div><dt>Redes</dt><dd>{config.redes}</dd></div>
           </dl>
+          <nav className="footer-nav" aria-label="Pie de página">
+            <Link to={prest.to}>{prest.texto}</Link>
+            <Link to="/privacidad">Privacidad</Link>
+          </nav>
           <p className="footer-nota">Hecho en el Valle de Tenza, Boyacá.</p>
         </div>
       </footer>
