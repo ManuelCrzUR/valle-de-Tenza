@@ -10,8 +10,10 @@ import type { TipoReserva } from '../data/lugares'
 import { useOperacion, crearReserva, cupoLibre, enlaceWhatsapp, negocioDeLugar, whatsappDeNegocio, LUGAR_NEGOCIO, hoy } from '../state/reservas'
 import type { EstadoReserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
+import { useOnline } from '../state/offline'
 import NoEncontrado from './NoEncontrado'
 import '../styles/reservas.css'
+import '../styles/offline.css'
 
 export const fechaLarga = (f: string) =>
   new Date(`${f}T00:00:00`).toLocaleDateString('es-CO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })
@@ -22,6 +24,7 @@ const VACIOS: Campos = { fecha: '', hora: '', noches: '1', personas: '2', nombre
 export default function Reservar() {
   const { id } = useParams()
   const demo = useOperacion()
+  const enLinea = useOnline()
   const lugar = id?.startsWith(LUGAR_NEGOCIO) ? undefined : getLugar(id)
   const negocioPropio = id?.startsWith(LUGAR_NEGOCIO) ? demo.negocios.find((n) => n.lugarId === id) : undefined
   const info = lugar
@@ -136,6 +139,7 @@ export default function Reservar() {
       <h1 id="titulo" tabIndex={-1} className="t-h1">Reservar en {info.nombre}</h1>
       <p className="sub">Envía tu solicitud. No se confirma al instante: queda pendiente hasta que se gestione.</p>
       <div aria-live="polite">{demo.sinConexion && <p className="res-aviso"><Icon name="alerta" size={20} />Sin conexión: por ahora no se pueden hacer reservas.</p>}</div>
+      <div aria-live="polite">{!enLinea && <p className="res-offline">Sin conexión: no se puede enviar la solicitud ahora. El botón se activa cuando vuelva la señal.</p>}</div>
       <form className="res-form" onSubmit={enviar} noValidate>
         <div className="res-fila">
           <TextField label={tipo === 'hotel' ? 'Fecha de llegada' : 'Fecha'} type="date" min={hoy()} value={v.fecha} onChange={set('fecha')} error={errores.fecha} required />
@@ -153,7 +157,7 @@ export default function Reservar() {
         <p className="res-privacidad">Guardamos tu nombre, teléfono y los datos de la solicitud solo para gestionar tu reserva. Solo los ve el negocio y el equipo de Valle Directo, y se borran a los 12 meses. <Link to="/privacidad" target="_blank" rel="noopener">Aviso de privacidad</Link></p>
         <div aria-live="assertive">{errorGeneral && <p className="res-error"><Icon name="alerta" size={18} />{errorGeneral}</p>}</div>
         <div className="res-acciones">
-          <Button type="submit" variant="cta" disabled={enviando || demo.sinConexion}>{enviando ? 'Enviando…' : 'Enviar solicitud'}</Button>
+          <Button type="submit" variant="cta" disabled={enviando || demo.sinConexion || !enLinea}>{enviando ? 'Enviando…' : 'Enviar solicitud'}</Button>
           {volver && <LinkButton to={volver} variant="ghost">Cancelar</LinkButton>}
         </div>
       </form>

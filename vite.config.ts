@@ -2,6 +2,7 @@ import { loadEnv } from 'vite'
 import { defineConfig } from 'vitest/config'
 import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // En desarrollo sirve /api/chat con la misma función que usa Vercel (lee .env.local).
 function apiDev(): Plugin {
@@ -29,6 +30,24 @@ function apiDev(): Plugin {
 
 export default defineConfig({
   base: '/',
-  plugins: [react(), apiDev()],
+  plugins: [
+    react(),
+    apiDev(),
+    // Offline: sw/sw.js (precache del shell y fuentes, caché de fotos y catálogo). Usa el public/manifest.webmanifest existente.
+    // Las páginas prerenderizadas y las fotos NO se precachean. Se registra desde AvisoVersion (virtual:pwa-register/react).
+    VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'sw',
+      filename: 'sw.js',
+      registerType: 'prompt',
+      injectRegister: false,
+      manifest: false,
+      injectManifest: {
+        globPatterns: ['index.html', 'assets/**/*.{js,css}', 'fonts/*.woff2'],
+        globIgnores: ['**/fotos/**', '**/lugares/**', '**/municipios/**'],
+        maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
+      },
+    }),
+  ],
   test: { exclude: ['tests/e2e/**', 'node_modules/**', 'dist/**'] },
 })

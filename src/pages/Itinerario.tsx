@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Car, Bus, CalendarDays, CloudRain, Copy, Share2, MessageCircle } from 'lucide-react'
+import { Car, Bus, CalendarDays, CloudRain, Copy, Share2, MessageCircle, Download } from 'lucide-react'
 import { Option, PlaceCard, Button, TextField } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Foto } from '../components/Foto'
@@ -19,10 +19,14 @@ import { eventosEntre, useEventos } from '../state/contenido'
 import type { Evento } from '../state/contenido'
 import { compartirItinerario, registrarDemanda } from '../state/compartir'
 import { config } from '../config'
+import { claveEleccion as claveRuta, guardarParaSinSenal, planGuardado, useOnline, useRutaGuardada } from '../state/offline'
+import type { Progreso } from '../state/offline'
+import { MAX_TESELAS } from '../lib/teselas'
 import { Icon } from '../components/Icon'
 import { usePagina } from '../usePagina'
 import '../styles/itinerario.css'
 import '../styles/como-llegar.css'
+import '../styles/offline.css'
 
 const sitio = (l: Lugar) => `${CATEGORIA_POR_ID[l.categoria]?.singular ?? l.categoria} · ${NOMBRE_MUNICIPIO[l.municipio] ?? l.municipio}`
 
@@ -185,6 +189,25 @@ export default function Itinerario() {
   }
   const etiquetaCarretera = itinerario && itinerario.segundosCarretera > 0 ? `${itinerario.aprox ? '~' : ''}${duracionLarga(Math.max(1, Math.round(itinerario.segundosCarretera / 60)))}${itinerario.aprox ? ' (aprox.)' : ''}` : 'Sin recorridos largos'
   const estadoHospedaje = itinerario?.avisoHospedaje ?? (hosp && tone === 'strong' ? 'Hospedaje con cupo' : 'Cupo por confirmar')
+  // Guardar para ver sin señal: itinerario + teselas OSM de la caja de la ruta (z12–15, máximo MAX_TESELAS).
+  const enLinea = useOnline()
+  const guardada = useRutaGuardada()
+  const [guardando, setGuardando] = useState<Progreso | null>(null)
+  const [estadoGuardado, setEstadoGuardado] = useState('')
+  const cuantas = itinerario && eleccion ? planGuardado(itinerario).total : 0
+  const guardadaAqui = !!(guardada && eleccion && guardada.clave === claveRuta(eleccion))
+  const guardar = async () => {
+    if (!itinerario || !eleccion) return
+    setEstadoGuardado(''); setGuardando({ hechas: 0, total: cuantas })
+    const r = await guardarParaSinSenal(itinerario, eleccion, setGuardando)
+    setGuardando(null)
+    setEstadoGuardado(r.ok
+      ? `Listo: guardamos tu ruta y ${r.teselas} teselas del mapa${r.fallidas ? ` (${r.fallidas} no se pudieron bajar)` : ''}. Ya la puedes ver sin señal.`
+      : r.motivo === 'grande' ? 'La zona es muy grande para guardarla sin señal.'
+        : r.motivo === 'sinUbicacion' ? 'Esta ruta no tiene lugares con ubicación para guardar el mapa.'
+          : r.motivo === 'sinCache' ? 'Tu navegador no permite guardar datos sin señal.'
+            : 'No pudimos guardar la ruta. Revisa tu conexión e inténtalo de nuevo.')
+  }
   const idsRuta = pasos.map((p) => p.lugar.id).join(',')
   useEffect(() => { if (idsRuta) cargarTramos(idsRuta.split(',')) }, [idsRuta])
 
@@ -308,6 +331,18 @@ export default function Itinerario() {
                 <div className="it-enlace-campo"><TextField label="Enlace para compartir" readOnly value={enlace.url} onFocus={(e) => e.currentTarget.select()} /></div>
               )}
             </div>
+            <section className="it-offline" aria-label="Ver sin señal">
+              <Button variant="secondary" disabled={!enLinea || !!guardando || !pasos.length || cuantas > MAX_TESELAS} onClick={() => void guardar()}>
+                <Download size={20} aria-hidden /> {guardadaAqui ? 'Actualizar lo guardado sin señal' : 'Guardar para ver sin señal'}
+              </Button>
+              {guardando && <><progress max={guardando.total} value={guardando.hechas} aria-label="Guardando el mapa" /><p>Guardando el mapa de la ruta: {guardando.hechas} de {guardando.total}…</p></>}
+              <div aria-live="polite">
+                {estadoGuardado && <p>{estadoGuardado}</p>}
+                {!estadoGuardado && cuantas > MAX_TESELAS && <p>La zona es muy grande para guardarla sin señal.</p>}
+                {!estadoGuardado && cuantas <= MAX_TESELAS && !guardando && !enLinea && <p>Necesitas conexión para guardar la ruta.</p>}
+                {!estadoGuardado && !guardando && guardadaAqui && guardada && <p>Guardada el {new Date(guardada.guardadaEn).toLocaleDateString('es-CO', { day: 'numeric', month: 'long' })}. Los cupos y avisos se actualizan cuando vuelva la señal.</p>}
+              </div>
+            </section>
             <div className="it-pie">
               <LinkButton to="/mapa?vista=ruta" variant="cta" icon="mapa">Ver mi ruta en el mapa</LinkButton>
               <LinkButton to="/reservas" variant="secondary">Mis reservas</LinkButton>

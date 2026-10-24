@@ -5,7 +5,8 @@ import { cargarTramos, useLogistica } from './logistica'
 import { useCatalogo } from '../data/lugares'
 import { DIAS_MAX, construirItinerario, costoEntre, generarPlan } from '../data/generarPlan'
 import type { DepsPlan, Itinerario, RutaPersonal } from '../data/generarPlan'
-import { MUNICIPIOS, metros, tieneUbicacion } from '../data/lugares'
+import { MUNICIPIOS, getLugar, metros, tieneUbicacion } from '../data/lugares'
+import { claveEleccion, restaurarGuardada, useOnline, useRutaGuardada } from './offline'
 import type { Lugar } from '../data/lugares'
 import { getPlan } from '../data/planes'
 import type { Categoria } from '../data/planes'
@@ -87,11 +88,19 @@ export function ItinerarioProvider({ children }: { children: ReactNode }) {
       rutasPublicas: rutas.map((r) => ({ origen: r.origen, destino: r.destino })),
     }
   }, [lugares, negocios, cupos, ocupacion, rutas, tramoEntre])
+  const enLinea = useOnline()
+  const guardada = useRutaGuardada()
+  useEffect(() => { void restaurarGuardada() }, [])
   const itinerario = useMemo(() => {
     if (!e) return undefined
+    // Sin señal y con esta misma ruta guardada: se muestra tal como se guardó (sin cupos ni tiempos reales que ya no llegan).
+    if (!enLinea && guardada && guardada.clave === claveEleccion(e)) {
+      const it = construirItinerario(guardada.ruta, deps.costo)
+      if (it) { it.dias.forEach((d) => { d.opcional = (guardada.opcional[d.n - 1] ?? []).map(getLugar).filter((l): l is Lugar => !!l) }); return it }
+    }
     if (e.ruta) return construirItinerario(e.ruta, deps.costo)
     return generarPlan(e.planId, e.municipio, e.semilla, e.dias, { ...deps, fecha: e.fecha, personas: e.personas, movilidad: e.movilidad })
-  }, [e, deps])
+  }, [e, deps, enLinea, guardada])
   // Pide los tiempos reales del municipio base (o de las paradas de la ruta armada); la caché de `cargarTramos` evita repetir.
   const claveTramos = e && itinerario ? (e.ruta ? `ruta|${itinerario.paradas.map((l) => l.id).join(',')}` : `${e.planId}|${itinerario.municipio}`) : ''
   useEffect(() => {

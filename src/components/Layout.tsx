@@ -4,6 +4,8 @@ import { TabBar } from './ui'
 import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
+import { AvisoVersion } from './AvisoVersion'
+import { EstadoConexion } from './EstadoConexion'
 import { useAjustes } from '../state/ajustes'
 import { useUsuario } from '../state/reservas'
 
@@ -36,6 +38,8 @@ export function Layout() {
           </nav>
         </div>
       </header>
+      <EstadoConexion />
+      <AvisoVersion />
 
       <main id="contenido" tabIndex={-1}>
         <div key={pathname} className="ruta-entra"><Suspense fallback={<Cargando />}><Outlet /></Suspense></div>
