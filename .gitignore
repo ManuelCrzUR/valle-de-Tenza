@@ -9,3 +9,9 @@ scraper/.venv/
 scraper/cache/
 scraper/salida/
 __pycache__/
+
+# supabase
+supabase/.env
+.env
+supabase/.temp/
+supabase/.branches/
