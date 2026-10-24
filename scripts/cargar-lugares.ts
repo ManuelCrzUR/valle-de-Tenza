@@ -48,3 +48,19 @@ async function subir(tabla: string, filas: object[], conflicto: string) {
 
 await subir('municipios', municipios, 'slug')
 await subir('lugares', lugares, 'id')
+
+// Oculta (nunca vuelve a mostrar) los lugares que ya no están en el JSON, p. ej. duplicados descartados por el scraper.
+const idsJson = new Set<string>(lugares.map((l: { id: string }) => l.id))
+const visibles: string[] = []
+for (let desde = 0; ; desde += 1000) {
+  const { data, error } = await supabase.from('lugares').select('id').eq('visible', true).range(desde, desde + 999)
+  if (error) throw new Error(`lugares: ${error.message}`)
+  visibles.push(...data.map((f) => f.id))
+  if (data.length < 1000) break
+}
+const sobrantes = visibles.filter((id) => !idsJson.has(id))
+for (let i = 0; i < sobrantes.length; i += TAMANO_LOTE) {
+  const { error } = await supabase.from('lugares').update({ visible: false }).in('id', sobrantes.slice(i, i + TAMANO_LOTE))
+  if (error) throw new Error(`lugares (ocultar): ${error.message}`)
+}
+console.log(`lugares: ${sobrantes.length} ocultados (ya no están en el JSON)`)

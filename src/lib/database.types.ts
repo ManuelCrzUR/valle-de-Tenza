@@ -23,7 +23,21 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "alertas_via": {
+            "ajustes": {
+                  Row: {
+                    "actualizado": string,"clave": string,"valor": NonNullable<Json>
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "actualizado"?: string,"clave": string,"valor": NonNullable<Json>
+                  }
+                  Update: {
+                    "actualizado"?: string,"clave"?: string,"valor"?: NonNullable<Json>
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"alertas_via": {
                   Row: {
                     "creada_por": string | null,"desde": string,"fuente": string | null,"hasta": string | null,"id": string,"mensaje": string,"municipio": string | null,"tipo": Database["public"]['Enums']["tipo_alerta"],"tramo_desde": string | null,"tramo_hasta": string | null
                   }
@@ -93,6 +107,26 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "negocios_publicos"
       referencedColumns: ["id"]
+    }
+                  ]
+                },"embajadores": {
+                  Row: {
+                    "activo": boolean,"creado": string,"horario": NonNullable<Json>,"id": string,"municipio": string,"nombre": string,"whatsapp": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "activo"?: boolean,"creado"?: string,"horario"?: NonNullable<Json>,"id"?: string,"municipio": string,"nombre": string,"whatsapp": string
+                  }
+                  Update: {
+                    "activo"?: boolean,"creado"?: string,"horario"?: NonNullable<Json>,"id"?: string,"municipio"?: string,"nombre"?: string,"whatsapp"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "embajadores_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
     }
                   ]
                 },"eventos": {
@@ -343,6 +377,22 @@ isOneToOne: false
 "cupo_libre":
 { Args: { "fecha": string,"negocio": string }; Returns: number
                            },
+"embajadores_disponibles":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "activo": boolean,
+"creado": string,
+"horario": NonNullable<Json>,
+"id": string,
+"municipio": string,
+"nombre": string,
+"whatsapp": string
+            }[]
+                          SetofOptions: {
+        from: "*"
+        to: "embajadores"
+        isOneToOne: false
+        isSetofReturn: true
+      } },
 "es_coordinador":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
