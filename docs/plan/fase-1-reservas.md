@@ -35,32 +35,32 @@ vuelve cierta la promesa «Cupo verificado hoy».
 
 ## Front
 
-- [ ] `src/state/reservas.ts` reemplaza `demo.ts` **conservando los nombres exportados** que usan las páginas
+- [x] `src/state/reservas.ts` reemplaza `demo.ts` **conservando los nombres exportados** que usan las páginas
   (`useUsuario`, `salir`, `guardarNegocio`, `quitarNegocio`, `negocioDeLugar`, `cupoLibre`, `crearReserva`,
   `cambiarEstado`, `useMisReservas`, `hoy`, `LUGAR_NEGOCIO`, tipos `Negocio`, `Reserva`, `EstadoReserva`).
   Diferencia clave: las mutaciones pasan a ser `async` y devuelven `Promise<Resultado>`; actualizar cada llamada en
   `Reservar.tsx`, `MisReservas.tsx`, `PrestadorPanel.tsx`, `PrestadorAcceso.tsx`, `Itinerario.tsx`, `Lugares.tsx`,
   `LugarDetalle.tsx`, `Layout.tsx`, `Chat.tsx`, `Prestadores.tsx` y `src/data/asistente.ts`. Estados de carga y error visibles.
   `useDemo()` se reemplaza por `useOperacion()` (negocios públicos + cupos de los próximos 30 días), suscrito a Realtime.
-- [ ] **Acceso de prestadores:** `PrestadorAcceso.tsx` con enlace mágico por correo (Supabase Auth). Quitar el aviso de
+- [x] **Acceso de prestadores:** `PrestadorAcceso.tsx` con enlace mágico por correo (Supabase Auth). Quitar el aviso de
   «Modo demostración» y el campo de contraseña.
-- [ ] **Panel del prestador** (`PrestadorPanel.tsx`): cupo diario por defecto, calendario de 30 días para cerrar o
+- [x] **Panel del prestador** (`PrestadorPanel.tsx`): cupo diario por defecto, calendario de 30 días para cerrar o
   cambiar el cupo de una fecha, lista de solicitudes por estado con Confirmar / Rechazar, aviso en vivo de solicitudes
   nuevas (Realtime sobre `reservas` filtrado por sus negocios). Cada vez que guarda cupo se actualiza `cupo_actualizado`.
-- [ ] **WhatsApp sin API:** al crear una reserva, botón «Avisar al negocio por WhatsApp» (`https://wa.me/<num>?text=`)
+- [x] **WhatsApp sin API:** al crear una reserva, botón «Avisar al negocio por WhatsApp» (`https://wa.me/<num>?text=`)
   con el mensaje armado (lugar, fecha, personas, código). En el panel, al confirmar o rechazar, botón «Avisar al
   viajero». El número del negocio solo lo arma una función de servidor (`rpc`) para no exponerlo en vistas públicas.
-- [ ] **Mis reservas:** `/reservas` muestra las de este navegador (códigos guardados en `localStorage`) y un formulario
+- [x] **Mis reservas:** `/reservas` muestra las de este navegador (códigos guardados en `localStorage`) y un formulario
   «Buscar mi reserva» con código + teléfono.
-- [ ] **Etiqueta de cupo honesta:** «Cupo verificado hoy» solo si `cupo_actualizado` tiene menos de 24 h; si no,
+- [x] **Etiqueta de cupo honesta:** «Cupo verificado hoy» solo si `cupo_actualizado` tiene menos de 24 h; si no,
   «Cupo por confirmar». Revisar el texto de la portada («Todo lo que ves en la app es cierto ese día») para que coincida.
-- [ ] **UX del itinerario — fecha y personas:** en `Itinerario.tsx` agregar «¿Cuándo vas?» (fecha de llegada,
+- [x] **UX del itinerario — fecha y personas:** en `Itinerario.tsx` agregar «¿Cuándo vas?» (fecha de llegada,
   por defecto el próximo sábado) y «¿Cuántos van?» (1–12). Guardarlos en `ItinerarioProvider`. Con ellos el hospedaje
   sugerido muestra cupo real para esa fecha, y «Reservar» llega con fecha y personas ya llenas.
-- [ ] **UX — «Soy prestador»:** sacarlo del encabezado y llevarlo al pie de página y al final de la portada.
-- [ ] **Aviso de privacidad** breve en el formulario de reserva (qué se guarda, quién lo ve, borrado a los 12 meses)
+- [x] **UX — «Soy prestador»:** sacarlo del encabezado y llevarlo al pie de página y al final de la portada.
+- [x] **Aviso de privacidad** breve en el formulario de reserva (qué se guarda, quién lo ve, borrado a los 12 meses)
   y página `/privacidad`.
-- [ ] Borrar `src/state/demo.ts` cuando ya no lo importe nadie.
+- [x] Borrar `src/state/demo.ts` cuando ya no lo importe nadie.
 
 ## Prueba de cierre
 
@@ -82,3 +82,19 @@ con bloqueo de fila; ningún dato de contacto en vistas públicas; prueba cada p
 Al terminar corre build, test, supabase test db y la prueba Playwright, marca el checklist y dime qué configurar
 en Supabase Auth (URL de redirección, plantilla del correo en español).
 ```
+
+## Estado del cierre (local)
+
+- [x] 1. `npm run e2e`: el prestador entra por enlace mágico y ve la solicitud del viajero (375 px) sin recargar en < 5 s.
+- [x] 2. pgTAP de concurrencia en verde (57 pruebas en total); verificado además con dos sesiones reales.
+- [x] 3. Un navegador limpio encuentra la reserva con código + teléfono.
+- [x] 4. `grep -r "state/demo" src` vacío.
+
+Riesgos aceptados para el MVP (revisión de seguridad): fuerza bruta de `mi_reserva` (mitigar con límite por IP en
+Vercel), reservas falsas que llenan cupo (vencen a las 48 h), un prestador puede reclamar un lugar del mapa (el
+coordinador lo verifica o libera desde `/coordinador`, Fase 2). El coordinador lee contactos de todas las reservas,
+como pide esta fase; alinear con la regla de `CLAUDE.md`.
+
+**Pendiente del usuario:** en Supabase Auth de producción, `site_url` = dominio de Vercel, URLs de redirección y
+la plantilla `supabase/templates/enlace-magico.html` (el `config.toml` solo aplica en local). Confirmar que
+`pg_cron` esté habilitado antes de `supabase db push`.

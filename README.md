@@ -66,7 +66,17 @@ scraper/.venv/bin/python scraper/probar.py                      # pruebas sin re
 
 ```
 npm run test      # vitest (generador de itinerarios)
+npm run e2e       # Playwright: prueba de cierre de la Fase 1 (reservas de punta a punta)
 ```
+
+La prueba e2e necesita Supabase local en marcha (`npx supabase start`, con el seed). Las variables salen de `npx supabase status -o env`:
+
+```
+eval "$(npx supabase status -o env | grep -E '^(API_URL|ANON_KEY|SERVICE_ROLE_KEY|MAILPIT_URL|INBUCKET_URL)=')"
+VITE_SUPABASE_URL=$API_URL VITE_SUPABASE_ANON_KEY=$ANON_KEY npm run e2e
+```
+
+Levanta Vite en el puerto 5186 (o reutiliza uno ya abierto con las mismas variables), entra como `prestador@prueba.local` con el enlace leído de Mailpit y borra con la `service_role` las reservas que crea.
 
 ## Base de datos (Supabase)
 

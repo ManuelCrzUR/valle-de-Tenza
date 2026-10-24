@@ -15,3 +15,7 @@ supabase/.env
 .env
 supabase/.temp/
 supabase/.branches/
+
+# playwright
+test-results/
+playwright-report/

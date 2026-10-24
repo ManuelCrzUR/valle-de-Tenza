@@ -1,4 +1,5 @@
-import { defineConfig, loadEnv } from 'vite'
+import { loadEnv } from 'vite'
+import { defineConfig } from 'vitest/config'
 import type { Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -30,4 +31,5 @@ function apiDev(): Plugin {
 export default defineConfig({
   base: './',
   plugins: [react(), apiDev()],
+  test: { exclude: ['tests/e2e/**', 'node_modules/**', 'dist/**'] },
 })
