@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { Foto } from '../components/Foto'
 import { LinkButton } from '../components/LinkButton'
 import { useUsuario } from '../state/reservas'
-import { config } from '../config'
+import { useAjustes } from '../state/ajustes'
 import '../styles/prestador.css'
 import { usePagina } from '../usePagina'
 
@@ -14,6 +14,7 @@ const BENEFICIOS = [
 
 export default function Prestadores() {
   usePagina('Para prestadores y emprendedores')
+  const { contacto } = useAjustes()
   const usuario = useUsuario()
   return (
     <div className="wrap pagina">
@@ -25,7 +26,7 @@ export default function Prestadores() {
         </dl>
         <aside className="panel prest-aside">
           <Foto n={14} className="prest-arte" />
-          <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{config.contacto}</strong>.</p>
+          {contacto && <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{contacto}</strong>.</p>}
         </aside>
       </div>
       <p className="sub">Recibe solicitudes de reserva con cuatro módulos: restaurante, caminata, actividad y hotel.</p>

@@ -11,6 +11,7 @@ import { useItinerario } from '../state/itinerario'
 import { useOperacion } from '../state/reservas'
 import { preguntar, ChatError } from '../chatApi'
 import { config } from '../config'
+import { useAjustes } from '../state/ajustes'
 import { usePagina } from '../usePagina'
 import '../styles/chat-asistente.css'
 
@@ -21,6 +22,8 @@ const MSG_LIMITE = 'Has enviado muchos mensajes seguidos. Espera unos minutos o 
 
 export default function Chat() {
   usePagina('Chatbot y embajador')
+  const { horario, contacto } = useAjustes()
+  const textoEmbajador = ['Un embajador del Valle te atiende', horario && ` en horario de oficina: ${horario}`, '.', contacto && ` Contacto: ${contacto}.`].filter(Boolean).join('')
   const [msgs, setMsgs] = useState<Msg[]>([
     { from: 'bot', text: 'Hola, soy el asistente de Valle Directo. Conozco los lugares reales del Valle de Tenza: puedo armarte una ruta por días, sugerirte qué hay cerca de un municipio o de un sitio, y llevarte a reservar. Escribe lo que necesitas o toca una sugerencia.' },
   ])
@@ -67,7 +70,7 @@ export default function Chat() {
   return (
     <div className="wrap pagina">
       <h1 id="titulo" tabIndex={-1} className="t-h1">Chatbot y embajador</h1>
-      <p className="sub">Dudas rápidas con el chatbot a cualquier hora, o habla con una persona del Valle en horario de oficina: {config.horario}.</p>
+      <p className="sub">Dudas rápidas con el chatbot a cualquier hora, o habla con una persona del Valle{horario ? ` en horario de oficina: ${horario}` : ''}.</p>
       <div className="chat-layout">
         <div className="chat">
           <div className="chat-log" ref={log} role="log" aria-live="polite" aria-label="Conversación" aria-busy={pensando}>
@@ -119,9 +122,9 @@ export default function Chat() {
         <aside className="panel chat-aside">
           <Icon name="embajador" size={32} />
           <h2 className="t-h3">Habla con una persona</h2>
-          <p>Un embajador del Valle te atiende en horario de oficina: {config.horario}.</p>
-          <p>Contacto: {config.contacto}</p>
-          <Button variant="secondary" icon="embajador" onClick={() => add({ from: 'ambassador', text: `Un embajador del Valle te atiende en horario de oficina: ${config.horario}. Contacto: ${config.contacto}.` })}>
+          <p>Un embajador del Valle te atiende{horario ? ` en horario de oficina: ${horario}` : ''}.</p>
+          {contacto && <p>Contacto: {contacto}</p>}
+          <Button variant="secondary" icon="embajador" onClick={() => add({ from: 'ambassador', text: textoEmbajador })}>
             Hablar con un embajador
           </Button>
         </aside>

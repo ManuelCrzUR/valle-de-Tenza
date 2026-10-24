@@ -1,4 +1,5 @@
-// Datos de contacto en un solo lugar. Reemplaza los valores [ENTRE CORCHETES] cuando los tengas.
+// Respaldo de contacto, horario y redes. Los valores reales viven en la tabla `ajustes` (Supabase) y se leen con
+// `useAjustes()` (src/state/ajustes.ts). Un valor que empiece con '[' es un marcador: nunca se muestra.
 export const config = {
   horario: '[HORARIO]',
   contacto: '[CONTACTO]',

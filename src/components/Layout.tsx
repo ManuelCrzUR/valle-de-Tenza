@@ -4,7 +4,7 @@ import { TabBar } from './ui'
 import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
-import { config } from '../config'
+import { useAjustes } from '../state/ajustes'
 import { useUsuario } from '../state/reservas'
 
 const NAV: TabBarItem[] = [
@@ -16,6 +16,7 @@ const NAV: TabBarItem[] = [
 const base = import.meta.env.BASE_URL
 
 export function Layout() {
+  const ajustes = useAjustes()
   const { pathname } = useLocation()
   const go = useNavigate()
   const usuario = useUsuario()
@@ -44,9 +45,13 @@ export function Layout() {
         <div className="wrap footer-in">
           <img src={`${base}logos/vd-horizontal-fondo-oscuro.svg`} alt="Valle Directo, Valle de Tenza" height={44} />
           <dl className="footer-datos">
-            <div><dt>Contacto</dt><dd>{config.contacto}</dd></div>
-            <div><dt>Horario de embajadores</dt><dd>{config.horario}</dd></div>
-            <div><dt>Redes</dt><dd>{config.redes}</dd></div>
+            {ajustes.contacto && <div><dt>Contacto</dt><dd>{ajustes.contacto}</dd></div>}
+            {ajustes.horario && <div><dt>Horario de embajadores</dt><dd>{ajustes.horario}</dd></div>}
+            {ajustes.redes.length > 0 && (
+              <div><dt>Redes</dt><dd>{ajustes.redes.map((r, i) => (
+                <span key={r.nombre}>{i > 0 && ' · '}{r.url ? <a href={r.url} target="_blank" rel="noopener noreferrer">{r.nombre}</a> : r.nombre}</span>
+              ))}</dd></div>
+            )}
           </dl>
           <nav className="footer-nav" aria-label="Pie de página">
             <Link to={prest.to}>{prest.texto}</Link>

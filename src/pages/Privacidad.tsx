@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom'
-import { config } from '../config'
+import { useAjustes } from '../state/ajustes'
 import '../styles/privacidad.css'
 import { usePagina } from '../usePagina'
 
-// Los datos de contacto se muestran solo cuando ya no son un [PLACEHOLDER].
-const contactoListo = !config.contacto.startsWith('[')
-
 export default function Privacidad() {
   usePagina('Aviso de privacidad')
+  const { contacto } = useAjustes()
   return (
     <div className="wrap pagina privacidad">
       <p className="overline">Ley 1581 de 2012</p>
@@ -53,7 +51,7 @@ export default function Privacidad() {
           Escribe al negocio con el que reservaste o al contacto de Valle Directo, indicando tu nombre y el código de tu reserva.
           Responderemos en los plazos que fija la ley.
         </p>
-        {contactoListo && <p>Contacto: <strong>{config.contacto}</strong></p>}
+        {contacto && <p>Contacto: <strong>{contacto}</strong></p>}
         <p>Si no obtienes respuesta, puedes presentar una queja ante la Superintendencia de Industria y Comercio.</p>
       </section>
 
