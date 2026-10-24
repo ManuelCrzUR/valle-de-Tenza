@@ -8,32 +8,32 @@ transporte y avisos reales.
 
 ## Cobertura
 
-- [ ] `scraper/municipios.py`: agregar Guateque y Garagoa primero; después Chinavita, Macanal, Pachavita, Santa María
+- [x] `scraper/municipios.py`: agregar Guateque y Garagoa primero; después Chinavita, Macanal, Pachavita, Santa María
   y San Luis de Gaceno (según la decisión abierta). Centro y caja de cada uno.
-- [ ] Correr el scraper con `--descargar`, revisar `scraper/salida/reporte.md` y cargar con `scripts/cargar-lugares.ts`.
+- [x] Correr el scraper con `--descargar`, revisar `scraper/salida/reporte.md` y cargar con `scripts/cargar-lugares.ts`.
   Los lugares sin ubicación honesta siguen la regla existente: aparecen en la lista, no en el mapa.
-- [ ] Revisar a mano los nombres raros que vengan de OSM (como «antiguo jardin» o «PARQUE PRINCIPAL») con un paso de
+- [x] Revisar a mano los nombres raros que vengan de OSM (como «antiguo jardin» o «PARQUE PRINCIPAL») con un paso de
   normalización: mayúsculas de título y descarte de duplicados por nombre + municipio.
-- [ ] Actualizar los textos «los siete municipios» / «7 municipios» en `Mapa.tsx`, `Lugares.tsx` y
+- [x] Actualizar los textos «los siete municipios» / «7 municipios» en `Mapa.tsx`, `Lugares.tsx` y
   `components/mapa/LeyendaMapa.tsx` para que salgan del número real de municipios activos.
 
 ## Contenido
 
-- [ ] Llenar el campo `acceso` de `lugares` (creado en la Fase 0): cómo se llega, si es propiedad privada, si requiere guía, dificultad. Formulario
+- [x] Llenar el campo `acceso` de `lugares` (creado en la Fase 0): cómo se llega, si es propiedad privada, si requiere guía, dificultad. Formulario
   en `/coordinador` para llenarlo; mostrarlo en `LugarDetalle.tsx` y usarlo en el ranking de la Fase 3.
-- [ ] Tabla `ajustes(clave text pk, valor jsonb)` con lectura pública: contacto, horario de embajadores, redes.
+- [x] Tabla `ajustes(clave text pk, valor jsonb)` con lectura pública: contacto, horario de embajadores, redes.
   `src/config.ts` lee de ahí con los valores actuales como respaldo, y **ninguna** cadena `[ENTRE CORCHETES]` se
   muestra: si falta el dato, se oculta la línea.
-- [ ] Tabla `embajadores(id, nombre, municipio, whatsapp, horario, activo)`; la página de chat muestra quiénes están
+- [x] Tabla `embajadores(id, nombre, municipio, whatsapp, horario, activo)`; la página de chat muestra quiénes están
   disponibles ahora según su horario, con botón de WhatsApp.
-- [ ] Calendario de `eventos` (fiestas, mercados) por municipio, editable por el coordinador, visible en la portada
+- [x] Calendario de `eventos` (fiestas, mercados) por municipio, editable por el coordinador, visible en la portada
   («Este fin de semana en el Valle») y como aviso en el itinerario si coincide con la fecha.
 
 ## Chat
 
-- [ ] `src/data/asistente.ts`: las respuestas de hospedaje y reservas usan `cupo_libre` real; nuevas intenciones
+- [x] `src/data/asistente.ts`: las respuestas de hospedaje y reservas usan `cupo_libre` real; nuevas intenciones
   «cómo llego», «cuánto me demoro de X a Y», «hay paro / cómo está la vía», «va a llover», «qué hay este fin de semana».
-- [ ] Mantener `usarAuren: false` por defecto. Si se activa, `api/chat.ts` envía a Auren un contexto mínimo con
+- [x] Mantener `usarAuren: false` por defecto. Si se activa, `api/chat.ts` envía a Auren un contexto mínimo con
   cupos y avisos del día (sin datos personales), y actualizar `docs/auren-conocimiento-valle.md` con los 14 municipios.
 
 ## Prueba de cierre
@@ -52,3 +52,14 @@ Reglas: respeta la regla de precisión de ubicación del scraper y su cortesía 
 ningún placeholder visible en producción; el chat no inventa datos: si no hay cupo o ruta verificada, lo dice.
 Al terminar corre el scraper sin red (cache) y con red si te lo permito, build, test y supabase test db.
 ```
+
+## Estado del cierre (local)
+
+- [x] 1. Guateque y Garagoa en el mapa (selector «Los 14 municipios»), en el selector del itinerario y con itinerario
+  propio (Garagoa: 8 paradas con minutos por carretera). 561 lugares, 513 en el mapa; 131.990 tramos; clima de 14 municipios.
+- [x] 2. `grep -rn "\[CONTACTO\]\|\[HORARIO\]\|\[REDES" src` solo encuentra el respaldo en `config.ts`; `useAjustes()`
+  oculta cualquier línea sin dato. **Pendiente del usuario:** cargar contacto, horario y redes reales en `/coordinador`.
+- [x] 3. El chat responde «¿cómo llego desde Bogotá?» con las rutas de la tabla y marca «por confirmar» lo no verificado.
+
+Decisiones: se agregaron los 7 municipios de una vez (Pachavita es DANE 15511; en OSM es «San Luís de Gaceno»).
+`usarAuren` sigue en `false`; `api/chat.ts` aún no reenvía el `contexto` que arma el front (pendiente si se activa).
