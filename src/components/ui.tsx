@@ -45,7 +45,7 @@ export interface PlaceCardProps {
 export function PlaceCard({ title, description, meta, chip, chipTone, chipIcon, image, imageAlt, onClick, children, className }: PlaceCardProps): ReactElement {
   const inner = (
     <>
-      {image && <img className="vd-card-img" src={image} alt={imageAlt ?? ''} />}
+      {image && <img className="vd-card-img" src={image} alt={imageAlt ?? ''} loading="lazy" decoding="async" />}
       {chip && <Chip tone={chipTone ?? 'soft'} icon={chipIcon}>{chip}</Chip>}
       <span className="vd-card-title">{title}</span>
       {description && <span className="vd-card-desc">{description}</span>}

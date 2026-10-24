@@ -3,11 +3,15 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Option, PlaceCard } from '../components/ui'
 import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
-import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
-import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, useCatalogo } from '../data/lugares'
-import type { TipoReserva } from '../data/lugares'
+import { FOTOS, FOTO_FILTRO, FOTO_MUNICIPIO, fotoPropiaDeLugar } from '../data/fotos'
+import { km } from '../data/generarPlan'
+import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, metros, tieneUbicacion, useCatalogo } from '../data/lugares'
+import type { Lugar, MunicipioMapa, TipoReserva } from '../data/lugares'
 import { PLANES } from '../data/planes'
-import { LUGAR_NEGOCIO, negocioDeLugar, useOperacion } from '../state/reservas'
+import { LUGAR_NEGOCIO, cupoVerificadoHoy, negocioDeLugar, useOperacion } from '../state/reservas'
+import type { Negocio } from '../state/reservas'
+import { minutos, tramoActual, useLogistica } from '../state/logistica'
+import { useItinerario } from '../state/itinerario'
 import { usePagina } from '../usePagina'
 import '../styles/lugares.css'
 
@@ -20,12 +24,29 @@ const FILTROS: { id: Filtro; texto: string; icono: 'naturaleza' | 'gastronomia' 
 // hotel -> dormir, restaurante -> gastro, caminata -> aventura, actividad -> cultura.
 const FILTRO_DE_TIPO: Record<TipoReserva, Filtro> = { hotel: 'dormir', restaurante: 'gastro', caminata: 'aventura', actividad: 'cultura' }
 
+const sinTilde = (t: string) => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+function recortar(t: string, max = 110): string {
+  const limpio = t.replace(/\s+/g, ' ').trim()
+  if (limpio.length <= max) return limpio
+  return `${limpio.slice(0, max).replace(/\s+\S*$/, '')}…`
+}
+// Una línea de «por qué ir»: la descripción; si no hay, cómo se llega.
+const porQueIr = (l: Lugar) => { const t = l.extra?.descripcion?.trim() || l.acceso?.trim(); return t ? recortar(t) : undefined }
+// Con información = acceso, descripción o foto propia. Los verificados van primero; luego los que más datos tienen.
+function puntaje(l: Lugar, n: Negocio | undefined): number {
+  return (n?.verificado ? 100 : 0) + (l.acceso ? 4 : 0) + (l.extra?.descripcion ? 2 : 0) + (fotoPropiaDeLugar(l) ? 1 : 0)
+}
+
 export default function Lugares() {
   usePagina('Qué lugares hay')
   const [params, setParams] = useSearchParams()
   const go = useNavigate()
   const { negocios } = useOperacion()
   const { lugares: LUGARES, municipios: MUNICIPIOS } = useCatalogo()
+  const { itinerario, eleccion } = useItinerario()
+  useLogistica({ tramos: false })   // solo para volver a pintar si los tiempos ya estaban en caché; aquí no se piden tramos
+  const base = itinerario?.municipio || eleccion?.municipio || ''
+  const centroBase = MUNICIPIOS.find((m: MunicipioMapa) => m.slug === base)?.centro ?? null
   const cat = FILTROS.find((f) => f.id === params.get('cat'))?.id ?? 'aventura'
   const mun = MUNICIPIOS.some((m) => m.slug === params.get('mun')) ? params.get('mun')! : ''
   const cambiar = (cambios: Record<string, string>) => {
@@ -34,7 +55,11 @@ export default function Lugares() {
     setParams(p, { replace: true })
   }
 
-  const lugares = LUGARES.filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun))
+  const lugares = LUGARES
+    .filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun))
+    .map((l, i) => ({ l, i, p: puntaje(l, negocioDeLugar(negocios, l.id)) }))
+    .sort((a, b) => b.p - a.p || a.i - b.i)
+    .map((x) => x.l)
   const nuevos = negocios.filter((n) => n.lugarId.startsWith(LUGAR_NEGOCIO) && FILTRO_DE_TIPO[n.tipo] === cat && (!mun || n.municipio === mun))
   const total = lugares.length + nuevos.length
   const filtroActual = FILTROS.find((f) => f.id === cat)!
@@ -72,13 +97,30 @@ export default function Lugares() {
         <div className="grid" key={`${cat}-${mun}`}>
           {lugares.map((l, i) => {
             const reserva = negocioDeLugar(negocios, l.id)
+            const tipo = CATEGORIA_POR_ID[l.categoria].singular
+            const sub = l.subtipo ? etiquetaSubtipo(l.subtipo) : ''
+            const chip = sub && sinTilde(sub) !== sinTilde(tipo) ? `${tipo} · ${sub}` : tipo   // sin «Atracción / Atracción»
+            const fotoId = fotoPropiaDeLugar(l)
+            // Distancia desde el municipio base del itinerario: línea recta desde su centro; por carretera solo si ya estaba en caché.
+            let desde: string | null = null
+            if (base && l.municipio !== base && centroBase) {
+              const punto: [number, number] | null = tieneUbicacion(l) ? [l.lat, l.lon] : MUNICIPIOS.find((m: MunicipioMapa) => m.slug === l.municipio)?.centro ?? null
+              const tr = tramoActual(`mun:${base}`, `mun:${l.municipio}`)
+              if (tr) desde = `a ${minutos(tr.duracion_s)} min por carretera de ${NOMBRE_MUNICIPIO[base]}`
+              else if (punto) desde = `a ~${km(metros(centroBase, punto))} de ${NOMBRE_MUNICIPIO[base]} (en línea recta)`
+            }
             return (
               <div key={l.id} className="aparece grid-item" style={{ '--i': Math.min(i, 12) } as CSSProperties}>
                 <PlaceCard
-                  chip={CATEGORIA_POR_ID[l.categoria].singular}
+                  chip={chip}
+                  image={fotoId ? `${import.meta.env.BASE_URL}${FOTOS[fotoId].archivo}` : undefined}
+                  imageAlt={fotoId ? FOTOS[fotoId].pie : undefined}
                   title={l.nombre}
-                  description={l.subtipo ? etiquetaSubtipo(l.subtipo) : undefined}
-                  meta={`${NOMBRE_MUNICIPIO[l.municipio]}${reserva ? ' · Recibe reservas' : ''}`}
+                  description={porQueIr(l)}
+                  meta={<>
+                    {NOMBRE_MUNICIPIO[l.municipio]}{desde ? ` · ${desde}` : ''}
+                    {reserva && <><br /><strong className="lugar-cupo">{cupoVerificadoHoy(reserva) ? 'Cupo verificado hoy' : 'Cupo por confirmar'}</strong></>}
+                  </>}
                   onClick={() => go(`/lugares/${l.id}`)}
                 />
               </div>

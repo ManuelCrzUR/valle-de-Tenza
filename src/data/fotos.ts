@@ -45,6 +45,8 @@ const FOTO_LUGAR: Record<string, FotoId> = {
   'tenza-naturaleza-parque-principal-27cdb': 11,
 }
 // Foto del lugar si la hay; si no, la del municipio (el pie dice qué se ve, así no se confunde).
+// Solo la foto propia del lugar (sin recurrir a la del municipio).
+export const fotoPropiaDeLugar = (l: Pick<Lugar, 'id'>): FotoId | undefined => FOTO_LUGAR[l.id]
 export const fotoDeLugar = (l: Pick<Lugar, 'id' | 'municipio'>): FotoId | undefined => FOTO_LUGAR[l.id] ?? FOTO_MUNICIPIO[l.municipio]
 
 export const FOTOS_LISTA = (Object.keys(FOTOS) as unknown as FotoId[]).map((n) => ({ n: Number(n) as FotoId, ...FOTOS[Number(n) as FotoId] }))

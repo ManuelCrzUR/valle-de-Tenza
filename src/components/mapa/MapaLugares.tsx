@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { List, SlidersHorizontal } from 'lucide-react'
 import { CATEGORIAS, tieneUbicacion, useCatalogo } from '../../data/lugares'
@@ -9,6 +9,8 @@ import { LeyendaMapa } from './LeyendaMapa'
 import { Resultados } from './Resultados'
 import { FichaLugar } from './FichaLugar'
 import { Hoja } from './Hoja'
+import { HojaMapa } from './HojaMapa'
+import type { PosHoja } from './HojaMapa'
 import MapaLeaflet from './MapaLeaflet'
 
 const TODAS = CATEGORIAS.map((c) => c.id)
@@ -18,6 +20,8 @@ export default function MapaLugares() {
   const { alertas } = useLogistica({ tramos: false })
   const [params, setParams] = useSearchParams()
   const escritorio = useMedia('(min-width: 1024px)')
+  const movil = useMedia('(max-width: 767px)')
+  const [pos, setPos] = useState<PosHoja>(0)
   const [panel, setPanel] = useState<'leyenda' | 'lista'>('leyenda')
   const [hojaAbierta, setHojaAbierta] = useState(false)
 
@@ -44,6 +48,9 @@ export default function MapaLugares() {
   const visibles = useMemo(() => delMunicipio.filter((l) => activas.has(l.categoria)), [delMunicipio, activas])
   const puntos = useMemo(() => visibles.filter(tieneUbicacion), [visibles])
 
+  // Al elegir un lugar (en el mapa, la lista o la URL) la hoja sube a la posición media para mostrar su ficha.
+  useEffect(() => { if (seleccionId) setPos((p) => (p < 1 ? 1 : p)) }, [seleccionId])
+
   const elegir = (id: string) => cambiar({ lugar: id })
   const volverALista = () => { cambiar({ lugar: null }); setPanel('lista') }
 
@@ -55,7 +62,7 @@ export default function MapaLugares() {
   const lista = <Resultados lugares={visibles} seleccionado={seleccionId} onElegir={elegir} />
   const ficha = (l: Lugar) => <FichaLugar lugar={l} onVolver={volverALista} />
 
-  const mapa = <MapaLeaflet puntos={puntos} seleccionadoId={seleccion && tieneUbicacion(seleccion) ? seleccion.id : null} onElegir={elegir} alertas={alertas} />
+  const mapa = <MapaLeaflet puntos={puntos} seleccionadoId={seleccion && tieneUbicacion(seleccion) ? seleccion.id : null} onElegir={elegir} alertas={alertas} hojaPos={movil ? pos : undefined} />
   const sinUbicar = visibles.length - puntos.length
 
   if (escritorio) {
@@ -76,6 +83,29 @@ export default function MapaLugares() {
           {mapa}
           <p className="mapa-contador" role="status">{puntos.length} en el mapa{sinUbicar > 0 ? ` · ${sinUbicar} sin ubicación (ver lista)` : ''}{alertas.length > 0 ? ` · ${alertas.length} ${alertas.length === 1 ? 'aviso' : 'avisos'} de vía` : ''}</p>
         </div>
+      </div>
+    )
+  }
+
+  if (movil) {
+    const pestana = (p: 'leyenda' | 'lista') => { setPanel(p); setPos((x) => (x < 1 ? 1 : x)) }
+    return (
+      <div className="mapa-app mapa-movil" data-hoja={pos}>
+        <div className="mapa-lienzo">
+          {mapa}
+          <p className="mapa-contador" role="status">{puntos.length} en el mapa{sinUbicar > 0 ? ` · ${sinUbicar} sin ubicación` : ''}{alertas.length > 0 ? ` · ${alertas.length} ${alertas.length === 1 ? 'aviso' : 'avisos'} de vía` : ''}</p>
+        </div>
+        <HojaMapa pos={pos} onPos={setPos} resumen={seleccion ? seleccion.nombre : `${visibles.length} ${visibles.length === 1 ? 'lugar' : 'lugares'}`}>
+          {seleccion ? ficha(seleccion) : (
+            <>
+              <div className="opts mapa-tabs" role="group" aria-label="Panel">
+                <button type="button" className="vd-opt" aria-pressed={panel === 'leyenda'} onClick={() => pestana('leyenda')}><SlidersHorizontal size={20} aria-hidden /> Leyenda</button>
+                <button type="button" className="vd-opt" aria-pressed={panel === 'lista'} onClick={() => pestana('lista')}><List size={20} aria-hidden /> Lista ({visibles.length})</button>
+              </div>
+              {panel === 'leyenda' ? leyenda : lista}
+            </>
+          )}
+        </HojaMapa>
       </div>
     )
   }

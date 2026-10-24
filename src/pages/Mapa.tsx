@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react'
 import { Fragment, Suspense, lazy, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Option } from '../components/ui'
@@ -8,6 +9,7 @@ import { useItinerario } from '../state/itinerario'
 import { distanciasRuta, km, MAX_SALTO_M, ordenRuta } from '../data/generarPlan'
 import { cargarTramos, minutos, useLogistica } from '../state/logistica'
 import { usePagina } from '../usePagina'
+import { useMedia } from '../useMedia'
 import '../styles/itinerario.css'
 
 // Leaflet pesa bastante: solo se descarga al abrir la vista de lugares.
@@ -87,13 +89,27 @@ export default function Mapa() {
   const { municipios } = useCatalogo()
   const [params, setParams] = useSearchParams()
   const vista = params.get('vista') === 'ruta' ? 'ruta' : 'lugares'
+  const movil = useMedia('(max-width: 767px)')
+  const [info, setInfo] = useState(false)
   const ir = (v: 'lugares' | 'ruta') => setParams(v === 'ruta' ? { vista: 'ruta' } : {}, { replace: true })
   return (
     <div className={`wrap pagina${vista === 'lugares' ? ' pagina-mapa' : ''}`}>
-      <h1 id="titulo" tabIndex={-1} className="t-h1">Tu mapa</h1>
-      <p className="sub">
-        {vista === 'lugares' ? `Lugares reales de los ${municipios.length} municipios: dónde comer, dormir, qué visitar y servicios útiles.` : 'Muestra solo la ruta de tu itinerario ya generado. No es un buscador libre.'}
-      </p>
+      {movil && vista === 'lugares' ? (
+        <div className="mapa-barra">
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Tu mapa</h1>
+          <button type="button" className="vd-btn vd-btn-ghost" aria-expanded={info} aria-controls="mapa-info" onClick={() => setInfo((v) => !v)}>
+            Más información <ChevronDown size={20} aria-hidden className={info ? 'mapa-info-abierta' : undefined} />
+          </button>
+          <p id="mapa-info" className="sub" hidden={!info}>Lugares reales de los {municipios.length} municipios: dónde comer, dormir, qué visitar y servicios útiles.</p>
+        </div>
+      ) : (
+        <>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Tu mapa</h1>
+          <p className="sub">
+            {vista === 'lugares' ? `Lugares reales de los ${municipios.length} municipios: dónde comer, dormir, qué visitar y servicios útiles.` : 'Muestra solo la ruta de tu itinerario ya generado. No es un buscador libre.'}
+          </p>
+        </>
+      )}
       <div className="opts" role="group" aria-label="Vista del mapa">
         <Option selected={vista === 'lugares'} icon="mapa" onClick={() => ir('lugares')}>Lugares del Valle</Option>
         <Option selected={vista === 'ruta'} icon="ruta" onClick={() => ir('ruta')}>Mi ruta</Option>

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
@@ -39,15 +39,59 @@ function iconoAlerta(a: Alerta): L.DivIcon {
 }
 const fechaAviso = (f: string) => new Date(f).toLocaleDateString('es-CO', { day: 'numeric', month: 'long', year: 'numeric' })
 
-function Ajustar({ puntos, seleccionado }: { puntos: Punto[]; seleccionado: Punto | undefined }) {
+// Si el contenedor cambia de tamaño (hoja, barra del navegador, giro), Leaflet recalcula el suyo.
+function Redimensionar() {
+  const map = useMap()
+  useEffect(() => {
+    const el = map.getContainer()
+    let raf = 0
+    const ro = new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => map.invalidateSize({ animate: false })) })
+    ro.observe(el)
+    return () => { ro.disconnect(); cancelAnimationFrame(raf) }
+  }, [map])
+  return null
+}
+
+// Alto que la hoja inferior (solo móvil) tapa del mapa en cada posición: recogida 76 px, media 45 %, completa se trata como media.
+const tapadoPorHoja = (alto: number, pos: 0 | 1 | 2) => (pos === 0 ? 76 : Math.round(alto * 0.45))
+
+function Ajustar({ puntos, seleccionado, hojaPos }: { puntos: Punto[]; seleccionado: Punto | undefined; hojaPos?: 0 | 1 | 2 }) {
   const map = useMap()
   const clave = puntos.map((p) => p.id).join()
-  // Al cambiar los filtros, encuadra lo que se ve.
+  const pos = useRef(hojaPos)
+  pos.current = hojaPos
+  const haySel = useRef(false)
+  haySel.current = Boolean(seleccionado)
+  const movido = useRef(false)   // si la persona ya movió el mapa, no se le vuelve a encuadrar solo por cambios de tamaño
+  const encuadrar = (animar: boolean) => {
+    if (!puntos.length || haySel.current) return
+    map.invalidateSize({ animate: false })   // primero el tamaño final del contenedor, después fitBounds
+    const abajo = pos.current === undefined ? 56 : tapadoPorHoja(map.getSize().y, pos.current) + 20
+    const arriba = pos.current === undefined ? 56 : 24
+    map.fitBounds(L.latLngBounds(puntos.map((p) => [p.lat, p.lon] as [number, number])), {
+      paddingTopLeft: [pos.current === undefined ? 56 : 24, arriba], paddingBottomRight: [pos.current === undefined ? 56 : 24, abajo],
+      maxZoom: 15, animate: animar && !reduceMovimiento(),
+    })
+  }
+  const ultimo = useRef(encuadrar)
+  ultimo.current = encuadrar
+  // Al cambiar los filtros (o de municipio), encuadra lo que se ve, dejando libre lo que tapa la hoja.
   useEffect(() => {
-    if (!puntos.length) return
-    map.fitBounds(L.latLngBounds(puntos.map((p) => [p.lat, p.lon] as [number, number])), { padding: [56, 56], maxZoom: 15, animate: !reduceMovimiento() })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    movido.current = false
+    const id = requestAnimationFrame(() => ultimo.current(true))
+    return () => cancelAnimationFrame(id)
   }, [clave, map])
+  // Mientras no se haya movido el mapa, un cambio de tamaño del contenedor o de posición de la hoja re-encuadra.
+  useEffect(() => {
+    const el = map.getContainer()
+    const marcar = () => { movido.current = true }
+    map.on('dragstart', marcar)
+    let raf = 0
+    const ro = new ResizeObserver(() => { cancelAnimationFrame(raf); raf = requestAnimationFrame(() => { if (!movido.current) ultimo.current(false) }) })
+    ro.observe(el)
+    return () => { map.off('dragstart', marcar); ro.disconnect(); cancelAnimationFrame(raf) }
+  }, [map])
+  useEffect(() => { if (!movido.current && hojaPos !== undefined) ultimo.current(true) }, [hojaPos])
   // Al elegir un lugar, se acerca a él.
   useEffect(() => {
     if (!seleccionado) return
@@ -59,7 +103,7 @@ function Ajustar({ puntos, seleccionado }: { puntos: Punto[]; seleccionado: Punt
   return null
 }
 
-export default function MapaLeaflet({ puntos, seleccionadoId, onElegir, alertas = [] }: { puntos: Punto[]; seleccionadoId: string | null; onElegir: (id: string) => void; alertas?: Alerta[] }) {
+export default function MapaLeaflet({ puntos, seleccionadoId, onElegir, alertas = [], hojaPos }: { puntos: Punto[]; seleccionadoId: string | null; onElegir: (id: string) => void; alertas?: Alerta[]; hojaPos?: 0 | 1 | 2 }) {
   const { municipios } = useCatalogo()
   // Las alertas con municipio se pintan en su centro; si hay varias en el mismo, se separan un poco para que todas se puedan tocar.
   const avisos = useMemo(() => {
@@ -74,10 +118,11 @@ export default function MapaLeaflet({ puntos, seleccionadoId, onElegir, alertas 
   }, [alertas, municipios])
   const seleccionado = useMemo(() => puntos.find((p) => p.id === seleccionadoId), [puntos, seleccionadoId])
   return (
-    <MapContainer className="mapa-leaflet" center={[5.03, -73.42]} zoom={11} zoomControl={false} scrollWheelZoom aria-label="Mapa de lugares del Valle de Tenza">
+    <MapContainer className="mapa-leaflet" center={[5.03, -73.42]} zoom={11} zoomControl={false} zoomSnap={0.5} scrollWheelZoom aria-label="Mapa de lugares del Valle de Tenza">
       <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" maxZoom={19} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Colaboradores de OpenStreetMap</a>' />
       <ZoomControl position="bottomright" zoomInTitle="Acercar" zoomOutTitle="Alejar" />
-      <Ajustar puntos={puntos} seleccionado={seleccionado} />
+      <Redimensionar />
+      <Ajustar puntos={puntos} seleccionado={seleccionado} hojaPos={hojaPos} />
       <MarkerClusterGroup
         chunkedLoading showCoverageOnHover={false} maxClusterRadius={46}
         iconCreateFunction={(c: { getChildCount(): number }) => L.divIcon({ html: `<span class="pin pin-cluster">${c.getChildCount()}</span>`, className: 'pin-wrap', iconSize: [44, 44], iconAnchor: [22, 22] })}

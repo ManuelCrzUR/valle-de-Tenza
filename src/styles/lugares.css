@@ -12,3 +12,4 @@
 .detalle-acceso h2 { margin: 0; }
 .detalle-acceso-texto { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
 .detalle-acceso-ver { margin: 0; font-size: 14px; }
+.lugar-cupo { color: var(--ink); }
