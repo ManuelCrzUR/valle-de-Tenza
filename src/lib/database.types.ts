@@ -107,6 +107,38 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "negocios_publicos"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "cupo_dia_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "cupo_dia_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
+    }
+                  ]
+                },"demanda": {
+                  Row: {
+                    "creado": string,"dias": number,"fecha_viaje": string | null,"id": number,"municipio": string | null,"personas": number,"plan": string,"transporte": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "creado"?: string,"dias": number,"fecha_viaje"?: string | null,"id"?: never,"municipio"?: string | null,"personas": number,"plan": string,"transporte"?: string | null
+                  }
+                  Update: {
+                    "creado"?: string,"dias"?: number,"fecha_viaje"?: string | null,"id"?: never,"municipio"?: string | null,"personas"?: number,"plan"?: string,"transporte"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "demanda_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
     }
                   ]
                 },"embajadores": {
@@ -148,6 +180,34 @@ isOneToOne: false
       referencedRelation: "municipios"
       referencedColumns: ["slug"]
     }
+                  ]
+                },"itinerarios_compartidos": {
+                  Row: {
+                    "creado": string,"eleccion": NonNullable<Json>,"id": string,"vistas": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "creado"?: string,"eleccion": NonNullable<Json>,"id": string,"vistas"?: number
+                  }
+                  Update: {
+                    "creado"?: string,"eleccion"?: NonNullable<Json>,"id"?: string,"vistas"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"limite_compartir": {
+                  Row: {
+                    "cuenta": number,"dia": string,"huella": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "cuenta"?: number,"dia": string,"huella": string
+                  }
+                  Update: {
+                    "cuenta"?: number,"dia"?: string,"huella"?: string
+                  }
+                  Relationships: [
+                    
                   ]
                 },"lugares": {
                   Row: {
@@ -239,6 +299,18 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "negocios_publicos"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "ocupacion_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "ocupacion_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
     }
                   ]
                 },"perfiles": {
@@ -257,14 +329,14 @@ isOneToOne: false
                   ]
                 },"reservas": {
                   Row: {
-                    "actualizada": string,"codigo": string,"contacto": string,"creada": string,"estado": Database["public"]['Enums']["estado_reserva"],"fecha": string,"hora": string | null,"id": string,"lugar_id": string | null,"negocio_id": string | null,"noches": number,"nombre": string,"nota": string | null,"personas": number,"tipo": Database["public"]['Enums']["tipo_reserva"]
+                    "actualizada": string,"codigo": string,"contacto": string,"creada": string,"estado": Database["public"]['Enums']["estado_reserva"],"fecha": string,"hora": string | null,"id": string,"lugar_id": string | null,"negocio_id": string | null,"noches": number,"nombre": string,"nota": string | null,"personas": number,"respondida": string | null,"tipo": Database["public"]['Enums']["tipo_reserva"]
                   }
                   ComputedFields: never
                   Insert: {
-                    "actualizada"?: string,"codigo": string,"contacto": string,"creada"?: string,"estado"?: Database["public"]['Enums']["estado_reserva"],"fecha": string,"hora"?: string | null,"id"?: string,"lugar_id"?: string | null,"negocio_id"?: string | null,"noches"?: number,"nombre": string,"nota"?: string | null,"personas": number,"tipo": Database["public"]['Enums']["tipo_reserva"]
+                    "actualizada"?: string,"codigo": string,"contacto": string,"creada"?: string,"estado"?: Database["public"]['Enums']["estado_reserva"],"fecha": string,"hora"?: string | null,"id"?: string,"lugar_id"?: string | null,"negocio_id"?: string | null,"noches"?: number,"nombre": string,"nota"?: string | null,"personas": number,"respondida"?: string | null,"tipo": Database["public"]['Enums']["tipo_reserva"]
                   }
                   Update: {
-                    "actualizada"?: string,"codigo"?: string,"contacto"?: string,"creada"?: string,"estado"?: Database["public"]['Enums']["estado_reserva"],"fecha"?: string,"hora"?: string | null,"id"?: string,"lugar_id"?: string | null,"negocio_id"?: string | null,"noches"?: number,"nombre"?: string,"nota"?: string | null,"personas"?: number,"tipo"?: Database["public"]['Enums']["tipo_reserva"]
+                    "actualizada"?: string,"codigo"?: string,"contacto"?: string,"creada"?: string,"estado"?: Database["public"]['Enums']["estado_reserva"],"fecha"?: string,"hora"?: string | null,"id"?: string,"lugar_id"?: string | null,"negocio_id"?: string | null,"noches"?: number,"nombre"?: string,"nota"?: string | null,"personas"?: number,"respondida"?: string | null,"tipo"?: Database["public"]['Enums']["tipo_reserva"]
                   }
                   Relationships: [
                     {
@@ -279,6 +351,18 @@ isOneToOne: false
 isOneToOne: false
       referencedRelation: "negocios_publicos"
       referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
     }
                   ]
                 },"rutas_transporte": {
@@ -332,7 +416,67 @@ isOneToOne: false
                 }
           }
           Views: {
-            "negocios_publicos": {
+            "brecha_hospedaje": {
+                  Row: {
+                    "cupo_disponible": number | null,"fecha": string | null,"municipio": string | null,"personas_demandadas": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "demanda_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
+    }
+                  ]
+                },"demanda_semanal": {
+                  Row: {
+                    "itinerarios": number | null,"municipio": string | null,"personas": number | null,"plan": string,"semana": string | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "demanda_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
+    }
+                  ]
+                },"metricas_prestador": {
+                  Row: {
+                    "confirmadas": number | null,"negocio_id": string | null,"rechazadas": number | null,"respuesta_media": string | null,"tasa_confirmacion": number | null,"total": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    {
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios_publicos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
+    }
+                  ]
+                },"negocios_publicos": {
                   Row: {
                     "cupo_actualizado": string,"cupo_diario": number,"descripcion": string,"id": string,"lugar_id": string | null,"municipio": string,"nombre": string,"precio_desde_cop": number | null,"tipo": Database["public"]['Enums']["tipo_reserva"],"verificado": boolean
                   }
@@ -358,6 +502,34 @@ isOneToOne: false
       referencedColumns: ["slug"]
     }
                   ]
+                },"ocupacion_diaria": {
+                  Row: {
+                    "cupo": number | null,"fecha": string | null,"libre": number | null,"negocio_id": string,"ocupado": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
+                },"prestadores_inactivos": {
+                  Row: {
+                    "cupo_actualizado": string,"municipio": string,"negocio_id": string,"nombre": string,"whatsapp": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "cupo_actualizado"?: string | null,"municipio"?: string | null,"negocio_id"?: string | null,"nombre"?: string | null,"whatsapp"?: string | null
+                         }
+                        Update: {
+                           "cupo_actualizado"?: string | null,"municipio"?: string | null,"negocio_id"?: string | null,"nombre"?: string | null,"whatsapp"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "negocios_municipio_fkey"
+      columns: ["municipio"]
+isOneToOne: false
+      referencedRelation: "municipios"
+      referencedColumns: ["slug"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -368,6 +540,12 @@ isOneToOne: false
 { Args: { "p_codigo": string,"p_contacto": string }; Returns: {
               "codigo": string,"estado": Database["public"]['Enums']["estado_reserva"]
             }[]
+                           },
+"compartir_itinerario":
+{ Args: { "p_eleccion": Json }; Returns: string
+                           },
+"consumir_limite":
+{ Args: { "p_ambito": string,"p_max": number }; Returns: undefined
                            },
 "crear_reserva":
 { Args: { "p_contacto": string,"p_fecha": string,"p_hora": string,"p_lugar_id": string,"p_negocio_id"?: string,"p_noches": number,"p_nombre": string,"p_nota": string,"p_personas": number,"p_tipo": Database["public"]['Enums']["tipo_reserva"] }; Returns: {
@@ -410,11 +588,20 @@ isOneToOne: false
 "normalizar_contacto":
 { Args: { "p": string }; Returns: string
                            },
+"purgar_limites":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
 "purgar_reservas":
 { Args: Record<PropertyKey, never>; Returns: number
                            },
+"registrar_demanda":
+{ Args: { "p_dias": number,"p_fecha_viaje": string,"p_municipio": string,"p_personas": number,"p_plan": string,"p_transporte": string }; Returns: undefined
+                           },
 "vencer_reservas":
 { Args: Record<PropertyKey, never>; Returns: number
+                           },
+"ver_itinerario":
+{ Args: { "p_id": string }; Returns: Json
                            },
 "verificar_negocio":
 { Args: { "p_negocio": string,"p_verificado": boolean }; Returns: undefined
