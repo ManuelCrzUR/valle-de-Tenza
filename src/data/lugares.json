@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-03",
+ "generado": "2026-10-24",
  "atribucion": "© Colaboradores de OpenStreetMap (ODbL); datos.gov.co",
  "municipios": [
   {
@@ -99,12 +99,110 @@
     5.15623,
     -73.43246
    ]
+  },
+  {
+   "slug": "guateque",
+   "nombre": "Guateque",
+   "centro": [
+    5.007141,
+    -73.474847
+   ],
+   "caja": [
+    4.98432,
+    -73.50045,
+    5.03774,
+    -73.45634
+   ]
+  },
+  {
+   "slug": "garagoa",
+   "nombre": "Garagoa",
+   "centro": [
+    5.081501,
+    -73.363779
+   ],
+   "caja": [
+    5.00761,
+    -73.39916,
+    5.15175,
+    -73.25952
+   ]
+  },
+  {
+   "slug": "chinavita",
+   "nombre": "Chinavita",
+   "centro": [
+    5.186885,
+    -73.368102
+   ],
+   "caja": [
+    5.15445,
+    -73.4083,
+    5.25748,
+    -73.28536
+   ]
+  },
+  {
+   "slug": "macanal",
+   "nombre": "Macanal",
+   "centro": [
+    4.975587,
+    -73.324318
+   ],
+   "caja": [
+    4.92083,
+    -73.37057,
+    5.03537,
+    -73.24278
+   ]
+  },
+  {
+   "slug": "pachavita",
+   "nombre": "Pachavita",
+   "centro": [
+    5.139567,
+    -73.401431
+   ],
+   "caja": [
+    5.08672,
+    -73.43972,
+    5.18284,
+    -73.3779
+   ]
+  },
+  {
+   "slug": "santa-maria",
+   "nombre": "Santa María",
+   "centro": [
+    4.851033,
+    -73.268468
+   ],
+   "caja": [
+    4.74544,
+    -73.34404,
+    4.93272,
+    -73.17797
+   ]
+  },
+  {
+   "slug": "san-luis-de-gaceno",
+   "nombre": "San Luis de Gaceno",
+   "centro": [
+    4.821301,
+    -73.168045
+   ],
+   "caja": [
+    4.72422,
+    -73.22172,
+    4.95646,
+    -73.05427
+   ]
   }
  ],
  "lugares": [
   {
    "id": "almeida-alojamiento-el-turista-cbe62",
-   "nombre": "El turista",
+   "nombre": "El Turista",
    "categoria": "alojamiento",
    "subtipo": "hotel",
    "municipio": "almeida",
@@ -121,7 +219,7 @@
   },
   {
    "id": "almeida-alojamiento-finca-turistica-vereda-umbavita-63220",
-   "nombre": "Finca turística · vereda Umbavita",
+   "nombre": "Finca Turística · Vereda Umbavita",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "almeida",
@@ -265,7 +363,7 @@
   },
   {
    "id": "almeida-comercio-la-esquina-a3be7",
-   "nombre": "La esquina",
+   "nombre": "La Esquina",
    "categoria": "comercio",
    "subtipo": "convenience",
    "municipio": "almeida",
@@ -554,7 +652,7 @@
   },
   {
    "id": "almeida-naturaleza-cuchilla-el-sauche-4f462",
-   "nombre": "Cuchilla El Sauche",
+   "nombre": "Cuchilla el Sauche",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "almeida",
@@ -605,7 +703,7 @@
   },
   {
    "id": "almeida-naturaleza-via-a-almeida-c3136",
-   "nombre": "Vía a Almeida",
+   "nombre": "Vía A Almeida",
    "categoria": "naturaleza",
    "subtipo": "sendero",
    "municipio": "almeida",
@@ -656,7 +754,7 @@
   },
   {
    "id": "almeida-restaurante-sra-hilda-de8b4",
-   "nombre": "Sra hilda",
+   "nombre": "Sra Hilda",
    "categoria": "restaurante",
    "subtipo": "ice_cream",
    "municipio": "almeida",
@@ -750,6 +848,392 @@
    "municipio": "almeida",
    "lat": 4.971588,
    "lon": -73.378353,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-alojamiento-el-triunfo-de-la-finca-ad8f0",
+   "nombre": "El Triunfo de la Finca",
+   "categoria": "alojamiento",
+   "subtipo": "chalet",
+   "municipio": "chinavita",
+   "lat": 5.233859,
+   "lon": -73.395036,
+   "precision": "exacta",
+   "direccion": "Usillo Vereda",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-alojamiento-hotel-primavera-rp-1af41",
+   "nombre": "Hotel Primavera Rp",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "chinavita",
+   "lat": 5.167301,
+   "lon": -73.368943,
+   "precision": "direccion",
+   "direccion": "Carrera 4 4 64",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 20
+   }
+  },
+  {
+   "id": "chinavita-alojamiento-otro-tipo-de-vivienda-turistica-5bcf6",
+   "nombre": "Otro Tipo de Vivienda Turística",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "chinavita",
+   "lat": 5.168962,
+   "lon": -73.368722,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 16
+   }
+  },
+  {
+   "id": "chinavita-cajero-cajero-banco-agrario-d789b",
+   "nombre": "Cajero Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "cajero automático",
+   "municipio": "chinavita",
+   "lat": 5.164451,
+   "lon": -73.369729,
+   "precision": "direccion",
+   "direccion": "Calle 4 # 3 - 32",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario"
+   ]
+  },
+  {
+   "id": "chinavita-monumento-capilla-713c0",
+   "nombre": "Capilla",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "chinavita",
+   "lat": 5.169096,
+   "lon": -73.368458,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-monumento-capilla-virgen-del-carmen-e9205",
+   "nombre": "Capilla Virgen del Carmen",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "chinavita",
+   "lat": 5.236972,
+   "lon": -73.398304,
+   "precision": "exacta",
+   "direccion": "Usillo Vereda",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-monumento-parroquia-central-c0c53",
+   "nombre": "Parroquia Central",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "chinavita",
+   "lat": 5.16725,
+   "lon": -73.368308,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cerro-francisco-2b3b3",
+   "nombre": "Cerro Francisco",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.194311,
+   "lon": -73.295358,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cerro-la-sierra-93258",
+   "nombre": "Cerro la Sierra",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.210081,
+   "lon": -73.383228,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cuchilla-filipio-00898",
+   "nombre": "Cuchilla Filipio",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.184956,
+   "lon": -73.338334,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cuchilla-loma-azul-fc96f",
+   "nombre": "Cuchilla Loma Azul",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.225031,
+   "lon": -73.389208,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cuchilla-san-antonio-52789",
+   "nombre": "Cuchilla San Antonio",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.247483,
+   "lon": -73.374971,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cuchilla-sicha-f63d4",
+   "nombre": "Cuchilla Sicha",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.166784,
+   "lon": -73.35422,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-cuchilla-tres-quebradas-f2b0c",
+   "nombre": "Cuchilla Tres Quebradas",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "chinavita",
+   "lat": 5.238067,
+   "lon": -73.376103,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-naturaleza-parque-principal-ed0f4",
+   "nombre": "Parque Principal",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "chinavita",
+   "lat": 5.167156,
+   "lon": -73.368645,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-restaurante-billares-girasoles-2f6c2",
+   "nombre": "Billares Girasoles",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "chinavita",
+   "lat": 5.168112,
+   "lon": -73.369342,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-restaurante-discoteca-la-cumbre-f21a1",
+   "nombre": "Discoteca la Cumbre",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "chinavita",
+   "lat": 5.169654,
+   "lon": -73.368152,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-restaurante-don-omar-f3b4d",
+   "nombre": "Don Omar",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "chinavita",
+   "lat": 5.166618,
+   "lon": -73.368546,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-restaurante-el-paraiso-73c4f",
+   "nombre": "El Paraiso",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "chinavita",
+   "lat": 5.167124,
+   "lon": -73.370155,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-restaurante-el-viajero-68284",
+   "nombre": "El Viajero",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "chinavita",
+   "lat": 5.165847,
+   "lon": -73.368288,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "chinavita-salud-centro-de-salud-ea9b2",
+   "nombre": "Centro de Salud",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "chinavita",
+   "lat": 5.16632,
+   "lon": -73.369242,
+   "precision": "exacta",
+   "direccion": "Cl 3 No. 4-27",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap",
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
+   "id": "chinavita-salud-chinavita-7d806",
+   "nombre": "Chinavita",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "chinavita",
+   "lat": 5.166028,
+   "lon": -73.36695,
    "precision": "exacta",
    "direccion": "",
    "plan": null,
@@ -892,7 +1376,7 @@
   },
   {
    "id": "chivor-naturaleza-alto-del-fique-a50bb",
-   "nombre": "Alto Del Fique",
+   "nombre": "Alto del Fique",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "chivor",
@@ -960,7 +1444,7 @@
   },
   {
    "id": "chivor-naturaleza-loma-el-alimento-4acaa",
-   "nombre": "Loma El Alimento",
+   "nombre": "Loma el Alimento",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "chivor",
@@ -994,7 +1478,7 @@
   },
   {
    "id": "chivor-operador-bendicion-a-chivor-tours-y-esmeralda-b5b90",
-   "nombre": "Bendicion a Chivor Tours y Esmeraldas",
+   "nombre": "Bendicion A Chivor Tours y Esmeraldas",
    "categoria": "operador",
    "subtipo": "agencia de viajes operadoras",
    "municipio": "chivor",
@@ -1002,23 +1486,6 @@
    "lon": -73.365985,
    "precision": "direccion",
    "direccion": "Calle 3 4 46",
-   "plan": "aventura",
-   "esServicio": false,
-   "conRegistro": true,
-   "fuentes": [
-    "RNT"
-   ]
-  },
-  {
-   "id": "chivor-operador-emerald-hotel-boutique-verilo-01029",
-   "nombre": "Emerald Hotel Boutique & Verilo",
-   "categoria": "operador",
-   "subtipo": "agencia de viajes operadoras",
-   "municipio": "chivor",
-   "lat": null,
-   "lon": null,
-   "precision": null,
-   "direccion": "Km 75 Chivor Via la Playa",
    "plan": "aventura",
    "esServicio": false,
    "conRegistro": true,
@@ -1064,8 +1531,3568 @@
    }
   },
   {
+   "id": "garagoa-alojamiento-apartamento-turistico-670b9",
+   "nombre": "Apartamento Turístico",
+   "categoria": "alojamiento",
+   "subtipo": "apartamento turístico",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "Vereda Funbaque",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 9
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-bochica-bdc6d",
+   "nombre": "Bochica",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.081922,
+   "lon": -73.363458,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-alojamiento-casa-turistica-4e1f9",
+   "nombre": "Casa Turística",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 4
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-daru-69a2b",
+   "nombre": "Daru",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.082299,
+   "lon": -73.363944,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-alojamiento-el-oasis-de239",
+   "nombre": "El Oasis",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.085482,
+   "lon": -73.366869,
+   "precision": "exacta",
+   "direccion": "calle 13 14-24",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-alojamiento-el-refugio-de-mamapacha-ecolodge-ce15c",
+   "nombre": "El Refugio de Mamapacha Ecolodge",
+   "categoria": "alojamiento",
+   "subtipo": "refugio",
+   "municipio": "garagoa",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Km 8 Via Garagoa a Miraflores",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 3,
+    "camas": 6
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-agroturistica-tierra-mia-de174",
+   "nombre": "Finca Agroturistica Tierra Mia",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": 5.119459,
+   "lon": -73.360417,
+   "precision": "vereda",
+   "direccion": "Vereda Caldera Abajo",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Caldera Abajo",
+   "extra": {
+    "habitaciones": 3,
+    "camas": 9
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-turistica-vereda-arada-chiquit-3a97f",
+   "nombre": "Finca Turística · Vereda Arada Chiquita",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": 5.030911,
+   "lon": -73.376967,
+   "precision": "vereda",
+   "direccion": "Vereda Arada Chiquita",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Arada Chiquita",
+   "extra": {
+    "habitaciones": 7,
+    "camas": 20
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-turistica-vereda-caldera-arrib-1f6dd",
+   "nombre": "Finca Turística · Vereda Caldera Arriba",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": 5.103461,
+   "lon": -73.346554,
+   "precision": "vereda",
+   "direccion": "Vereda Caldera Arriba",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Caldera Arriba",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 12
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-turistica-vereda-guanica-grand-816f5",
+   "nombre": "Finca Turística · Vereda Guanica Grande",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": 5.125321,
+   "lon": -73.34592,
+   "precision": "vereda",
+   "direccion": "Vereda Guanica Grande",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Guanica Grande",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 30
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-turistica-vereda-guayabal-e549f",
+   "nombre": "Finca Turística · Vereda Guayabal",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": 5.045351,
+   "lon": -73.351379,
+   "precision": "vereda",
+   "direccion": "Vereda Guayabal",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Guayabal",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 14
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-turistica-vereda-quigua-arriba-2b431",
+   "nombre": "Finca Turística · Vereda Quigua Arriba Zona el Morro",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Quigua Arriba Zona el Morro",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Quigua Arriba Zona el Morro",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 2
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-finca-turistica-vereda-resguardo-mac-a0e31",
+   "nombre": "Finca Turística · Vereda Resguardo Maciegal",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Resguardo Maciegal",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Resguardo Maciegal",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 6
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-fundepaz-garagoa-05122",
+   "nombre": "Fundepaz Garagoa",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.08221,
+   "lon": -73.36336,
+   "precision": "direccion",
+   "direccion": "Cr 9 7 84",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 20,
+    "camas": 40
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hospedaje-chucureno-5b4c3",
+   "nombre": "Hospedaje Chucureño",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "garagoa",
+   "lat": 5.077313,
+   "lon": -73.365342,
+   "precision": "direccion",
+   "direccion": "Carrera 10 9 17 Piso 2",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 7
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hospedaje-florida-real-garagoa-1de30",
+   "nombre": "Hospedaje Florida Real Garagoa",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "garagoa",
+   "lat": 5.079692,
+   "lon": -73.366107,
+   "precision": "direccion",
+   "direccion": "Carrera 10 9 22",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 14,
+    "camas": 22
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hospedaje-paraiso-b8b64",
+   "nombre": "Hospedaje Paraiso",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.083691,
+   "lon": -73.364827,
+   "precision": "direccion",
+   "direccion": "Cl 12 11 85",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 5
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-baru-c2bc8",
+   "nombre": "Hotel Baru",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.083244,
+   "lon": -73.3661,
+   "precision": "direccion",
+   "direccion": "Calle 11 10-74",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 15,
+    "camas": 22
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-boutique-los-alpes-173ef",
+   "nombre": "Hotel Boutique los Alpes",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "Calle 17 17 48",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 9,
+    "camas": 20
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-campestre-buena-vista-db7fd",
+   "nombre": "Hotel Campestre Buena Vista",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "Vrd Caldera Abajo",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 3,
+    "camas": 12
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-campestre-el-flamingo-d5f28",
+   "nombre": "Hotel Campestre el Flamingo",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "Vda Quigua Abajo",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 7,
+    "camas": 11
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-campestre-kambra-4151b",
+   "nombre": "Hotel Campestre Kambra",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Quigua Abajo",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Quigua Abajo",
+   "extra": {
+    "habitaciones": 12,
+    "camas": 30
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-casa-real-garagoa-2f56a",
+   "nombre": "Hotel Casa Real Garagoa",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.080573,
+   "lon": -73.366157,
+   "precision": "direccion",
+   "direccion": "Cr 12 13 09",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 20,
+    "camas": 41
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-club-san-carlos-32163",
+   "nombre": "Hotel Club San Carlos",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Sector Club San Carlos",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 19,
+    "camas": 29
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-dannys-bcd5c",
+   "nombre": "Hotel Dannys",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "Carrera 12 N 12-41",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 15,
+    "camas": 22
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-eclipse-j-j-25503",
+   "nombre": "Hotel Eclipse J.j.",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.084302,
+   "lon": -73.364324,
+   "precision": "direccion",
+   "direccion": "Calle 13 No 11a 26",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 15,
+    "camas": 17
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-el-eden-garagoa-92056",
+   "nombre": "Hotel el Eden Garagoa",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.080573,
+   "lon": -73.366157,
+   "precision": "direccion",
+   "direccion": "Cr 12 13 07",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 11,
+    "camas": 15
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-el-encanto-garagoa-f4e46",
+   "nombre": "Hotel el Encanto Garagoa",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.080659,
+   "lon": -73.365216,
+   "precision": "direccion",
+   "direccion": "Carrera 11 13 18",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 14,
+    "camas": 18
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-la-casa-del-jardin-cf626",
+   "nombre": "Hotel la Casa del Jardín",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.080573,
+   "lon": -73.366157,
+   "precision": "direccion",
+   "direccion": "Carrera 12 11 65",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 8,
+    "camas": 15
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-la-ceiba-de-oro-07332",
+   "nombre": "Hotel la Ceiba de Oro",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.079692,
+   "lon": -73.366107,
+   "precision": "direccion",
+   "direccion": "Carrera 10 9 31",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 14,
+    "camas": 19
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-la-macarena-789c5",
+   "nombre": "Hotel la Macarena",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.080573,
+   "lon": -73.366157,
+   "precision": "direccion",
+   "direccion": "Carrera 12 13 24",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 4,
+    "camas": 7
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-mamapacha-6c787",
+   "nombre": "Hotel Mamapacha",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.082367,
+   "lon": -73.364891,
+   "precision": "direccion",
+   "direccion": "Carrera 12 10a 25",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 15,
+    "camas": 23
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-queen-magdalena-d60d4",
+   "nombre": "Hotel Queen Magdalena",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.079692,
+   "lon": -73.366107,
+   "precision": "direccion",
+   "direccion": "Carrera 10 No 12-47",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 11,
+    "camas": 11
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-san-fernando-samat-f8caf",
+   "nombre": "Hotel San Fernando Samat",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.080573,
+   "lon": -73.366157,
+   "precision": "direccion",
+   "direccion": "Carrera 12 12 49",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 13,
+    "camas": 21
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-tayrona-41442",
+   "nombre": "Hotel Tayrona",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.082889,
+   "lon": -73.362499,
+   "precision": "exacta",
+   "direccion": "Calle 12 9 12",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 18,
+    "camas": 14
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-hotel-y-restaurante-el-oasis-b96df",
+   "nombre": "Hotel y Restaurante el Oasis",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.085907,
+   "lon": -73.367047,
+   "precision": "direccion",
+   "direccion": "Calle 13 14 24",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 6,
+    "camas": 7
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-mamapacha-03704",
+   "nombre": "Mamapacha",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.082367,
+   "lon": -73.364891,
+   "precision": "exacta",
+   "direccion": "Carrera 12 10A-25",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-alojamiento-otro-tipo-de-vivienda-turistica-vere-dd7ce",
+   "nombre": "Otro Tipo de Vivienda Turística · Vereda Fumbaque",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "garagoa",
+   "lat": 5.059424,
+   "lon": -73.389165,
+   "precision": "vereda",
+   "direccion": "Vereda Fumbaque",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Fumbaque",
+   "extra": {
+    "habitaciones": 10,
+    "camas": 15
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-panoram-1f82a",
+   "nombre": "Panoram",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.082215,
+   "lon": -73.362872,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-alojamiento-panorama-confort-b41b8",
+   "nombre": "Panorama Confort",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "garagoa",
+   "lat": 5.083244,
+   "lon": -73.3661,
+   "precision": "direccion",
+   "direccion": "Calle 11 9 20",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 18,
+    "camas": 32
+   }
+  },
+  {
+   "id": "garagoa-alojamiento-villa-celeste-garagoa-123e0",
+   "nombre": "Villa Celeste Garagoa",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "garagoa",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Guanica Abajo Sector la Frontera",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Guanica Abajo",
+   "extra": {
+    "habitaciones": 8,
+    "camas": 16
+   }
+  },
+  {
+   "id": "garagoa-atraccion-alto-santabarbara-76d1e",
+   "nombre": "Alto Santabarbara",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "garagoa",
+   "lat": 5.073097,
+   "lon": -73.364816,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-cajero-banca-mia-8a19b",
+   "nombre": "Banca Mia",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.080084,
+   "lon": -73.362679,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-cajero-bancamia-586df",
+   "nombre": "Bancamía",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.080245,
+   "lon": -73.363726,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Fr 08:15-12:00,14:00-16:30; Sa 09:00-12:00"
+   }
+  },
+  {
+   "id": "garagoa-cajero-banco-agrario-9fa53",
+   "nombre": "Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.081137,
+   "lon": -73.364232,
+   "precision": "exacta",
+   "direccion": "Carrera 10 # 9-66 Local 101",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario",
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-cajero-banco-crescamos-ecf53",
+   "nombre": "Banco Crescamos",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.082355,
+   "lon": -73.363387,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-cajero-banco-de-bogota-b7d69",
+   "nombre": "Banco de Bogotá",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.08183,
+   "lon": -73.363479,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-cajero-banco-de-la-mujer-30b1f",
+   "nombre": "Banco de la Mujer",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.081673,
+   "lon": -73.364169,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-cajero-banco-w-bc1c4",
+   "nombre": "Banco W",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.082179,
+   "lon": -73.365624,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.bancow.com.co",
+    "horario": "Mo-Fr 08:30-12:00,14:00-17:00; Sa 09:00-12:00"
+   }
+  },
+  {
+   "id": "garagoa-cajero-bancolombia-69c09",
+   "nombre": "Bancolombia",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.08163,
+   "lon": -73.363982,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.bancolombia.com/"
+   }
+  },
+  {
+   "id": "garagoa-cajero-comerciacoop-995b6",
+   "nombre": "Comerciacoop",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "garagoa",
+   "lat": 5.0822,
+   "lon": -73.36304,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-carnes-la-feria-01e69",
+   "nombre": "Carnes la Feria",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "garagoa",
+   "lat": 5.082269,
+   "lon": -73.364914,
+   "precision": "exacta",
+   "direccion": "Carrera 12",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-el-campesino-f044d",
+   "nombre": "El Campesino",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "garagoa",
+   "lat": 5.083895,
+   "lon": -73.364369,
+   "precision": "exacta",
+   "direccion": "Carrera 12 12-22",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-el-guatecano-0134a",
+   "nombre": "El Guatecano",
+   "categoria": "comercio",
+   "subtipo": "greengrocer",
+   "municipio": "garagoa",
+   "lat": 5.080007,
+   "lon": -73.361761,
+   "precision": "exacta",
+   "direccion": "carrera 8 8-40",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-el-paraiso-fd9d2",
+   "nombre": "El Paraiso",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "garagoa",
+   "lat": 5.082739,
+   "lon": -73.364821,
+   "precision": "exacta",
+   "direccion": "Carrera 12",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-frutiver-b513c",
+   "nombre": "Frutiver",
+   "categoria": "comercio",
+   "subtipo": "greengrocer",
+   "municipio": "garagoa",
+   "lat": 5.082407,
+   "lon": -73.361226,
+   "precision": "exacta",
+   "direccion": "carrera 8",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-garpena-b6969",
+   "nombre": "Garpeña",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.082163,
+   "lon": -73.362869,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-indupan-b6ff9",
+   "nombre": "Indupan",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.08259,
+   "lon": -73.361024,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-justo-y-bueno-469bb",
+   "nombre": "Justo y Bueno",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "garagoa",
+   "lat": 5.083683,
+   "lon": -73.363075,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-la-floresta-74f27",
+   "nombre": "La Floresta",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "garagoa",
+   "lat": 5.081724,
+   "lon": -73.364204,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-la-orquideo-241c7",
+   "nombre": "La Orquideo",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.083179,
+   "lon": -73.361053,
+   "precision": "exacta",
+   "direccion": "carrera 8",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-la-primavera-98044",
+   "nombre": "La Primavera",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.080857,
+   "lon": -73.362671,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-la-res-12d65",
+   "nombre": "La Res",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "garagoa",
+   "lat": 5.082796,
+   "lon": -73.363035,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-la-special-cb0fc",
+   "nombre": "La Special",
+   "categoria": "comercio",
+   "subtipo": "greengrocer",
+   "municipio": "garagoa",
+   "lat": 5.080068,
+   "lon": -73.361627,
+   "precision": "exacta",
+   "direccion": "carrera 8 8-62",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-las-2r2-f83b5",
+   "nombre": "Las 2r2",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "garagoa",
+   "lat": 5.081777,
+   "lon": -73.361449,
+   "precision": "exacta",
+   "direccion": "carrera 8",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-las-americas-11a4a",
+   "nombre": "Las Americas",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.079967,
+   "lon": -73.361643,
+   "precision": "exacta",
+   "direccion": "carrera 8 8-30",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-morenos-20c86",
+   "nombre": "Morenos",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "garagoa",
+   "lat": 5.084211,
+   "lon": -73.36739,
+   "precision": "exacta",
+   "direccion": "Carrera15",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-panaderia-la-quince-ca8eb",
+   "nombre": "Panadería la Quince",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.084931,
+   "lon": -73.367306,
+   "precision": "exacta",
+   "direccion": "Carrera15 10c-54",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-picolin-17dbf",
+   "nombre": "Picolin",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.0814,
+   "lon": -73.363069,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-pollos-hato-grande-be79e",
+   "nombre": "Pollos Hato Grande",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "garagoa",
+   "lat": 5.082083,
+   "lon": -73.364979,
+   "precision": "exacta",
+   "direccion": "Carrera 12",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-rubi-cfaac",
+   "nombre": "Rubi",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "garagoa",
+   "lat": 5.084991,
+   "lon": -73.367374,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-surti-mas-ef22a",
+   "nombre": "Surti Mas",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "garagoa",
+   "lat": 5.082024,
+   "lon": -73.364604,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-surtifruver-be108",
+   "nombre": "Surtifruver",
+   "categoria": "comercio",
+   "subtipo": "greengrocer",
+   "municipio": "garagoa",
+   "lat": 5.083649,
+   "lon": -73.361035,
+   "precision": "exacta",
+   "direccion": "carrera 8",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-terra-nova-3f762",
+   "nombre": "Terra Nova",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "garagoa",
+   "lat": 5.079662,
+   "lon": -73.365546,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-umbipan-32ea9",
+   "nombre": "Umbipan",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "garagoa",
+   "lat": 5.082001,
+   "lon": -73.364079,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-comercio-wilbert-4ac9d",
+   "nombre": "Wilbert",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "garagoa",
+   "lat": 5.082097,
+   "lon": -73.365225,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-gasolinera-estacion-de-servicio-66c87",
+   "nombre": "Estación de servicio",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "garagoa",
+   "lat": 5.086384,
+   "lon": -73.367068,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-gasolinera-estacion-de-servicio-93256",
+   "nombre": "Estación de servicio",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "garagoa",
+   "lat": 5.079677,
+   "lon": -73.368122,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-gasolinera-la-quince-4f153",
+   "nombre": "La Quince",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "garagoa",
+   "lat": 5.086463,
+   "lon": -73.367101,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-monumento-monasterio-carmelitas-2abf6",
+   "nombre": "Monasterio Carmelitas",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "garagoa",
+   "lat": 5.078436,
+   "lon": -73.367432,
+   "precision": "exacta",
+   "direccion": "carrera 10",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-monumento-movimiento-misionario-de-colombia-52746",
+   "nombre": "Movimiento Misionario de Colombia",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "garagoa",
+   "lat": 5.085257,
+   "lon": -73.367349,
+   "precision": "exacta",
+   "direccion": "Carrera15",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-monumento-nuestra-senora-del-rosario-de-chiqui-3eded",
+   "nombre": "Nuestra Señora del Rosario de Chiquinquira",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "garagoa",
+   "lat": 5.080336,
+   "lon": -73.358341,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-alto-el-oso-ba669",
+   "nombre": "Alto el Oso",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.106348,
+   "lon": -73.309246,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-calle-11-a-993e1",
+   "nombre": "Calle 11 A",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "garagoa",
+   "lat": 5.08247,
+   "lon": -73.3644,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-centro-de-integracion-ciudadana-cb353",
+   "nombre": "Centro de Integracion Ciudadana",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "garagoa",
+   "lat": 5.080746,
+   "lon": -73.358273,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-coliseo-municipal-6dffa",
+   "nombre": "Coliseo Municipal",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "garagoa",
+   "lat": 5.082749,
+   "lon": -73.365461,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-carbonera-e1cf4",
+   "nombre": "Cuchilla Carbonera",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.141751,
+   "lon": -73.269521,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-el-varon-fb965",
+   "nombre": "Cuchilla el Varon",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.078953,
+   "lon": -73.316466,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-el-veral-7b114",
+   "nombre": "Cuchilla el Veral",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.04691,
+   "lon": -73.288577,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-guarumal-38e45",
+   "nombre": "Cuchilla Guarumal",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.070513,
+   "lon": -73.274638,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-las-cruces-3d0b1",
+   "nombre": "Cuchilla las Cruces",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.08271,
+   "lon": -73.29824,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-mama-pacha-f2244",
+   "nombre": "Cuchilla Mama Pacha",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.139026,
+   "lon": -73.303567,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-cuchilla-pena-blanca-f52ff",
+   "nombre": "Cuchilla Peña Blanca",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "garagoa",
+   "lat": 5.017605,
+   "lon": -73.282241,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-guanata-e84f9",
+   "nombre": "Guanata",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "garagoa",
+   "lat": 5.083979,
+   "lon": -73.367114,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-parque-principal-de-garagoa-bb38a",
+   "nombre": "Parque Principal de Garagoa",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "garagoa",
+   "lat": 5.081963,
+   "lon": -73.363771,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-naturaleza-via-a-predio-las-nubes-2e1a9",
+   "nombre": "Vía A Predio las Nubes",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "garagoa",
+   "lat": 5.055013,
+   "lon": -73.355283,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-operador-guia-de-turismo-c590b",
+   "nombre": "Guía de Turismo",
+   "categoria": "operador",
+   "subtipo": "guia de turismo",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "garagoa-operador-la-mochila-de-lore-fb275",
+   "nombre": "La Mochila de Lore",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "garagoa",
+   "lat": 5.080457,
+   "lon": -73.362604,
+   "precision": "direccion",
+   "direccion": "Calle 9 7 64",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "garagoa-operador-opal-experience-a7ce5",
+   "nombre": "Opal Experience",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "garagoa",
+   "lat": 5.080573,
+   "lon": -73.366157,
+   "precision": "direccion",
+   "direccion": "Carrera 12 7 19",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "garagoa-operador-viajes-juferos-85b58",
+   "nombre": "Viajes Juferos",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "cabecera",
+   "direccion": "Cl Trece a 16 -41",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-24-horas-9af28",
+   "nombre": "24 Horas",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.086205,
+   "lon": -73.367279,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-asadero-restaurante-maxipollo-2a22f",
+   "nombre": "Asadero Restaurante Maxipollo",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.081879,
+   "lon": -73.363474,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-bar-licorera-geminis-835c7",
+   "nombre": "Bar Licorera Geminis",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.086448,
+   "lon": -73.367208,
+   "precision": "exacta",
+   "direccion": "Carrera15",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-bola-8-60a81",
+   "nombre": "Bola 8",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.082213,
+   "lon": -73.362974,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-broaster-y-asado-a2969",
+   "nombre": "Broaster y Asado",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.082476,
+   "lon": -73.363974,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-bruselas-5caaa",
+   "nombre": "Bruselas",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.081982,
+   "lon": -73.363469,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-cafe-cafe-0e562",
+   "nombre": "Café Café",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "garagoa",
+   "lat": 5.081641,
+   "lon": -73.363499,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-candelaria-36230",
+   "nombre": "Candelaria",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.08046,
+   "lon": -73.361694,
+   "precision": "exacta",
+   "direccion": "carrera 8",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-carnivoros-99b16",
+   "nombre": "Carnivoros",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.081862,
+   "lon": -73.361442,
+   "precision": "exacta",
+   "direccion": "carrera 8",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-crema-y-nata-1051f",
+   "nombre": "Crema y Nata",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "garagoa",
+   "lat": 5.082292,
+   "lon": -73.363866,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-don-pollo-rico-f34fd",
+   "nombre": "Don Pollo Rico",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.083829,
+   "lon": -73.364461,
+   "precision": "exacta",
+   "direccion": "Carrera 12",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-donde-tere-19f1b",
+   "nombre": "Donde Tere",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.083381,
+   "lon": -73.362194,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-el-buho-e2ddb",
+   "nombre": "El Buho",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.085684,
+   "lon": -73.367373,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-el-mejor-e94be",
+   "nombre": "El Mejor",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.082641,
+   "lon": -73.364685,
+   "precision": "exacta",
+   "direccion": "calle 11",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-el-tenanpa-d745b",
+   "nombre": "El Tenanpa",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.081798,
+   "lon": -73.364192,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-frut-helado-f940e",
+   "nombre": "Frut Helado",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "garagoa",
+   "lat": 5.079027,
+   "lon": -73.3682,
+   "precision": "exacta",
+   "direccion": "Carrera 15 04-60",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.facebook.com/profile.php?id=100054642376081",
+    "horario": "Mo-Su 10:00-22:00"
+   }
+  },
+  {
+   "id": "garagoa-restaurante-hipopotamos-express-620a6",
+   "nombre": "Hipopotamos Express",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.083046,
+   "lon": -73.362267,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-jorch-20f3b",
+   "nombre": "Jorch",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "garagoa",
+   "lat": 5.082321,
+   "lon": -73.36293,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-juana-cafe-bar-500f5",
+   "nombre": "Juana Café Bar",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "garagoa",
+   "lat": 5.084559,
+   "lon": -73.367349,
+   "precision": "exacta",
+   "direccion": "Carrera15",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-karluo-66ba8",
+   "nombre": "Karluo",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "garagoa",
+   "lat": 5.083005,
+   "lon": -73.364661,
+   "precision": "exacta",
+   "direccion": "Carrera 12",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-la-estacion-de-sabor-60198",
+   "nombre": "La Estación de Sabor",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.085204,
+   "lon": -73.367284,
+   "precision": "exacta",
+   "direccion": "Carrera15",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-la-martina-5dc9a",
+   "nombre": "La Martina",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.086515,
+   "lon": -73.367224,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-la-quinta-8f65a",
+   "nombre": "La Quinta",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.085287,
+   "lon": -73.362948,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://restaurantelaquint.wixsite.com/laquintagaragoa"
+   }
+  },
+  {
+   "id": "garagoa-restaurante-maldivas-62118",
+   "nombre": "Maldivas",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.085456,
+   "lon": -73.36674,
+   "precision": "exacta",
+   "direccion": "calle 13 14-20",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-mi-cafe-5f193",
+   "nombre": "Mi Café",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "garagoa",
+   "lat": 5.085088,
+   "lon": -73.367303,
+   "precision": "exacta",
+   "direccion": "calle 11a 14-24",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-peaebrera-d0578",
+   "nombre": "Peaebrera",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.082219,
+   "lon": -73.363304,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-pico-rico-89ab6",
+   "nombre": "Pico Rico",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.082531,
+   "lon": -73.364054,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-pizzeria-piccolo-f5b30",
+   "nombre": "Pizzeria Piccolo",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "garagoa",
+   "lat": 5.084554,
+   "lon": -73.367432,
+   "precision": "exacta",
+   "direccion": "Carrera15",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-plaza-de-mercado-garagoa-01c59",
+   "nombre": "Plaza de Mercado Garagoa",
+   "categoria": "restaurante",
+   "subtipo": "plaza de mercado",
+   "municipio": "garagoa",
+   "lat": 5.082572,
+   "lon": -73.365404,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-raka-mandaca-84927",
+   "nombre": "Raka Mandaca",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "garagoa",
+   "lat": 5.082208,
+   "lon": -73.363415,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-restaurante-garacenter-d4140",
+   "nombre": "Restaurante Garacenter",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.081399,
+   "lon": -73.363125,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-restaurante-la-esmeralda-0dfdb",
+   "nombre": "Restaurante la Esmeralda",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.081804,
+   "lon": -73.364923,
+   "precision": "exacta",
+   "direccion": "Carrera 12",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-restaurante-la-quinta-dd431",
+   "nombre": "Restaurante la Quinta",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.0844,
+   "lon": -73.362596,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-risco-cafe-bar-18407",
+   "nombre": "Risco Café - Bar",
+   "categoria": "restaurante",
+   "subtipo": "pub",
+   "municipio": "garagoa",
+   "lat": 5.081644,
+   "lon": -73.364021,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-shawuarma-4aad0",
+   "nombre": "Shawuarma",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "garagoa",
+   "lat": 5.08219,
+   "lon": -73.362977,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-songo-sorongo-db92c",
+   "nombre": "Songo-Sorongo",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "garagoa",
+   "lat": 5.081434,
+   "lon": -73.36249,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-restaurante-vivatto-pizza-af71a",
+   "nombre": "Vivatto Pizza",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "garagoa",
+   "lat": 5.082145,
+   "lon": -73.362374,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-salud-clinica-santa-barbara-del-valle-de-t-e7a34",
+   "nombre": "Clinica Santa Barbara del Valle de Tenza S.a.",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "garagoa",
+   "lat": 5.084302,
+   "lon": -73.364324,
+   "precision": "direccion",
+   "direccion": "Calle 13 N. 9-55",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ]
+  },
+  {
+   "id": "garagoa-salud-hospital-2bb27",
+   "nombre": "Hospital",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "garagoa",
+   "lat": 5.078116,
+   "lon": -73.361921,
+   "precision": "exacta",
+   "direccion": "carrera 8 KR 8 No. 6-02",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-salud-hospital-de-garagoa-a149a",
+   "nombre": "Hospital de Garagoa",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "garagoa",
+   "lat": 5.07819,
+   "lon": -73.361865,
+   "precision": "direccion",
+   "direccion": "Kr 8 No. 6-02",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
+   "id": "garagoa-salud-sede-alterna-garagoa-5e70a",
+   "nombre": "Sede Alterna - Garagoa",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "garagoa",
+   "lat": 5.081767,
+   "lon": -73.364606,
+   "precision": "direccion",
+   "direccion": "Calle 10 # 9-17",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
+   "id": "garagoa-salud-urgencias-9caee",
+   "nombre": "Urgencias",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "garagoa",
+   "lat": 5.077927,
+   "lon": -73.361667,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-servicio-antigua-alcaldia-8dada",
+   "nombre": "Antigua Alcaldía",
+   "categoria": "servicio",
+   "subtipo": "townhall",
+   "municipio": "garagoa",
+   "lat": 5.081501,
+   "lon": -73.363779,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-servicio-casa-de-la-cultura-tomas-villamil-029b3",
+   "nombre": "Casa de la Cultura \"Tomas Villamil\"",
+   "categoria": "servicio",
+   "subtipo": "library",
+   "municipio": "garagoa",
+   "lat": 5.08162,
+   "lon": -73.364826,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "garagoa-servicio-estacion-de-policia-garagoa-e81e2",
+   "nombre": "Estación de Policia Garagoa",
+   "categoria": "servicio",
+   "subtipo": "police",
+   "municipio": "garagoa",
+   "lat": 5.084988,
+   "lon": -73.362115,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-alojamiento-apartamento-turistico-vereda-puentes-65628",
+   "nombre": "Apartamento Turístico · Vereda Puentes",
+   "categoria": "alojamiento",
+   "subtipo": "apartamento turístico",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Puentes",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Puentes",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 1
+   }
+  },
+  {
+   "id": "guateque-alojamiento-balcon-de-la-montana-6c893",
+   "nombre": "Balcon de la Montaña",
+   "categoria": "alojamiento",
+   "subtipo": "glamping",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca la Esperanza",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 5
+   }
+  },
+  {
+   "id": "guateque-alojamiento-cabanas-villa-mariana-6d9c3",
+   "nombre": "Cabañas Villa Mariana",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Puente",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Puente",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 4
+   }
+  },
+  {
+   "id": "guateque-alojamiento-casa-turistica-vereda-cuatro-esquina-6163b",
+   "nombre": "Casa Turística · Vereda Cuatro Esquinas",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "guateque",
+   "lat": 5.027743,
+   "lon": -73.484208,
+   "precision": "vereda",
+   "direccion": "Vereda Cuatro Esquinas",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Cuatro Esquinas",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 4
+   }
+  },
+  {
+   "id": "guateque-alojamiento-casa-turistica-vereda-el-mortino-12c33",
+   "nombre": "Casa Turística · Vereda el Mortiño",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda El Mortiño",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "El Mortiño",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 8
+   }
+  },
+  {
+   "id": "guateque-alojamiento-ecoglamping-guatoc-04c07",
+   "nombre": "Ecoglamping Guatoc",
+   "categoria": "alojamiento",
+   "subtipo": "glamping",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca la Naveta",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 6
+   }
+  },
+  {
+   "id": "guateque-alojamiento-finca-turistica-750cf",
+   "nombre": "Finca Turística",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "guateque",
+   "lat": 5.006288,
+   "lon": -73.473133,
+   "precision": "cabecera",
+   "direccion": "Vereda Mortiño",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 14,
+    "camas": 35
+   }
+  },
+  {
+   "id": "guateque-alojamiento-finca-turistica-vereda-goteras-b7f63",
+   "nombre": "Finca Turística · Vereda Goteras",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Goteras",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Goteras",
+   "extra": {
+    "habitaciones": 4,
+    "camas": 9
+   }
+  },
+  {
+   "id": "guateque-alojamiento-finca-turistica-vereda-llano-grande-c45ef",
+   "nombre": "Finca Turística · Vereda Llano Grande",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Llano Grande",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Llano Grande",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 2
+   }
+  },
+  {
+   "id": "guateque-alojamiento-glamping-chowa-guatoc-781c8",
+   "nombre": "Glamping Chowa Guatoc",
+   "categoria": "alojamiento",
+   "subtipo": "glamping",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vrd Ubajuca Km 5 Via Guateque Bogota",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 3,
+    "camas": 9
+   }
+  },
+  {
+   "id": "guateque-alojamiento-gran-hotel-central-65325",
+   "nombre": "Gran Hotel Central",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.007521,
+   "lon": -73.473523,
+   "precision": "exacta",
+   "direccion": "Calle 11 7-48",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 33,
+    "camas": 70,
+    "horario": "24/7"
+   }
+  },
+  {
+   "id": "guateque-alojamiento-guatoc-cacique-hotel-fe4e2",
+   "nombre": "Guatoc Cacique Hotel",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.003719,
+   "lon": -73.474938,
+   "precision": "direccion",
+   "direccion": "Carrera 7 11 30",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 29,
+    "camas": 43
+   }
+  },
+  {
+   "id": "guateque-alojamiento-hospedaje-la-casona-guateque-47890",
+   "nombre": "Hospedaje la Casona Guateque",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "guateque",
+   "lat": 5.00874,
+   "lon": -73.478392,
+   "precision": "direccion",
+   "direccion": "Calle 11 7 88",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 8,
+    "camas": 12
+   }
+  },
+  {
+   "id": "guateque-alojamiento-hostal-valle-dorado-9080e",
+   "nombre": "Hostal Valle Dorado",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "guateque",
+   "lat": 5.006103,
+   "lon": -73.471051,
+   "precision": "direccion",
+   "direccion": "Calle 10 7 65",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 20,
+    "camas": 30
+   }
+  },
+  {
+   "id": "guateque-alojamiento-hotel-paraiso-47101",
+   "nombre": "Hotel Paraiso",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.007091,
+   "lon": -73.474214,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-alojamiento-hotel-tu-refugio-a41db",
+   "nombre": "Hotel Tu Refugio",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.003719,
+   "lon": -73.474938,
+   "precision": "direccion",
+   "direccion": "Carrera 7 11 21",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 27,
+    "camas": 44
+   }
+  },
+  {
+   "id": "guateque-alojamiento-hotel-villa-hotel-9aa00",
+   "nombre": "Hotel Villa Hotel",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.006103,
+   "lon": -73.471051,
+   "precision": "direccion",
+   "direccion": "Calle 10 8-11",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 24,
+    "camas": 28
+   }
+  },
+  {
+   "id": "guateque-alojamiento-hotel-y-restaurante-real-3458d",
+   "nombre": "Hotel y Restaurante Real",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.006288,
+   "lon": -73.473133,
+   "precision": "cabecera",
+   "direccion": "Calle 13 0 87",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 18,
+    "camas": 40
+   }
+  },
+  {
+   "id": "guateque-alojamiento-la-gironda-c7a15",
+   "nombre": "La Gironda",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "guateque",
+   "lat": 5.007689,
+   "lon": -73.466343,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-alojamiento-la-posada-mia-hospedaje-en-guateque-4e5d1",
+   "nombre": "La Posada Mia Hospedaje en Guateque",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "guateque",
+   "lat": 5.008652,
+   "lon": -73.474385,
+   "precision": "direccion",
+   "direccion": "Calle 12 4 31",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 10,
+    "camas": 14
+   }
+  },
+  {
+   "id": "guateque-alojamiento-otro-tipo-de-vivienda-turistica-vere-c83a9",
+   "nombre": "Otro Tipo de Vivienda Turística · Vereda Chorro de Oro",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "guateque",
+   "lat": 5.014912,
+   "lon": -73.48991,
+   "precision": "vereda",
+   "direccion": "Vereda Chorro de Oro",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Chorro de Oro",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 12
+   }
+  },
+  {
+   "id": "guateque-alojamiento-terrazas-guateque-balneario-bfa09",
+   "nombre": "Terrazas Guateque Balneario",
+   "categoria": "alojamiento",
+   "subtipo": "centro vacacional",
+   "municipio": "guateque",
+   "lat": 5.006288,
+   "lon": -73.473133,
+   "precision": "cabecera",
+   "direccion": "Calle 13 0 252 Interior 1",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 12,
+    "camas": 28
+   }
+  },
+  {
+   "id": "guateque-alojamiento-ualtor-hospedaje-la-esmeralda-51ae8",
+   "nombre": "Ualtor` Hospedaje la Esmeralda",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "guateque",
+   "lat": 5.004887,
+   "lon": -73.471996,
+   "precision": "direccion",
+   "direccion": "Calle 8 6 38",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 10,
+    "camas": 22
+   }
+  },
+  {
+   "id": "guateque-alojamiento-villa-joli-f25e9",
+   "nombre": "Villa JoLi",
+   "categoria": "alojamiento",
+   "subtipo": "chalet",
+   "municipio": "guateque",
+   "lat": 5.017107,
+   "lon": -73.484472,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-cajero-banco-agrario-2aa5d",
+   "nombre": "Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "guateque",
+   "lat": 5.006814,
+   "lon": -73.473275,
+   "precision": "exacta",
+   "direccion": "Carrera 7 # 10-05",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario",
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-cajero-banco-de-bogota-26184",
+   "nombre": "Banco de Bogotá",
+   "categoria": "cajero",
+   "subtipo": "banco",
+   "municipio": "guateque",
+   "lat": 5.00677,
+   "lon": -73.473079,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-comercio-panaderia-asados-el-fogon-bc450",
+   "nombre": "Panadería Asados el Fogon",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "guateque",
+   "lat": 5.005911,
+   "lon": -73.473123,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-comercio-panaderia-lumpian-7dfbd",
+   "nombre": "Panadería Lumpian",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "guateque",
+   "lat": 5.007433,
+   "lon": -73.472898,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-gasolinera-estacion-de-servicio-263ea",
+   "nombre": "Estación de servicio",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "guateque",
+   "lat": 5.009143,
+   "lon": -73.483088,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-calle-10-7f6f3",
+   "nombre": "Calle 10",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "guateque",
+   "lat": 5.006632,
+   "lon": -73.472964,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-camino-real-0cc4b",
+   "nombre": "Camino Real",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "guateque",
+   "lat": 5.012029,
+   "lon": -73.490452,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-jardin-jose-maria-avellana-b73ce",
+   "nombre": "Jardín José María Avellana",
+   "categoria": "naturaleza",
+   "subtipo": "garden",
+   "municipio": "guateque",
+   "lat": 5.003951,
+   "lon": -73.473157,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-la-colina-808fe",
+   "nombre": "La Colina",
+   "categoria": "naturaleza",
+   "subtipo": "swimming_pool",
+   "municipio": "guateque",
+   "lat": 4.999504,
+   "lon": -73.474491,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-loma-sinabita-3aa97",
+   "nombre": "Loma Sinabita",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "guateque",
+   "lat": 4.99432,
+   "lon": -73.473595,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-parque-central-enrique-olaya-herrera-130d4",
+   "nombre": "Parque Central Enrique Olaya Herrera",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "guateque",
+   "lat": 5.006277,
+   "lon": -73.473133,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-parque-itboy-65cc5",
+   "nombre": "Parque Itboy",
+   "categoria": "naturaleza",
+   "subtipo": "playground",
+   "municipio": "guateque",
+   "lat": 5.005552,
+   "lon": -73.47121,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-naturaleza-polideportivo-municipio-1b7d0",
+   "nombre": "Polideportivo Municipio",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "guateque",
+   "lat": 5.006994,
+   "lon": -73.467826,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-operador-go-up-travel-agency-guateque-d9528",
+   "nombre": "Go Up Travel Agency Guateque",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "guateque",
+   "lat": 5.006288,
+   "lon": -73.473133,
+   "precision": "cabecera",
+   "direccion": "Cl 13 5 55 Local 1",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "guateque-operador-guia-de-turismo-cffa0",
+   "nombre": "Guía de Turismo",
+   "categoria": "operador",
+   "subtipo": "guia de turismo",
+   "municipio": "guateque",
+   "lat": 5.006288,
+   "lon": -73.473133,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "guateque-operador-servimorel-ltda-agencia-guateque-061b7",
+   "nombre": "Servimorel Ltda Agencia Guateque",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "guateque",
+   "lat": 5.00874,
+   "lon": -73.478392,
+   "precision": "direccion",
+   "direccion": "Calle 11 5-46",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "guateque-operador-trama-tours-dd942",
+   "nombre": "Trama Tours",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "guateque",
+   "lat": 5.007203,
+   "lon": -73.472538,
+   "precision": "direccion",
+   "direccion": "Carrera 6 13 112",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "guateque-restaurante-asados-el-fogon-a994b",
+   "nombre": "Asados el Fogón",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "guateque",
+   "lat": 5.005826,
+   "lon": -73.47315,
+   "precision": "exacta",
+   "direccion": "Carrera 6A 82",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-restaurante-plaza-de-marcado-guateque-1887a",
+   "nombre": "Plaza de Marcado Guateque",
+   "categoria": "restaurante",
+   "subtipo": "plaza de mercado",
+   "municipio": "guateque",
+   "lat": 5.004388,
+   "lon": -73.474031,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "We 00:00-24:00"
+   }
+  },
+  {
+   "id": "guateque-restaurante-rancho-martinez-818ce",
+   "nombre": "Rancho Martínez",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "guateque",
+   "lat": 5.006005,
+   "lon": -73.473492,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-restaurante-social-7ca72",
+   "nombre": "Social",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "guateque",
+   "lat": 5.005977,
+   "lon": -73.47291,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-restaurante-son-arrieros-bd5cd",
+   "nombre": "Son Arrieros",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "guateque",
+   "lat": 5.006223,
+   "lon": -73.472788,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "guateque-salud-hospital-de-guateque-d9402",
+   "nombre": "Hospital de Guateque",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "guateque",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Km 1 Via Sutatenza",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "2"
+   }
+  },
+  {
+   "id": "guateque-servicio-teminal-centarl-b1c3b",
+   "nombre": "Teminal Centarl",
+   "categoria": "servicio",
+   "subtipo": "bus_station",
+   "municipio": "guateque",
+   "lat": 5.007378,
+   "lon": -73.474354,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
    "id": "guayata-alojamiento-casa-bc464",
-   "nombre": "casa",
+   "nombre": "Casa",
    "categoria": "alojamiento",
    "subtipo": "guest_house",
    "municipio": "guayata",
@@ -1082,29 +5109,12 @@
   },
   {
    "id": "guayata-alojamiento-casa-e28b7",
-   "nombre": "casa",
+   "nombre": "Casa",
    "categoria": "alojamiento",
    "subtipo": "guest_house",
    "municipio": "guayata",
    "lat": 4.937826,
    "lon": -73.525211,
-   "precision": "exacta",
-   "direccion": "",
-   "plan": null,
-   "esServicio": false,
-   "conRegistro": false,
-   "fuentes": [
-    "OpenStreetMap"
-   ]
-  },
-  {
-   "id": "guayata-alojamiento-casa-0e4fa",
-   "nombre": "casa",
-   "categoria": "alojamiento",
-   "subtipo": "guest_house",
-   "municipio": "guayata",
-   "lat": 4.941315,
-   "lon": -73.521094,
    "precision": "exacta",
    "direccion": "",
    "plan": null,
@@ -1137,7 +5147,7 @@
   },
   {
    "id": "guayata-alojamiento-finca-turistica-vereda-rincon-arriba-830b3",
-   "nombre": "Finca turística · vereda Rincon Arriba",
+   "nombre": "Finca Turística · Vereda Rincon Arriba",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "guayata",
@@ -1159,7 +5169,7 @@
   },
   {
    "id": "guayata-alojamiento-finca-turistica-vereda-tablon-1ff0c",
-   "nombre": "Finca turística · vereda Tablon",
+   "nombre": "Finca Turística · Vereda Tablon",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "guayata",
@@ -1272,7 +5282,7 @@
   },
   {
    "id": "guayata-naturaleza-alto-de-pan-de-azucar-2ff30",
-   "nombre": "Alto De Pan de Azúcar",
+   "nombre": "Alto de Pan de Azúcar",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "guayata",
@@ -1289,7 +5299,7 @@
   },
   {
    "id": "guayata-naturaleza-alto-las-cruces-93488",
-   "nombre": "Alto Las Cruces",
+   "nombre": "Alto las Cruces",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "guayata",
@@ -1306,7 +5316,7 @@
   },
   {
    "id": "guayata-naturaleza-alto-pan-de-azucar-2edd1",
-   "nombre": "Alto Pan De Azucar",
+   "nombre": "Alto Pan de Azucar",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "guayata",
@@ -1340,7 +5350,7 @@
   },
   {
    "id": "guayata-naturaleza-loma-el-regadio-95a75",
-   "nombre": "Loma El Regadio",
+   "nombre": "Loma el Regadio",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "guayata",
@@ -1357,7 +5367,7 @@
   },
   {
    "id": "guayata-naturaleza-loma-el-rogache-55882",
-   "nombre": "Loma El Rogache",
+   "nombre": "Loma el Rogache",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "guayata",
@@ -1391,7 +5401,7 @@
   },
   {
    "id": "guayata-restaurante-cafe-deleite-colombainos-sas-68255",
-   "nombre": "Cafe Deleite Colombainos SAS",
+   "nombre": "Café Deleite Colombainos Sas",
    "categoria": "restaurante",
    "subtipo": "cafe",
    "municipio": "guayata",
@@ -1445,7 +5455,7 @@
   },
   {
    "id": "guayata-servicio-alcaldia-0b5da",
-   "nombre": "Alcaldia",
+   "nombre": "Alcaldía",
    "categoria": "servicio",
    "subtipo": "townhall",
    "municipio": "guayata",
@@ -1462,7 +5472,7 @@
   },
   {
    "id": "la-capilla-alojamiento-finca-turistica-d4e8b",
-   "nombre": "Finca turística",
+   "nombre": "Finca Turística",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "la-capilla",
@@ -1521,7 +5531,7 @@
   },
   {
    "id": "la-capilla-naturaleza-cuchilla-los-cristales-144f1",
-   "nombre": "Cuchilla Los Cristales",
+   "nombre": "Cuchilla los Cristales",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "la-capilla",
@@ -1555,7 +5565,7 @@
   },
   {
    "id": "la-capilla-salud-e-s-e-la-capilla-bef96",
-   "nombre": "E.S.E. La Capilla",
+   "nombre": "E.s.e. la Capilla",
    "categoria": "salud",
    "subtipo": "hospital",
    "municipio": "la-capilla",
@@ -1598,6 +5608,3663 @@
    "municipio": "la-capilla",
    "lat": 5.096083,
    "lon": -73.445038,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-alojamiento-apartamento-turistico-79332",
+   "nombre": "Apartamento Turístico",
+   "categoria": "alojamiento",
+   "subtipo": "apartamento turístico",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 6
+   }
+  },
+  {
+   "id": "macanal-alojamiento-ave-maria-sumerce-5d4f9",
+   "nombre": "Ave María Sumerce",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Lote 13 Vereda la Vega",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "La Vega",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 5
+   }
+  },
+  {
+   "id": "macanal-alojamiento-cabanas-luz-del-alba-e49ed",
+   "nombre": "Cabañas Luz del Alba",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda el Datil",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "El Datil",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 1
+   }
+  },
+  {
+   "id": "macanal-alojamiento-cabanas-y-restaurante-helenua-91103",
+   "nombre": "Cabañas y Restaurante Helenua",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": 4.972728,
+   "lon": -73.318733,
+   "precision": "direccion",
+   "direccion": "Calle 4 6 17",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 3,
+    "camas": 18
+   }
+  },
+  {
+   "id": "macanal-alojamiento-casa-turistica-vereda-centro-d4d51",
+   "nombre": "Casa Turística · Vereda Centro",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Centro",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Centro",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 3
+   }
+  },
+  {
+   "id": "macanal-alojamiento-casa-turistica-vereda-el-limon-b4f9e",
+   "nombre": "Casa Turística · Vereda el Limon",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda El Limon",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "El Limon",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 2
+   }
+  },
+  {
+   "id": "macanal-alojamiento-casa-turistica-vereda-quebrada-negra-49121",
+   "nombre": "Casa Turística · Vereda Quebrada Negra",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Quebrada Negra",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Quebrada Negra",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 9
+   }
+  },
+  {
+   "id": "macanal-alojamiento-diamante-glamping-98e74",
+   "nombre": "Diamante Glamping",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.970363,
+   "lon": -73.315005,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.facebook.com/diamanteglamping"
+   }
+  },
+  {
+   "id": "macanal-alojamiento-ecoturismo-evy-e73f6",
+   "nombre": "Ecoturismo Evy",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca Piedra Mona",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 10
+   }
+  },
+  {
+   "id": "macanal-alojamiento-el-rinconcito-del-bosque-38c8f",
+   "nombre": "El Rinconcito del Bosque",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Pantanos",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Pantanos",
+   "extra": {
+    "habitaciones": 5,
+    "camas": 9
+   }
+  },
+  {
+   "id": "macanal-alojamiento-finca-turistica-vereda-centro-bata-00ef6",
+   "nombre": "Finca Turística · Vereda Centro Bata",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Centro Bata",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Centro Bata",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 2
+   }
+  },
+  {
+   "id": "macanal-alojamiento-finca-turistica-vereda-el-volador-49a5a",
+   "nombre": "Finca Turística · Vereda el Volador",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": 4.985857,
+   "lon": -73.330919,
+   "precision": "vereda",
+   "direccion": "Vereda El Volador",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "El Volador",
+   "extra": {
+    "habitaciones": 4,
+    "camas": 5
+   }
+  },
+  {
+   "id": "macanal-alojamiento-finca-turistica-vereda-la-mesa-17ef5",
+   "nombre": "Finca Turística · Vereda la Mesa",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": 5.017447,
+   "lon": -73.325961,
+   "precision": "vereda",
+   "direccion": "Vereda La Mesa",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "La Mesa",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 9
+   }
+  },
+  {
+   "id": "macanal-alojamiento-finca-turistica-vereda-naranjos-4493f",
+   "nombre": "Finca Turística · Vereda Naranjos",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": 4.957253,
+   "lon": -73.351147,
+   "precision": "vereda",
+   "direccion": "Vereda Naranjos",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Naranjos",
+   "extra": {
+    "habitaciones": 3,
+    "camas": 10
+   }
+  },
+  {
+   "id": "macanal-alojamiento-finca-turistica-vereda-vijagual-36786",
+   "nombre": "Finca Turística · Vereda Vijagual",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Vijagual",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Vijagual",
+   "extra": {
+    "habitaciones": 3,
+    "camas": 12
+   }
+  },
+  {
+   "id": "macanal-alojamiento-glamping-buenos-aires-307cd",
+   "nombre": "Glamping Buenos Aires",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.954199,
+   "lon": -73.322258,
+   "precision": "exacta",
+   "direccion": "Vereda la Vega",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 8,
+    "web": "https://www.facebook.com/profile.php?id=100076162609001"
+   }
+  },
+  {
+   "id": "macanal-alojamiento-glamping-campestre-uriyahu-6c042",
+   "nombre": "Glamping Campestre Uriyahu",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.969049,
+   "lon": -73.312349,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.facebook.com/profile.php?id=100063652077325"
+   }
+  },
+  {
+   "id": "macanal-alojamiento-glamping-dharma-0a41a",
+   "nombre": "Glamping Dharma",
+   "categoria": "alojamiento",
+   "subtipo": "glamping",
+   "municipio": "macanal",
+   "lat": 4.985857,
+   "lon": -73.330919,
+   "precision": "vereda",
+   "direccion": "Vereda Volador Sector la Cabaña",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Volador",
+   "extra": {
+    "habitaciones": 2,
+    "camas": 6
+   }
+  },
+  {
+   "id": "macanal-alojamiento-glamping-mamaterra-9c2c7",
+   "nombre": "Glamping Mamaterra",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": 4.985857,
+   "lon": -73.330919,
+   "precision": "vereda",
+   "direccion": "Finca el Pedregal Vereda el Volador Bajo",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "El Volador Bajo",
+   "extra": {
+    "habitaciones": 10,
+    "camas": 15
+   }
+  },
+  {
+   "id": "macanal-alojamiento-glamping-xtreme-4ef36",
+   "nombre": "Glamping Xtreme",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.981808,
+   "lon": -73.342879,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.instagram.com/"
+   }
+  },
+  {
+   "id": "macanal-alojamiento-hospedaje-miramar-macanal-b68e7",
+   "nombre": "Hospedaje Miramar Macanal",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "macanal",
+   "lat": 4.971411,
+   "lon": -73.319702,
+   "precision": "direccion",
+   "direccion": "Calle 2 3-45",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 7,
+    "camas": 12
+   }
+  },
+  {
+   "id": "macanal-alojamiento-hostal-cartegenita-751b7",
+   "nombre": "Hostal Cartegenita",
+   "categoria": "alojamiento",
+   "subtipo": "chalet",
+   "municipio": "macanal",
+   "lat": 4.950611,
+   "lon": -73.313143,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-alojamiento-hotel-casa-mural-aaea7",
+   "nombre": "Hotel Casa Mural",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.971911,
+   "lon": -73.318407,
+   "precision": "direccion",
+   "direccion": "Calle 3 3 24",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 8,
+    "camas": 16
+   }
+  },
+  {
+   "id": "macanal-alojamiento-hotel-clavellino-79ed9",
+   "nombre": "Hotel Clavellino",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.973104,
+   "lon": -73.320864,
+   "precision": "exacta",
+   "direccion": "Calle 4 Nro 6 - 18",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 11,
+    "camas": 11
+   }
+  },
+  {
+   "id": "macanal-alojamiento-hotel-el-encanto-macanal-ef5cb",
+   "nombre": "Hotel el Encanto Macanal",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.971411,
+   "lon": -73.319702,
+   "precision": "direccion",
+   "direccion": "Calle 2 4 93",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 7,
+    "camas": 20
+   }
+  },
+  {
+   "id": "macanal-alojamiento-hotel-la-esmeralda-macanal-5b00e",
+   "nombre": "Hotel la Esmeralda Macanal",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.972011,
+   "lon": -73.320039,
+   "precision": "direccion",
+   "direccion": "Carrera 5 2a 54",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 14,
+    "camas": 15
+   }
+  },
+  {
+   "id": "macanal-alojamiento-hotel-sinai-00782",
+   "nombre": "Hotel Sinaí",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 5.010486,
+   "lon": -73.360489,
+   "precision": "exacta",
+   "direccion": "Vereda el Datil",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 19,
+    "camas": 19
+   }
+  },
+  {
+   "id": "macanal-alojamiento-la-cabana-macanal-96b4d",
+   "nombre": "La Cabaña Macanal",
+   "categoria": "alojamiento",
+   "subtipo": "apartamento turístico",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Calle 2 Bis a 7 a 15",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 10
+   }
+  },
+  {
+   "id": "macanal-alojamiento-la-esmeralda-79398",
+   "nombre": "La Esmeralda",
+   "categoria": "alojamiento",
+   "subtipo": "hostel",
+   "municipio": "macanal",
+   "lat": 4.971994,
+   "lon": -73.319944,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-alojamiento-la-vista-macanal-97b79",
+   "nombre": "La Vista Macanal",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Kilometro 283 Via Santa Maria",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 16
+   }
+  },
+  {
+   "id": "macanal-alojamiento-lake-guest-house-f62d3",
+   "nombre": "Lake Guest House",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Vrd Limon",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 4,
+    "camas": 4
+   }
+  },
+  {
+   "id": "macanal-alojamiento-otro-tipo-de-vivienda-turistica-ab528",
+   "nombre": "Otro Tipo de Vivienda Turística",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Vereda Quebrada Negra",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 6,
+    "camas": 21
+   }
+  },
+  {
+   "id": "macanal-alojamiento-otro-tipo-de-vivienda-turistica-vere-7936b",
+   "nombre": "Otro Tipo de Vivienda Turística · Vereda Centro",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Centro",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Centro",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 1
+   }
+  },
+  {
+   "id": "macanal-alojamiento-quinta-la-sonada-b2ddf",
+   "nombre": "Quinta la Soñada",
+   "categoria": "alojamiento",
+   "subtipo": "chalet",
+   "municipio": "macanal",
+   "lat": 4.954226,
+   "lon": -73.340225,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-alojamiento-sala-de-belleza-y-miscelanea-taliana-b511f",
+   "nombre": "Sala de Belleza y Miscelanea Taliana",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.971911,
+   "lon": -73.318407,
+   "precision": "direccion",
+   "direccion": "Calle 3 4 45",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 3,
+    "camas": 6
+   }
+  },
+  {
+   "id": "macanal-alojamiento-summer-c-hotel-y-playground-4a877",
+   "nombre": "Summer C Hotel y Playground",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "macanal",
+   "lat": 4.951185,
+   "lon": -73.320583,
+   "precision": "exacta",
+   "direccion": "Sec Cristo Rey",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 12,
+    "camas": 31,
+    "web": "https://www.hotelsummerc.com/es"
+   }
+  },
+  {
+   "id": "macanal-alojamiento-tinyhouse-alta-vista-a7d35",
+   "nombre": "Tinyhouse Alta Vista",
+   "categoria": "alojamiento",
+   "subtipo": "chalet",
+   "municipio": "macanal",
+   "lat": 4.976611,
+   "lon": -73.33587,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-alojamiento-zodme-2-ca10e",
+   "nombre": "Zodme 2",
+   "categoria": "alojamiento",
+   "subtipo": "camp_site",
+   "municipio": "macanal",
+   "lat": 4.960552,
+   "lon": -73.321481,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-alojamiento-zodme-2b-3d6e2",
+   "nombre": "Zodme 2b",
+   "categoria": "alojamiento",
+   "subtipo": "camp_site",
+   "municipio": "macanal",
+   "lat": 4.973994,
+   "lon": -73.33327,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-atraccion-alto-de-la-virgen-5f876",
+   "nombre": "Alto de la Virgen",
+   "categoria": "atraccion",
+   "subtipo": "viewpoint",
+   "municipio": "macanal",
+   "lat": 4.974305,
+   "lon": -73.318879,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-atraccion-mirador-cristo-rey-macanal-2d03c",
+   "nombre": "Mirador Cristo Rey Macanal",
+   "categoria": "atraccion",
+   "subtipo": "viewpoint",
+   "municipio": "macanal",
+   "lat": 4.957961,
+   "lon": -73.323707,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-atraccion-mirador-el-totumo-147b5",
+   "nombre": "Mirador el Totumo",
+   "categoria": "atraccion",
+   "subtipo": "viewpoint",
+   "municipio": "macanal",
+   "lat": 4.963115,
+   "lon": -73.343492,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-cajero-cajero-banco-agrario-f1e94",
+   "nombre": "Cajero Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "cajero automático",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Carrera 6 # 2 -73/75",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario"
+   ]
+  },
+  {
+   "id": "macanal-monumento-iglesia-macanal-366f4",
+   "nombre": "Iglesia Macanal",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "macanal",
+   "lat": 4.971714,
+   "lon": -73.319806,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-cerro-de-trompepuerco-96c0e",
+   "nombre": "Cerro de Trompepuerco",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "macanal",
+   "lat": 4.93365,
+   "lon": -73.296814,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-coliceo-municipal-e2237",
+   "nombre": "Coliceo Municipal",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "macanal",
+   "lat": 4.971675,
+   "lon": -73.321425,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-cuchilla-de-guanaque-c80c9",
+   "nombre": "Cuchilla de Guanaque",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "macanal",
+   "lat": 4.944105,
+   "lon": -73.252778,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-cuchilla-el-volador-76d08",
+   "nombre": "Cuchilla el Volador",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "macanal",
+   "lat": 5.0062,
+   "lon": -73.299349,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-cuchilla-volador-grande-d16ab",
+   "nombre": "Cuchilla Volador Grande",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "macanal",
+   "lat": 5.001923,
+   "lon": -73.318833,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-parque-principal-de-macanal-la-ceiba-c84ad",
+   "nombre": "Parque Principal de Macanal - la Ceiba",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "macanal",
+   "lat": 4.972028,
+   "lon": -73.32041,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-sede-vijagual-9083b",
+   "nombre": "Sede Vijagual",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "macanal",
+   "lat": 4.960418,
+   "lon": -73.297196,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-sendero-27aa5",
+   "nombre": "Sendero",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "macanal",
+   "lat": 5.013699,
+   "lon": -73.358459,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-serrania-el-ramal-0d4ab",
+   "nombre": "Serrania el Ramal",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "macanal",
+   "lat": 5.025367,
+   "lon": -73.270678,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-via-sede-bata-93d91",
+   "nombre": "Vía Sede Bata",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "macanal",
+   "lat": 4.970655,
+   "lon": -73.33687,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-via-sede-san-pedro-4371c",
+   "nombre": "Vía Sede San Pedro",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "macanal",
+   "lat": 4.974171,
+   "lon": -73.314907,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-naturaleza-via-sede-volador-e1726",
+   "nombre": "Via Sede Volador",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "macanal",
+   "lat": 4.990489,
+   "lon": -73.331467,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-operador-acrosiv-parapente-fe2c6",
+   "nombre": "Acrosiv Parapente",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Limon Sector Puente Bata 2",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Limon"
+  },
+  {
+   "id": "macanal-operador-destino-esmeralda-tours-d13b0",
+   "nombre": "Destino Esmeralda Tours",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda la Vega Kilometro 29",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "La Vega"
+  },
+  {
+   "id": "macanal-operador-extreme-tuor-macanal-3e9cf",
+   "nombre": "Extreme Tuor Macanal",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Calle 2 Bis C 7 24",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-macanaventuras-84600",
+   "nombre": "Macanaventuras",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Vrd Centro Puente Bata I",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-natunexion-macanal-7540e",
+   "nombre": "Natunexion Macanal",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca la Mejora- Naranjos",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-nautica-la-esmeralda-1-484fb",
+   "nombre": "Nautica la Esmeralda 1",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "macanal",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Sector Bata",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-navegantes-tours-284b5",
+   "nombre": "Navegantes Tours",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "macanal",
+   "lat": 4.971911,
+   "lon": -73.318407,
+   "precision": "direccion",
+   "direccion": "Calle 3 4 22",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-navegatour-25d31",
+   "nombre": "Navegatour",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes y de turismo",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Puente Bata 1 Muelle 1",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-oficina-macana-travel-s-a-s-5d4d0",
+   "nombre": "Oficina Macana Travel S.a.s",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "macanal",
+   "lat": 4.971911,
+   "lon": -73.318407,
+   "precision": "direccion",
+   "direccion": "Cl 3 5 22",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-operador-summer-c-hotel-a3b12",
+   "nombre": "Summer C Hotel",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "macanal",
+   "lat": 4.972296,
+   "lon": -73.320021,
+   "precision": "cabecera",
+   "direccion": "Sec Cristo Rey",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "macanal-restaurante-guanaque-0a2dd",
+   "nombre": "Guanaque",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 4.930831,
+   "lon": -73.308116,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://www.guanaque.com/",
+    "horario": "Mo-Fr 07:00-17:00"
+   }
+  },
+  {
+   "id": "macanal-restaurante-la-ramona-efc84",
+   "nombre": "La Ramona",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 5.014567,
+   "lon": -73.36054,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-restaurante-la-vista-ecohouse-mirador-dfd62",
+   "nombre": "La Vista EcoHouse & Mirador",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "macanal",
+   "lat": 4.955896,
+   "lon": -73.319351,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://lavistamcn.co/"
+   }
+  },
+  {
+   "id": "macanal-restaurante-macantour-793a5",
+   "nombre": "Macantour",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 4.963977,
+   "lon": -73.343499,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://macantour.negocio.site/",
+    "horario": "Fr-Su 09:00-21:00"
+   }
+  },
+  {
+   "id": "macanal-restaurante-panaderia-el-datil-e6751",
+   "nombre": "Panadería el Datil",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "macanal",
+   "lat": 5.013308,
+   "lon": -73.358816,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-restaurante-piqueteadero-el-balconcito-22dd0",
+   "nombre": "Piqueteadero el Balconcito",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 5.009897,
+   "lon": -73.358635,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-restaurante-restaurante-la-cocina-de-claudia-ea531",
+   "nombre": "Restaurante la Cocina de Claudia",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 5.015223,
+   "lon": -73.360569,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "macanal-restaurante-restaurante-la-estancia-63ab9",
+   "nombre": "Restaurante la Estancia",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 4.977571,
+   "lon": -73.332478,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 06:00-20:00"
+   }
+  },
+  {
+   "id": "macanal-restaurante-restaurante-mi-cabanita-e2e8a",
+   "nombre": "Restaurante Mi Cabañita",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "macanal",
+   "lat": 4.969036,
+   "lon": -73.337376,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "web": "https://micabanita.principalwebsite.com/",
+    "horario": "Mo-Sa 08:00-22:00"
+   }
+  },
+  {
+   "id": "macanal-salud-empresa-social-del-estado-centro-de--a7c16",
+   "nombre": "Empresa Social del Estado Centro de Salud Macanal",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "macanal",
+   "lat": 4.972728,
+   "lon": -73.318733,
+   "precision": "direccion",
+   "direccion": "Calle 4 No. 7 - 24",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "1"
+   }
+  },
+  {
+   "id": "pachavita-monumento-iglesia-7f522",
+   "nombre": "Iglesia",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "pachavita",
+   "lat": 5.138977,
+   "lon": -73.39599,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-cuchilla-carvajal-8cd9a",
+   "nombre": "Cuchilla Carvajal",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "pachavita",
+   "lat": 5.134191,
+   "lon": -73.387897,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-cuchilla-el-buitre-d533e",
+   "nombre": "Cuchilla el Buitre",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "pachavita",
+   "lat": 5.146388,
+   "lon": -73.429716,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-cuchilla-la-chapa-d1fd2",
+   "nombre": "Cuchilla la Chapa",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "pachavita",
+   "lat": 5.148131,
+   "lon": -73.408173,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-fuente-04ec3",
+   "nombre": "Fuente",
+   "categoria": "naturaleza",
+   "subtipo": "spring",
+   "municipio": "pachavita",
+   "lat": 5.1391,
+   "lon": -73.396536,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-hatogrande-9764c",
+   "nombre": "Hatogrande",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "pachavita",
+   "lat": 5.096724,
+   "lon": -73.3896,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-loma-las-escaleras-609f5",
+   "nombre": "Loma las Escaleras",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "pachavita",
+   "lat": 5.172842,
+   "lon": -73.410391,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-naturaleza-parque-5a32b",
+   "nombre": "Parque",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "pachavita",
+   "lat": 5.139204,
+   "lon": -73.396427,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "pachavita-salud-empresa-social-del-estado-centro-de--a4104",
+   "nombre": "Empresa Social del Estado Centro de Salud \"Nuestra Señora de Guadalupe\"",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "pachavita",
+   "lat": 5.140543,
+   "lon": -73.398148,
+   "precision": "cabecera",
+   "direccion": "Kr 2 No 2-51",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "1"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-buenos-aires-e29ff",
+   "nombre": "Buenos Aires",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820121,
+   "lon": -73.168563,
+   "precision": "exacta",
+   "direccion": "carrera 4",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 17,
+    "camas": 28,
+    "web": "https://www.hotelbuenosaires.com.co/"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-casa-turistica-32be0",
+   "nombre": "Casa Turística",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821301,
+   "lon": -73.168045,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 4,
+    "camas": 6
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-colina-campestre-125be",
+   "nombre": "Colina Campestre",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820589,
+   "lon": -73.169569,
+   "precision": "exacta",
+   "direccion": "calle4a",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 49,
+    "camas": 73,
+    "web": "https://www.hotelcolinacampestre.com.co/"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-harmony-glamping-33838",
+   "nombre": "Harmony Glamping",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.813263,
+   "lon": -73.181654,
+   "precision": "vereda",
+   "direccion": "Vereda Arrayanes Arriba Finca Harmony Glamping",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Arrayanes Arriba",
+   "extra": {
+    "habitaciones": 9,
+    "camas": 24
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hostal-don-niko-4153e",
+   "nombre": "Hostal Don Niko",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.822095,
+   "lon": -73.167886,
+   "precision": "direccion",
+   "direccion": "Calle 7 4 29",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 5,
+    "camas": 5
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-colina-suites-a5546",
+   "nombre": "Hotel Colina Suites",
+   "categoria": "alojamiento",
+   "subtipo": "apartahotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821301,
+   "lon": -73.168045,
+   "precision": "cabecera",
+   "direccion": "Dirección Cra 4 Nro 4-44",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 8,
+    "camas": 12
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-la-terraza-de-san-luis-aa5b1",
+   "nombre": "Hotel la Terraza de San Luis",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820804,
+   "lon": -73.168213,
+   "precision": "direccion",
+   "direccion": "Carrera 4 4 24",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 7,
+    "camas": 13
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-mediterranea-02979",
+   "nombre": "Hotel Mediterranea",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821421,
+   "lon": -73.167686,
+   "precision": "exacta",
+   "direccion": "Carrera 4",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-orquidea-san-luis-f80fa",
+   "nombre": "Hotel Orquidea San Luis",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819398,
+   "lon": -73.165235,
+   "precision": "direccion",
+   "direccion": "Calle 6 3 24",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 15,
+    "camas": 22
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-real-blue-d7a7f",
+   "nombre": "Hotel Real Blue",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819279,
+   "lon": -73.168372,
+   "precision": "direccion",
+   "direccion": "Carrera 3 3 40",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 17,
+    "camas": 24
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-y-rstaurante-don-niko-2a774",
+   "nombre": "Hotel y Rstaurante Don Niko",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.822095,
+   "lon": -73.167754,
+   "precision": "exacta",
+   "direccion": "4 47 calle 7a",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-hotel-zafari-a-8acdc",
+   "nombre": "Hotel Zafari A",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819398,
+   "lon": -73.165235,
+   "precision": "direccion",
+   "direccion": "Cl 6 5 33",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 6,
+    "camas": 14
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-la-orquidea-23bf1",
+   "nombre": "La Orquidea",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821059,
+   "lon": -73.167705,
+   "precision": "exacta",
+   "direccion": "calle 6a",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-la-terraza-22aa3",
+   "nombre": "La Terraza",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820031,
+   "lon": -73.168606,
+   "precision": "exacta",
+   "direccion": "Carrera 4",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-otro-tipo-de-vivienda-turistica-dae4d",
+   "nombre": "Otro Tipo de Vivienda Turística",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821301,
+   "lon": -73.168045,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 7,
+    "camas": 21
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-real-blue-e-b-fdfa8",
+   "nombre": "Real Blue E.b",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819046,
+   "lon": -73.168436,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-vereda-gasapal-89182",
+   "nombre": "Vereda Gasapal",
+   "categoria": "alojamiento",
+   "subtipo": "guest_house",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.946462,
+   "lon": -73.064274,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-alojamiento-zodme-4-f6f0f",
+   "nombre": "Zodme 4",
+   "categoria": "alojamiento",
+   "subtipo": "camp_site",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.816749,
+   "lon": -73.168404,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-atraccion-finca-campestre-acapulco-502f1",
+   "nombre": "Finca Campestre Acapulco",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.816608,
+   "lon": -73.175986,
+   "precision": "exacta",
+   "direccion": "Kilometro 1 Via Bogota",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "OpenStreetMap",
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 13,
+    "camas": 24
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-atraccion-los-farallones-de-san-luis-de-gaceno-cbcbd",
+   "nombre": "Los Farallones de San Luis de Gaceno",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.793663,
+   "lon": -73.185169,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-atraccion-mirador-gacenero-c2dad",
+   "nombre": "Mirador Gacenero",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.818156,
+   "lon": -73.161488,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-atraccion-pozo-el-amor-7b5ea",
+   "nombre": "Pozo el Amor",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820876,
+   "lon": -73.192057,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-atraccion-quebrada-la-sardinata-357f3",
+   "nombre": "Quebrada la Sardinata",
+   "categoria": "atraccion",
+   "subtipo": "attraction",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.824599,
+   "lon": -73.16737,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-cajero-banco-agrario-3ec22",
+   "nombre": "Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "cajero automático",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820353,
+   "lon": -73.168644,
+   "precision": "exacta",
+   "direccion": "carrera 4",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario",
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-autoservicio-don-jose-a54af",
+   "nombre": "Autoservicio Don José",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819649,
+   "lon": -73.168596,
+   "precision": "exacta",
+   "direccion": "calle 4 # 3 29 la floresta",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 06:15-20:45"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-autoservicio-mercamas-20fdb",
+   "nombre": "Autoservicio Mercamas",
+   "categoria": "comercio",
+   "subtipo": "convenience",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821379,
+   "lon": -73.168797,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 06:00-21:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-d1-f8fa7",
+   "nombre": "D1",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820469,
+   "lon": -73.166837,
+   "precision": "exacta",
+   "direccion": "Cl. 6ª #26",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-deposito-autoservicio-coratiendas-a406f",
+   "nombre": "Deposito Autoservicio Coratiendas",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820241,
+   "lon": -73.168502,
+   "precision": "exacta",
+   "direccion": "carrera 4",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-districarnes-los-gavanes-del-llano-d6897",
+   "nombre": "Districarnes los Gavanes del Llano",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.818574,
+   "lon": -73.168752,
+   "precision": "exacta",
+   "direccion": "Cra3.#2a 58, Cl. 2ª,",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-expendio-de-carnes-el-barcino-77ff3",
+   "nombre": "Expendio de Carnes el Barcino",
+   "categoria": "comercio",
+   "subtipo": "butcher",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820161,
+   "lon": -73.167904,
+   "precision": "exacta",
+   "direccion": "CALLE 5 #Nº 3 - 03",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-panaderia-y-pasteleria-lupito-41532",
+   "nombre": "Panadería y Pastelería Lupito",
+   "categoria": "comercio",
+   "subtipo": "bakery",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.822321,
+   "lon": -73.168091,
+   "precision": "exacta",
+   "direccion": "Calle 7a",
+   "plan": "gastro",
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-plaza-de-mercado-1b0f2",
+   "nombre": "Plaza de Mercado",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.818862,
+   "lon": -73.16907,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-supermercado-alcosto-4fc49",
+   "nombre": "Supermercado Alcosto",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820297,
+   "lon": -73.16874,
+   "precision": "exacta",
+   "direccion": "carrera 4",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 06:00-21:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-supermercado-autoservicio-miramar-94019",
+   "nombre": "Supermercado Autoservicio Miramar",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820319,
+   "lon": -73.167595,
+   "precision": "exacta",
+   "direccion": "calle 5 # 2-45",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-comercio-verduras-y-frutas-los-buenos-ec089",
+   "nombre": "Verduras y Frutas los Buenos",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820865,
+   "lon": -73.16832,
+   "precision": "exacta",
+   "direccion": "carrera 4",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 06:30-21:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-gasolinera-biomax-san-luis-d43c1",
+   "nombre": "Biomax San Luis",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.817702,
+   "lon": -73.172495,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-gasolinera-brio-3164a",
+   "nombre": "Brio",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.826275,
+   "lon": -73.163574,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-monumento-casa-de-la-cultura-d2f44",
+   "nombre": "Casa de la Cultura",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819767,
+   "lon": -73.169835,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-monumento-parroquia-san-luis-beltran-077fe",
+   "nombre": "Parroquia San Luis Beltran",
+   "categoria": "monumento",
+   "subtipo": "iglesia",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820564,
+   "lon": -73.170306,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "cultura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-alto-carrabo-8f39c",
+   "nombre": "Alto Carrabo",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.794254,
+   "lon": -73.100709,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-alto-la-aguja-65677",
+   "nombre": "Alto la Aguja",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.734218,
+   "lon": -73.155992,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-alto-los-alpes-1d35f",
+   "nombre": "Alto los Alpes",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.857457,
+   "lon": -73.160744,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-alto-puerta-lopez-e9d56",
+   "nombre": "Alto Puerta Lopez",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.782057,
+   "lon": -73.124786,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-alto-redondo-aa7da",
+   "nombre": "Alto Redondo",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.830659,
+   "lon": -73.186711,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-balneario-los-arrayanes-6fef6",
+   "nombre": "Balneario los Arrayanes",
+   "categoria": "naturaleza",
+   "subtipo": "swimming_pool",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.816913,
+   "lon": -73.18344,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-cuchilla-san-agustin-afbd2",
+   "nombre": "Cuchilla San Agustin",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.858138,
+   "lon": -73.21172,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-cuchilla-san-agustin-eba21",
+   "nombre": "Cuchilla San Agustin",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.937769,
+   "lon": -73.120193,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-el-mirador-la-guitarra-13e1b",
+   "nombre": "El Mirador \"la Guitarra\"",
+   "categoria": "naturaleza",
+   "subtipo": "swimming_pool",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821655,
+   "lon": -73.166242,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-farallones-de-san-luis-de-gaceno-1e752",
+   "nombre": "Farallones de San Luis de Gaceno",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.800428,
+   "lon": -73.181106,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-guichirales-9b8b1",
+   "nombre": "Guichirales",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.840383,
+   "lon": -73.130979,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-guichirales-fd82b",
+   "nombre": "Guichirales",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.852027,
+   "lon": -73.126929,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-la-arboleda-e7200",
+   "nombre": "La Arboleda",
+   "categoria": "naturaleza",
+   "subtipo": "swimming_pool",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819319,
+   "lon": -73.171612,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-loma-el-monumento-18e39",
+   "nombre": "Loma el Monumento",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.802016,
+   "lon": -73.121143,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-manto-de-carbon-b8b2e",
+   "nombre": "Manto de Carbón",
+   "categoria": "naturaleza",
+   "subtipo": "cascada",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.865122,
+   "lon": -73.17861,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-nacedero-san-agustinera-6f4aa",
+   "nombre": "Nacedero San Agustinera",
+   "categoria": "naturaleza",
+   "subtipo": "cascada",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.914363,
+   "lon": -73.145775,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-parque-da8db",
+   "nombre": "Parque",
+   "categoria": "naturaleza",
+   "subtipo": "park",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.9241,
+   "lon": -73.085424,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-polideportivo-bbe57",
+   "nombre": "Polideportivo",
+   "categoria": "naturaleza",
+   "subtipo": "sports_centre",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.747693,
+   "lon": -73.147139,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-puente-aguascalientes-19731",
+   "nombre": "Puente Aguascalientes",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.834104,
+   "lon": -73.210149,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-naturaleza-san-isidro-ea719",
+   "nombre": "San Isidro",
+   "categoria": "naturaleza",
+   "subtipo": "sendero",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.77959,
+   "lon": -73.163773,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-operador-arrayanes-adventure-0b4b0",
+   "nombre": "Arrayanes Adventure",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "san-luis-de-gaceno",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Kilometro 2 Via Bogota",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-operador-guia-de-turismo-39926",
+   "nombre": "Guía de Turismo",
+   "categoria": "operador",
+   "subtipo": "guia de turismo",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821301,
+   "lon": -73.168045,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-operador-momotus-aventura-viva-e26a0",
+   "nombre": "Momotus Aventura Viva",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819279,
+   "lon": -73.168372,
+   "precision": "direccion",
+   "direccion": "Carrera 3 N 4-18",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-operador-monkey-experience-9273a",
+   "nombre": "Monkey Experience",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.818356,
+   "lon": -73.171607,
+   "precision": "direccion",
+   "direccion": "Carrera 5 Nro 6 - 20",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-24-horas-dona-luz-60f88",
+   "nombre": "24 Horas Doña Luz",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.82149,
+   "lon": -73.168905,
+   "precision": "exacta",
+   "direccion": "56 #543,",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "lunes a domingo 24 horas"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-bar-berlin-3a372",
+   "nombre": "Bar Berlin",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820816,
+   "lon": -73.168332,
+   "precision": "exacta",
+   "direccion": "carrera 4 # 5-87",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-bar-dubay-b190c",
+   "nombre": "Bar Dubay",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821042,
+   "lon": -73.168186,
+   "precision": "exacta",
+   "direccion": "carrera 4 # 5-85",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-bar-los-recuerdos-de-ella-0cfc2",
+   "nombre": "Bar los Recuerdos de Ella",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821079,
+   "lon": -73.168157,
+   "precision": "exacta",
+   "direccion": "carrera 4 # 5-87",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-bar-tres-esquinas-87428",
+   "nombre": "Bar Tres Esquinas",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821168,
+   "lon": -73.168108,
+   "precision": "exacta",
+   "direccion": "carrera 4 # 5-89",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-comidas-rapidas-artesanal-c0613",
+   "nombre": "Comidas Rapidas Artesanal",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820248,
+   "lon": -73.167639,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-comidas-rapidas-don-hugo-b9c17",
+   "nombre": "Comidas Rapidas Don Hugo",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820952,
+   "lon": -73.169082,
+   "precision": "exacta",
+   "direccion": "Calle 5a",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 18:00-22:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-discobar-los-amigos-f868a",
+   "nombre": "Discobar los Amigos",
+   "categoria": "restaurante",
+   "subtipo": "bar",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819146,
+   "lon": -73.169015,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 10:00-24:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-don-papas-f2b41",
+   "nombre": "Don Papas",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.824655,
+   "lon": -73.166854,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-heladeria-y-fruteria-el-oasis-e40d9",
+   "nombre": "Heladeria y Fruteria el Oasis",
+   "categoria": "restaurante",
+   "subtipo": "ice_cream",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820189,
+   "lon": -73.167681,
+   "precision": "exacta",
+   "direccion": "calle 5 # 2-46",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-hoy-coma-pizza-0e9a8",
+   "nombre": "Hoy Coma Pizza",
+   "categoria": "restaurante",
+   "subtipo": "fast_food",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821267,
+   "lon": -73.168863,
+   "precision": "exacta",
+   "direccion": "56 #563 a 543,",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Th-Tu 17:00-24:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-restaurante-y-asadero-alcaravan-ed2ad",
+   "nombre": "Restaurante y Asadero Alcaravan",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820758,
+   "lon": -73.168371,
+   "precision": "exacta",
+   "direccion": "carrera 4 # 5-17",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-restaurante-y-asadero-el-nogal-3757c",
+   "nombre": "Restaurante y Asadero el Nogal",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.823266,
+   "lon": -73.167613,
+   "precision": "exacta",
+   "direccion": "calle 8a",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-restaurante-y-comidas-rapidas-chanch-29827",
+   "nombre": "Restaurante y Comidas Rapidas Chanchitos",
+   "categoria": "restaurante",
+   "subtipo": "restaurant",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.82056,
+   "lon": -73.169547,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-restaurante-totumazo-babb4",
+   "nombre": "Totumazo",
+   "categoria": "restaurante",
+   "subtipo": "cafe",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.817822,
+   "lon": -73.172122,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "gastro",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ],
+   "extra": {
+    "horario": "Mo-Su 08:00-20:00"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-salud-drogueria-farmacentro-862a1",
+   "nombre": "Droguería Farmacentro",
+   "categoria": "salud",
+   "subtipo": "pharmacy",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820682,
+   "lon": -73.168451,
+   "precision": "exacta",
+   "direccion": "3 87 calle 5a",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-salud-drogueria-master-92864",
+   "nombre": "Droguería Master",
+   "categoria": "salud",
+   "subtipo": "pharmacy",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.820994,
+   "lon": -73.168221,
+   "precision": "exacta",
+   "direccion": "carrera 4 # 5-84",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-salud-drogueria-minimarket-aef60",
+   "nombre": "Droguería Minimarket",
+   "categoria": "salud",
+   "subtipo": "pharmacy",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.822192,
+   "lon": -73.168186,
+   "precision": "exacta",
+   "direccion": "carrera 5 6-70",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "san-luis-de-gaceno-salud-hospital-san-francisco-9cf49",
+   "nombre": "Hospital San Francisco",
+   "categoria": "salud",
+   "subtipo": "hospital",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.819397,
+   "lon": -73.169675,
+   "precision": "exacta",
+   "direccion": "Calle 3 5-50",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap",
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "1",
+    "web": "http://www.hospitalsanfranciscoslg.gov.co/"
+   }
+  },
+  {
+   "id": "san-luis-de-gaceno-servicio-alcaldia-municipal-de-san-luis-de-ga-1ca46",
+   "nombre": "Alcaldía Municipal de San Luis de Gaceno",
+   "categoria": "servicio",
+   "subtipo": "townhall",
+   "municipio": "san-luis-de-gaceno",
+   "lat": 4.821301,
+   "lon": -73.168045,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-alojamiento-apartamento-turistico-34aae",
+   "nombre": "Apartamento Turístico",
+   "categoria": "alojamiento",
+   "subtipo": "apartamento turístico",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 12
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-casa-turistica-dcb59",
+   "nombre": "Casa Turística",
+   "categoria": "alojamiento",
+   "subtipo": "casa turística",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "Vereda Caño Negro",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 1,
+    "camas": 6
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-finca-ecoturistica-san-francisco-85c35",
+   "nombre": "Finca Ecoturistica San Francisco",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "santa-maria",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Caño Negro",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Caño Negro",
+   "extra": {
+    "habitaciones": 6,
+    "camas": 10
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-hospedaje-campestre-los-dos-potrillo-3386c",
+   "nombre": "Hospedaje Campestre los Dos Potrillos",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "Cl 3 1 a 59 In 1",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 2,
+    "camas": 2
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-hospedaje-j-r-fdb0e",
+   "nombre": "Hospedaje J.r.",
+   "categoria": "alojamiento",
+   "subtipo": "hostal",
+   "municipio": "santa-maria",
+   "lat": 4.860985,
+   "lon": -73.261921,
+   "precision": "direccion",
+   "direccion": "Calle 3 2-13",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 12,
+    "camas": 16
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-hotel-el-penon-santa-maria-3d77a",
+   "nombre": "Hotel el Peñon Santa María",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "Carrera 1c 2 56 60",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 39,
+    "camas": 58
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-hotel-los-almendros-st-1d205",
+   "nombre": "Hotel los Almendros St",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "santa-maria",
+   "lat": 4.862234,
+   "lon": -73.260953,
+   "precision": "direccion",
+   "direccion": "Calle 4 2 30",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 24,
+    "camas": 38
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-la-esmeralda-9f547",
+   "nombre": "La Esmeralda",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "santa-maria",
+   "lat": 4.860202,
+   "lon": -73.263111,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-alojamiento-las-cabanas-de-custodia-d8df9",
+   "nombre": "Las Cabañas de Custodia",
+   "categoria": "alojamiento",
+   "subtipo": "finca turistica (alojamiento rural)",
+   "municipio": "santa-maria",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Finca Calichana Finca el Paraiso",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 9,
+    "camas": 17
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-otro-tipo-de-vivienda-turistica-vere-81b57",
+   "nombre": "Otro Tipo de Vivienda Turística · Vereda Caño Negro Cabaña",
+   "categoria": "alojamiento",
+   "subtipo": "otro tipo de vivienda turística",
+   "municipio": "santa-maria",
+   "lat": null,
+   "lon": null,
+   "precision": null,
+   "direccion": "Vereda Caño Negro Cabaña",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "Caño Negro Cabaña",
+   "extra": {
+    "habitaciones": 1,
+    "camas": 15
+   }
+  },
+  {
+   "id": "santa-maria-alojamiento-servituristicos-la-esmeralda-sas-14311",
+   "nombre": "Servituristicos la Esmeralda Sas",
+   "categoria": "alojamiento",
+   "subtipo": "hotel",
+   "municipio": "santa-maria",
+   "lat": 4.860985,
+   "lon": -73.261921,
+   "precision": "direccion",
+   "direccion": "Calle 3 4 10",
+   "plan": null,
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "extra": {
+    "habitaciones": 60,
+    "camas": 70
+   }
+  },
+  {
+   "id": "santa-maria-cajero-cajero-banco-agrario-4d2c5",
+   "nombre": "Cajero Banco Agrario",
+   "categoria": "cajero",
+   "subtipo": "cajero automático",
+   "municipio": "santa-maria",
+   "lat": 4.860949,
+   "lon": -73.263201,
+   "precision": "direccion",
+   "direccion": "Carrera 4 # 10-12",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Banco Agrario"
+   ]
+  },
+  {
+   "id": "santa-maria-comercio-plaza-de-mercado-22186",
+   "nombre": "Plaza de Mercado",
+   "categoria": "comercio",
+   "subtipo": "supermarket",
+   "municipio": "santa-maria",
+   "lat": 4.862337,
+   "lon": -73.260684,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-gasolinera-santa-maria-930ae",
+   "nombre": "Santa María",
+   "categoria": "gasolinera",
+   "subtipo": "estación de servicio",
+   "municipio": "santa-maria",
+   "lat": 4.863606,
+   "lon": -73.260715,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-alto-de-san-jose-4d6b1",
+   "nombre": "Alto de San José",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.755445,
+   "lon": -73.287469,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-alto-la-cura-72535",
+   "nombre": "Alto la Cura",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.827361,
+   "lon": -73.243115,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-alto-pan-de-azucar-74953",
+   "nombre": "Alto Pan de Azucar",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.92272,
+   "lon": -73.26846,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-cerro-de-altamira-15422",
+   "nombre": "Cerro de Altamira",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.794571,
+   "lon": -73.288102,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-cerro-negro-cb54d",
+   "nombre": "Cerro Negro",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.836865,
+   "lon": -73.33404,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-cuchilla-calichama-e9ee1",
+   "nombre": "Cuchilla Calichama",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.763523,
+   "lon": -73.2824,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-cuchilla-cerro-negro-32d64",
+   "nombre": "Cuchilla Cerro Negro",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.840399,
+   "lon": -73.33236,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-cuchilla-de-chivor-5aa1a",
+   "nombre": "Cuchilla de Chivor",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.890361,
+   "lon": -73.298575,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-naturaleza-cuchilla-san-agustin-42534",
+   "nombre": "Cuchilla San Agustin",
+   "categoria": "naturaleza",
+   "subtipo": "peak",
+   "municipio": "santa-maria",
+   "lat": 4.870649,
+   "lon": -73.187966,
+   "precision": "exacta",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": false,
+   "fuentes": [
+    "OpenStreetMap"
+   ]
+  },
+  {
+   "id": "santa-maria-operador-agencia-ecoturistica-gotas-de-agua-88221",
+   "nombre": "Agencia Ecoturistica Gotas de Agua",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "santa-maria",
+   "lat": 4.842567,
+   "lon": -73.26751,
+   "precision": "vereda",
+   "direccion": "Kilometro 2 Vereda el Retiro Via Mambita",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ],
+   "vereda": "El Retiro"
+  },
+  {
+   "id": "santa-maria-operador-descubrir-ong-2c974",
+   "nombre": "Descubrir Ong",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "santa-maria",
+   "lat": 4.860049,
+   "lon": -73.261816,
+   "precision": "direccion",
+   "direccion": "Carrera 3 4 90",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "santa-maria-operador-guia-de-turismo-184c3",
+   "nombre": "Guía de Turismo",
+   "categoria": "operador",
+   "subtipo": "guia de turismo",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "santa-maria-operador-ywii-e23db",
+   "nombre": "Ywii",
+   "categoria": "operador",
+   "subtipo": "agencia de viajes operadoras",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "Cr 1 B 2 07",
+   "plan": "aventura",
+   "esServicio": false,
+   "conRegistro": true,
+   "fuentes": [
+    "RNT"
+   ]
+  },
+  {
+   "id": "santa-maria-salud-centro-de-salud-de-santa-maria-66fb9",
+   "nombre": "Centro de Salud de Santa María",
+   "categoria": "salud",
+   "subtipo": "centro de salud",
+   "municipio": "santa-maria",
+   "lat": 4.86138,
+   "lon": -73.26188,
+   "precision": "cabecera",
+   "direccion": "Centro",
+   "plan": null,
+   "esServicio": true,
+   "conRegistro": false,
+   "fuentes": [
+    "Red de salud de Boyacá"
+   ],
+   "extra": {
+    "nivel": "1"
+   }
+  },
+  {
+   "id": "santa-maria-servicio-estacion-de-policia-de-santa-maria-e7f33",
+   "nombre": "Estación de Policía de Santa María",
+   "categoria": "servicio",
+   "subtipo": "police",
+   "municipio": "santa-maria",
+   "lat": 4.861396,
+   "lon": -73.262684,
    "precision": "exacta",
    "direccion": "",
    "plan": null,
@@ -1672,7 +9339,7 @@
   },
   {
    "id": "somondoco-alojamiento-finca-turistica-vereda-boya-8b681",
-   "nombre": "Finca turística · vereda Boya",
+   "nombre": "Finca Turística · Vereda Boya",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "somondoco",
@@ -1694,7 +9361,7 @@
   },
   {
    "id": "somondoco-alojamiento-finca-turistica-vereda-cucuavaca-98f09",
-   "nombre": "Finca turística · vereda Cucuavaca",
+   "nombre": "Finca Turística · Vereda Cucuavaca",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "somondoco",
@@ -1716,7 +9383,7 @@
   },
   {
    "id": "somondoco-alojamiento-finca-turistica-vereda-san-antonio-6e4d5",
-   "nombre": "Finca turística · vereda San Antonio",
+   "nombre": "Finca Turística · Vereda San Antonio",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "somondoco",
@@ -1781,7 +9448,7 @@
   },
   {
    "id": "somondoco-alojamiento-otro-tipo-de-vivienda-turistica-vere-3dbf8",
-   "nombre": "Otro tipo de vivienda turística · vereda Bohorquez",
+   "nombre": "Otro Tipo de Vivienda Turística · Vereda Bohorquez",
    "categoria": "alojamiento",
    "subtipo": "otro tipo de vivienda turística",
    "municipio": "somondoco",
@@ -1825,7 +9492,7 @@
   },
   {
    "id": "somondoco-cajero-banco-agrario-4f136",
-   "nombre": "Banco agrario",
+   "nombre": "Banco Agrario",
    "categoria": "cajero",
    "subtipo": "banco",
    "municipio": "somondoco",
@@ -1860,7 +9527,7 @@
   },
   {
    "id": "somondoco-naturaleza-alto-el-aire-edf88",
-   "nombre": "Alto El Aire",
+   "nombre": "Alto el Aire",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "somondoco",
@@ -1877,7 +9544,7 @@
   },
   {
    "id": "somondoco-naturaleza-antiguo-jardin-dfc16",
-   "nombre": "antiguo jardin",
+   "nombre": "Antiguo Jardín",
    "categoria": "naturaleza",
    "subtipo": "garden",
    "municipio": "somondoco",
@@ -1894,7 +9561,7 @@
   },
   {
    "id": "somondoco-naturaleza-los-lagos-4e7ae",
-   "nombre": "los lagos",
+   "nombre": "Los Lagos",
    "categoria": "naturaleza",
    "subtipo": "swimming_pool",
    "municipio": "somondoco",
@@ -1911,7 +9578,7 @@
   },
   {
    "id": "somondoco-naturaleza-parque-principal-a966b",
-   "nombre": "PARQUE PRINCIPAL",
+   "nombre": "Parque Principal",
    "categoria": "naturaleza",
    "subtipo": "park",
    "municipio": "somondoco",
@@ -2071,7 +9738,7 @@
   },
   {
    "id": "sutatenza-alojamiento-casa-turistica-1fc03",
-   "nombre": "Casa turística",
+   "nombre": "Casa Turística",
    "categoria": "alojamiento",
    "subtipo": "casa turística",
    "municipio": "sutatenza",
@@ -2210,7 +9877,7 @@
   },
   {
    "id": "sutatenza-naturaleza-alto-de-irzon-28add",
-   "nombre": "Alto De Irzon",
+   "nombre": "Alto de Irzon",
    "categoria": "naturaleza",
    "subtipo": "peak",
    "municipio": "sutatenza",
@@ -2284,7 +9951,7 @@
   },
   {
    "id": "tenza-alojamiento-casa-turistica-10382",
-   "nombre": "Casa turística",
+   "nombre": "Casa Turística",
    "categoria": "alojamiento",
    "subtipo": "casa turística",
    "municipio": "tenza",
@@ -2305,7 +9972,7 @@
   },
   {
    "id": "tenza-alojamiento-finca-turistica-2b105",
-   "nombre": "Finca turística",
+   "nombre": "Finca Turística",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "tenza",
@@ -2326,7 +9993,7 @@
   },
   {
    "id": "tenza-alojamiento-finca-turistica-vereda-cora-chiquito-fe19f",
-   "nombre": "Finca turística · vereda Cora Chiquito",
+   "nombre": "Finca Turística · Vereda Cora Chiquito",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "tenza",
@@ -2348,7 +10015,7 @@
   },
   {
    "id": "tenza-alojamiento-finca-turistica-vereda-rucha-5ed78",
-   "nombre": "Finca turística · vereda Rucha",
+   "nombre": "Finca Turística · Vereda Rucha",
    "categoria": "alojamiento",
    "subtipo": "finca turistica (alojamiento rural)",
    "municipio": "tenza",
@@ -2701,7 +10368,7 @@
   },
   {
    "id": "tenza-operador-guia-de-turismo-5f571",
-   "nombre": "Guía de turismo",
+   "nombre": "Guía de Turismo",
    "categoria": "operador",
    "subtipo": "guia de turismo",
    "municipio": "tenza",
@@ -2769,7 +10436,7 @@
   },
   {
    "id": "tenza-restaurante-salon-de-onces-la-playa-96cb9",
-   "nombre": "Salon de Onces La Playa",
+   "nombre": "Salon de Onces la Playa",
    "categoria": "restaurante",
    "subtipo": "cafe",
    "municipio": "tenza",
@@ -2816,23 +10483,6 @@
    "conRegistro": false,
    "fuentes": [
     "OpenStreetMap"
-   ]
-  },
-  {
-   "id": "tenza-restaurante-valle-del-sol-d20c4",
-   "nombre": "Valle del Sol",
-   "categoria": "restaurante",
-   "subtipo": "restaurante",
-   "municipio": "tenza",
-   "lat": null,
-   "lon": null,
-   "precision": null,
-   "direccion": "Kilometro 25 Via Tenza la Capilla la Esperanza Verea Chaguatoque",
-   "plan": "gastro",
-   "esServicio": false,
-   "conRegistro": true,
-   "fuentes": [
-    "RNT"
    ]
   },
   {
