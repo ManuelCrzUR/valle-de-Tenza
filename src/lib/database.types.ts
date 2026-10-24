@@ -327,6 +327,56 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"resenas": {
+                  Row: {
+                    "calificacion": number,"comentario": string | null,"creada": string,"id": string,"lugar_id": string | null,"negocio_id": string | null,"reserva_id": string | null,"visible": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "calificacion": number,"comentario"?: string | null,"creada"?: string,"id"?: string,"lugar_id"?: string | null,"negocio_id"?: string | null,"reserva_id"?: string | null,"visible"?: boolean
+                  }
+                  Update: {
+                    "calificacion"?: number,"comentario"?: string | null,"creada"?: string,"id"?: string,"lugar_id"?: string | null,"negocio_id"?: string | null,"reserva_id"?: string | null,"visible"?: boolean
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios_publicos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "resenas_reserva_id_fkey"
+      columns: ["reserva_id"]
+isOneToOne: true
+      referencedRelation: "reservas"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "resenas_reserva_id_fkey"
+      columns: ["reserva_id"]
+isOneToOne: true
+      referencedRelation: "reservas_para_resena"
+      referencedColumns: ["reserva_id"]
+    }
+                  ]
                 },"reservas": {
                   Row: {
                     "actualizada": string,"codigo": string,"contacto": string,"creada": string,"estado": Database["public"]['Enums']["estado_reserva"],"fecha": string,"hora": string | null,"id": string,"lugar_id": string | null,"negocio_id": string | null,"noches": number,"nombre": string,"nota": string | null,"personas": number,"respondida": string | null,"tipo": Database["public"]['Enums']["tipo_reserva"]
@@ -430,6 +480,14 @@ isOneToOne: false
       referencedColumns: ["slug"]
     }
                   ]
+                },"calificacion_lugares": {
+                  Row: {
+                    "lugar_id": string | null,"promedio": number | null,"total": number | null
+                  }
+                  ComputedFields: never
+                  Relationships: [
+                    
+                  ]
                 },"demanda_semanal": {
                   Row: {
                     "itinerarios": number | null,"municipio": string | null,"personas": number | null,"plan": string,"semana": string | null
@@ -530,6 +588,82 @@ isOneToOne: false
       referencedColumns: ["slug"]
     }
                   ]
+                },"resenas_publicas": {
+                  Row: {
+                    "calificacion": number,"comentario": string | null,"creada": string,"id": string,"lugar_id": string | null,"negocio_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "calificacion"?: number | null,"comentario"?: string | null,"creada"?: string | null,"id"?: string | null,"lugar_id"?: string | null,"negocio_id"?: string | null
+                         }
+                        Update: {
+                           "calificacion"?: number | null,"comentario"?: string | null,"creada"?: string | null,"id"?: string | null,"lugar_id"?: string | null,"negocio_id"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios_publicos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "resenas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
+    }
+                  ]
+                },"reservas_para_resena": {
+                  Row: {
+                    "codigo": string,"contacto": string,"fecha": string,"negocio_id": string | null,"nombre": string,"reserva_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                           "codigo"?: string | null,"contacto"?: string | null,"fecha"?: string | null,"negocio_id"?: string | null,"nombre"?: string | null,"reserva_id"?: string | null
+                         }
+                        Update: {
+                           "codigo"?: string | null,"contacto"?: string | null,"fecha"?: string | null,"negocio_id"?: string | null,"nombre"?: string | null,"reserva_id"?: string | null
+                         }
+                        Relationships: [
+                    {
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "negocios_publicos"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "ocupacion_diaria"
+      referencedColumns: ["negocio_id"]
+    },{
+      foreignKeyName: "reservas_negocio_id_fkey"
+      columns: ["negocio_id"]
+isOneToOne: false
+      referencedRelation: "prestadores_inactivos"
+      referencedColumns: ["negocio_id"]
+    }
+                  ]
                 }
           }
           Functions: {
@@ -554,6 +688,9 @@ isOneToOne: false
                            },
 "cupo_libre":
 { Args: { "fecha": string,"negocio": string }; Returns: number
+                           },
+"dejar_resena":
+{ Args: { "p_calificacion": number,"p_codigo": string,"p_comentario": string,"p_contacto": string }; Returns: undefined
                            },
 "embajadores_disponibles":
 { Args: Record<PropertyKey, never>; Returns: {
@@ -596,6 +733,11 @@ isOneToOne: false
                            },
 "registrar_demanda":
 { Args: { "p_dias": number,"p_fecha_viaje": string,"p_municipio": string,"p_personas": number,"p_plan": string,"p_transporte": string }; Returns: undefined
+                           },
+"resena_pendiente":
+{ Args: { "p_codigo": string,"p_contacto": string }; Returns: {
+              "fecha": string,"motivo": string,"negocio_nombre": string,"puede": boolean
+            }[]
                            },
 "vencer_reservas":
 { Args: Record<PropertyKey, never>; Returns: number
