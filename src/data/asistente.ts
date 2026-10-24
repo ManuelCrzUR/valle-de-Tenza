@@ -5,11 +5,11 @@ import type { CategoriaId, Lugar } from './lugares'
 import { generarPlan, ordenRuta, distanciasRuta, km, MAX_SALTO_M, DIAS_MAX } from './generarPlan'
 import type { Itinerario, RutaPersonal } from './generarPlan'
 import type { Categoria } from './planes'
-import { cupoLibre, negocioDeLugar, hoy } from '../state/demo'
-import type { Negocio, Reserva } from '../state/demo'
+import { cupoLibre, negocioDeLugar, hoy } from '../state/reservas'
+import type { Operacion } from '../state/reservas'
 
 export interface UltimaRuta { planId: Categoria; municipio: string; dias: number; semilla: number }
-export interface Contexto { ultimaRuta?: UltimaRuta; negocios: Negocio[]; reservas: Reserva[] }
+export interface Contexto { ultimaRuta?: UltimaRuta; operacion: Operacion }
 export interface Tarjeta { lugarId: string; titulo: string; detalle: string; reservable: boolean }
 export interface Accion { tipo: 'usar-ruta' | 'ver-ruta-itinerario' | 'reservar' | 'ver-mapa' | 'ver-lugar'; etiqueta: string; to?: string }
 export interface Respuesta { texto: string; tarjetas?: Tarjeta[]; ruta?: RutaPersonal; acciones?: Accion[]; contexto?: Partial<Contexto> }
@@ -100,9 +100,9 @@ function tarjeta(l: Lugar, extra?: string): Tarjeta {
   return { lugarId: l.id, titulo: l.nombre, detalle: partes.join(' · '), reservable: tipoReserva(l) !== null }
 }
 function estadoCupo(l: Lugar, ctx: Contexto): string {
-  const neg = negocioDeLugar(ctx.negocios, l.id)
+  const neg = negocioDeLugar(ctx.operacion.negocios, l.id)
   if (!neg) return 'Aún no tiene prestador en la app: un embajador tramita la solicitud.'
-  const n = cupoLibre({ reservas: ctx.reservas }, neg, hoy())
+  const n = cupoLibre(ctx.operacion, neg, hoy())
   return n > 0 ? `Cupo hoy: ${n}.` : 'Hoy no le quedan cupos; puedes elegir otra fecha al reservar.'
 }
 const aRutaPersonal = (it: Itinerario): RutaPersonal => ({

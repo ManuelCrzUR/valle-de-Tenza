@@ -4,10 +4,11 @@ import { useParams } from 'react-router-dom'
 import { TextField, Button, Chip } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Icon } from '../components/Icon'
+import { Cargando } from '../components/Cargando'
 import { getLugar, tipoReserva, TIPOS_RESERVA, NOMBRE_MUNICIPIO } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
-import { useDemo, crearReserva, cupoLibre, negocioDeLugar, LUGAR_NEGOCIO, hoy } from '../state/demo'
-import type { Reserva } from '../state/demo'
+import { useOperacion, crearReserva, cupoLibre, negocioDeLugar, LUGAR_NEGOCIO, hoy } from '../state/reservas'
+import type { EstadoReserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import NoEncontrado from './NoEncontrado'
 import '../styles/reservas.css'
@@ -20,7 +21,7 @@ const VACIOS: Campos = { fecha: '', hora: '', noches: '1', personas: '2', nombre
 
 export default function Reservar() {
   const { id } = useParams()
-  const demo = useDemo()
+  const demo = useOperacion()
   const lugar = id?.startsWith(LUGAR_NEGOCIO) ? undefined : getLugar(id)
   const negocioPropio = id?.startsWith(LUGAR_NEGOCIO) ? demo.negocios.find((n) => n.lugarId === id) : undefined
   const info = lugar
@@ -29,9 +30,15 @@ export default function Reservar() {
   const [v, setV] = useState<Campos>(VACIOS)
   const [errores, setErrores] = useState<Partial<Record<keyof Campos, string>>>({})
   const [errorGeneral, setErrorGeneral] = useState('')
-  const [hecha, setHecha] = useState<Reserva | null>(null)
+  type Hecha = { codigo: string; estado: EstadoReserva; fecha: string; hora?: string; noches?: number; personas: number; nombre: string; contacto: string; conNegocio: boolean }
+  const [hecha, setHecha] = useState<Hecha | null>(null)
+  const [enviando, setEnviando] = useState(false)
   usePagina(hecha ? 'Solicitud enviada' : info ? `Reservar ${info.nombre}` : 'Reservar')
 
+  if (id?.startsWith(LUGAR_NEGOCIO) && !info && demo.cargando) return <Cargando />
+  if (id?.startsWith(LUGAR_NEGOCIO) && !info && demo.sinConexion) {
+    return <div className="wrap pagina res-pagina"><h1 id="titulo" tabIndex={-1} className="t-h1">Reservar</h1><p className="res-aviso" role="status"><Icon name="alerta" size={20} />Sin conexión: por ahora no se pueden hacer reservas.</p></div>
+  }
   if (!id || !info || !info.tipo) return <NoEncontrado />
   const tipo = info.tipo
   const negocio = negocioDeLugar(demo.negocios, id)
@@ -41,7 +48,7 @@ export default function Reservar() {
   const libre = negocio && v.fecha >= hoy() ? cupoLibre(demo, negocio, v.fecha) : null
   const etPers = tipo === 'hotel' ? 'Huéspedes' : 'Personas'
 
-  const enviar = (e: FormEvent) => {
+  const enviar = async (e: FormEvent) => {
     e.preventDefault()
     const er: Partial<Record<keyof Campos, string>> = {}
     if (!v.fecha) er.fecha = tipo === 'hotel' ? 'Elige la fecha de llegada.' : 'Elige la fecha.'
@@ -59,12 +66,15 @@ export default function Reservar() {
       setTimeout(() => document.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(), 0)
       return
     }
-    const r = crearReserva({
+    const datos = {
       lugarId: id, tipo, nombre: v.nombre.trim(), contacto: v.contacto.trim(), fecha: v.fecha, personas: pers, nota: v.nota.trim(),
       ...(tipo === 'restaurante' ? { hora: v.hora } : {}), ...(tipo === 'hotel' ? { noches: Number(v.noches) } : {}),
-    })
+    }
+    setEnviando(true)
+    const r = await crearReserva(datos)
+    setEnviando(false)
     if (!r.ok || !r.reserva) { setErrorGeneral(r.ok ? 'No se pudo enviar la solicitud.' : r.error); return }
-    setHecha(r.reserva)
+    setHecha({ ...datos, ...r.reserva, conNegocio: !!negocio })
   }
 
   const volver = id.startsWith(LUGAR_NEGOCIO) ? null : `/lugares/${id}`
@@ -76,7 +86,7 @@ export default function Reservar() {
         <h1 id="titulo" tabIndex={-1} className="t-h1">Recibimos tu solicitud</h1>
         <Chip tone="soft">Pendiente</Chip>
         <p className="sub">
-          {hecha.negocioId
+          {hecha.conNegocio
             ? 'Tu solicitud queda pendiente hasta que el negocio la confirme. Todavía no es una reserva confirmada.'
             : 'Este lugar aún no tiene prestador en la app: un embajador tramitará tu solicitud. Todavía no es una reserva confirmada.'}
         </p>
@@ -88,12 +98,13 @@ export default function Reservar() {
           <dt>{etPers}</dt><dd>{hecha.personas}</dd>
           <dt>A nombre de</dt><dd>{hecha.nombre}</dd>
           <dt>Contacto</dt><dd>{hecha.contacto}</dd>
+          <dt>Código</dt><dd>{hecha.codigo}</dd>
           <dt>Estado</dt><dd>Pendiente</dd>
         </dl>
-        <p className="res-nota">Modo demostración: los datos se guardan solo en este navegador.</p>
+        <p className="res-nota">Guarda tu código: con él y tu teléfono puedes consultar o cancelar la solicitud.</p>
         <div className="res-acciones">
           <LinkButton to="/reservas" variant="primary">Ver mis reservas</LinkButton>
-          {!hecha.negocioId && <LinkButton to="/chat" variant="secondary" icon="chat">Hablar con un embajador</LinkButton>}
+          {!hecha.conNegocio && <LinkButton to="/chat" variant="secondary" icon="chat">Hablar con un embajador</LinkButton>}
           {volver && <LinkButton to={volver} variant="ghost">Volver al lugar</LinkButton>}
         </div>
       </div>
@@ -105,7 +116,7 @@ export default function Reservar() {
       <p className="overline">{etiquetaTipo} · {info.municipio}</p>
       <h1 id="titulo" tabIndex={-1} className="t-h1">Reservar en {info.nombre}</h1>
       <p className="sub">Envía tu solicitud. No se confirma al instante: queda pendiente hasta que se gestione.</p>
-      <p className="res-aviso"><Icon name="alerta" size={20} />Modo demostración: los datos se guardan solo en este navegador.</p>
+      <div aria-live="polite">{demo.sinConexion && <p className="res-aviso"><Icon name="alerta" size={20} />Sin conexión: por ahora no se pueden hacer reservas.</p>}</div>
       <form className="res-form" onSubmit={enviar} noValidate>
         <div className="res-fila">
           <TextField label={tipo === 'hotel' ? 'Fecha de llegada' : 'Fecha'} type="date" min={hoy()} value={v.fecha} onChange={set('fecha')} error={errores.fecha} required />
@@ -122,7 +133,7 @@ export default function Reservar() {
         </div>
         <div aria-live="assertive">{errorGeneral && <p className="res-error"><Icon name="alerta" size={18} />{errorGeneral}</p>}</div>
         <div className="res-acciones">
-          <Button type="submit" variant="cta">Enviar solicitud</Button>
+          <Button type="submit" variant="cta" disabled={enviando || demo.sinConexion}>{enviando ? 'Enviando…' : 'Enviar solicitud'}</Button>
           {volver && <LinkButton to={volver} variant="ghost">Cancelar</LinkButton>}
         </div>
       </form>

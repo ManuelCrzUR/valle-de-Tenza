@@ -8,7 +8,7 @@ import { responder, EJEMPLOS } from '../data/asistente'
 import type { Accion, Contexto, Respuesta } from '../data/asistente'
 import { getLugar, tieneUbicacion } from '../data/lugares'
 import { useItinerario } from '../state/itinerario'
-import { useDemo } from '../state/demo'
+import { useOperacion } from '../state/reservas'
 import { preguntar, ChatError } from '../chatApi'
 import { config } from '../config'
 import { usePagina } from '../usePagina'
@@ -27,7 +27,7 @@ export default function Chat() {
   const [q, setQ] = useState('')
   const nav = useNavigate()
   const { usarRuta } = useItinerario()
-  const demo = useDemo()
+  const operacion = useOperacion()
   const ctx = useRef<Partial<Contexto>>({})
   const [pensando, setPensando] = useState(false)
   const log = useRef<HTMLDivElement>(null)
@@ -40,7 +40,7 @@ export default function Chat() {
     if (!t || pensando) return
     add({ from: 'me', text: t }); setQ('')
     if (!config.usarAuren) {
-      const r = responder(t, { negocios: demo.negocios, reservas: demo.reservas, ...ctx.current })
+      const r = responder(t, { operacion, ...ctx.current })
       ctx.current = { ...ctx.current, ...r.contexto }
       add({ from: 'bot', text: r.texto, resp: r })
       return

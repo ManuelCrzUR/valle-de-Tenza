@@ -5,7 +5,7 @@ import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
 import { config } from '../config'
-import { useUsuario } from '../state/demo'
+import { useUsuario } from '../state/reservas'
 
 const NAV: TabBarItem[] = [
   { id: 'itinerario', label: 'Itinerario', icon: 'itinerario' },

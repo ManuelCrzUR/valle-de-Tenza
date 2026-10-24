@@ -7,7 +7,7 @@ import { Foto } from '../components/Foto'
 import { fotoDeLugar } from '../data/fotos'
 import { DatosLugar } from '../components/mapa/DatosLugar'
 import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, TIPOS_RESERVA, getLugar, tieneUbicacion, tipoReserva } from '../data/lugares'
-import { LUGAR_NEGOCIO, useDemo } from '../state/demo'
+import { LUGAR_NEGOCIO, useOperacion } from '../state/reservas'
 import { useItinerario } from '../state/itinerario'
 import NoEncontrado from './NoEncontrado'
 import { usePagina } from '../usePagina'
@@ -16,7 +16,7 @@ import '../styles/lugares.css'
 export default function LugarDetalle() {
   const { id } = useParams()
   const lugar = getLugar(id)
-  const { negocios } = useDemo()
+  const { negocios } = useOperacion()
   const negocio = !lugar && id?.startsWith(LUGAR_NEGOCIO) ? negocios.find((n) => n.lugarId === id) : undefined
   const { elegir } = useItinerario()
   const go = useNavigate()

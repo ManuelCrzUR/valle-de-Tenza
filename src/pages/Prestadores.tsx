@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Foto } from '../components/Foto'
 import { LinkButton } from '../components/LinkButton'
-import { useUsuario } from '../state/demo'
+import { useUsuario } from '../state/reservas'
 import { config } from '../config'
 import '../styles/prestador.css'
 import { usePagina } from '../usePagina'

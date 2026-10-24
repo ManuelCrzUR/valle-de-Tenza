@@ -7,7 +7,7 @@ import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
 import { etiquetaSubtipo, CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, useCatalogo } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
 import { PLANES } from '../data/planes'
-import { LUGAR_NEGOCIO, negocioDeLugar, useDemo } from '../state/demo'
+import { LUGAR_NEGOCIO, negocioDeLugar, useOperacion } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import '../styles/lugares.css'
 
@@ -24,7 +24,7 @@ export default function Lugares() {
   usePagina('Qué lugares hay')
   const [params, setParams] = useSearchParams()
   const go = useNavigate()
-  const { negocios } = useDemo()
+  const { negocios } = useOperacion()
   const { lugares: LUGARES, municipios: MUNICIPIOS } = useCatalogo()
   const cat = FILTROS.find((f) => f.id === params.get('cat'))?.id ?? 'aventura'
   const mun = MUNICIPIOS.some((m) => m.slug === params.get('mun')) ? params.get('mun')! : ''

@@ -4,23 +4,24 @@ import { Navigate } from 'react-router-dom'
 import { Button, Chip, Option, TextField } from '../components/ui'
 import { NOMBRE_MUNICIPIO, TIPOS_RESERVA, tipoReserva, useCatalogo } from '../data/lugares'
 import type { TipoReserva } from '../data/lugares'
-import { cambiarEstado, cupoLibre, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useDemo, useUsuario } from '../state/demo'
-import type { EstadoReserva, Negocio, Reserva } from '../state/demo'
+import { cambiarEstado, cupoLibre, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useMisNegocios, useOperacion, useReservasDeMisNegocios, useSesionLista, useUsuario } from '../state/reservas'
+import type { EstadoReserva, Negocio, Reserva } from '../state/reservas'
 import { usePagina } from '../usePagina'
 import '../styles/prestador.css'
 
-const AVISO_DEMO = 'Modo demostración: las cuentas y reservas se guardan solo en este navegador; no uses una contraseña real.'
 const ETIQUETA_TIPO = Object.fromEntries(TIPOS_RESERVA.map((t) => [t.id, t.etiqueta])) as Record<TipoReserva, string>
 const ESTADOS: { id: EstadoReserva | 'todas'; etiqueta: string }[] = [
   { id: 'todas', etiqueta: 'Todas' }, { id: 'pendiente', etiqueta: 'Pendientes' }, { id: 'confirmada', etiqueta: 'Confirmadas' },
-  { id: 'rechazada', etiqueta: 'Rechazadas' }, { id: 'cancelada', etiqueta: 'Canceladas' },
+  { id: 'rechazada', etiqueta: 'Rechazadas' }, { id: 'cancelada', etiqueta: 'Canceladas' }, { id: 'vencida', etiqueta: 'Vencidas' },
 ]
-const TONO: Record<EstadoReserva, 'soft' | 'success' | 'danger' | 'strong'> = { pendiente: 'soft', confirmada: 'success', rechazada: 'danger', cancelada: 'danger' }
+const TONO: Record<EstadoReserva, 'soft' | 'success' | 'danger' | 'strong'> = { pendiente: 'soft', confirmada: 'success', rechazada: 'danger', cancelada: 'danger', vencida: 'danger' }
 const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
 export default function PrestadorPanel() {
   usePagina('Panel de prestador')
   const usuario = useUsuario()
+  const lista = useSesionLista()
+  if (!lista) return <div className="wrap pagina"><p className="sub" role="status">Cargando tu sesión…</p></div>
   if (!usuario) return <Navigate to="/prestadores/entrar" replace />
   return (
     <div className="wrap pagina">
@@ -28,17 +29,16 @@ export default function PrestadorPanel() {
         <h1 id="titulo" tabIndex={-1} className="t-h1">Hola, {usuario.nombre}</h1>
         <Button variant="secondary" onClick={salir}>Cerrar sesión</Button>
       </div>
-      <p className="pr-aviso" role="note">{AVISO_DEMO}</p>
-      <Negocios usuarioId={usuario.id} />
-      <Reservas usuarioId={usuario.id} />
+      <Negocios />
+      <Reservas />
     </div>
   )
 }
 
 // ---------- Mis negocios ----------
-function Negocios({ usuarioId }: { usuarioId: string }) {
-  const { negocios } = useDemo()
-  const mios = negocios.filter((n) => n.usuarioId === usuarioId)
+function Negocios() {
+  const { negocios: mios, cargando, error: errorCarga } = useMisNegocios()
+  const [error, setError] = useState('')
   const [editando, setEditando] = useState<Negocio | null>(null)
   const [quitando, setQuitando] = useState<string | null>(null)
   const [abierto, setAbierto] = useState(false)
@@ -46,7 +46,11 @@ function Negocios({ usuarioId }: { usuarioId: string }) {
   return (
     <section className="pr-seccion" aria-labelledby="h-negocios">
       <h2 id="h-negocios" className="t-h2">Mis negocios</h2>
-      {mios.length === 0 && !abierto && (
+      <div aria-live="polite">
+        {cargando && <p className="pr-nota">Cargando tus negocios…</p>}
+        {(errorCarga || error) && <p className="pr-error">{errorCarga || error}</p>}
+      </div>
+      {!cargando && mios.length === 0 && !abierto && (
         <div className="pr-vacio"><p>Aún no tienes negocios. Agrega uno para empezar a recibir solicitudes de reserva.</p></div>
       )}
       <ul className="pr-lista">
@@ -63,7 +67,7 @@ function Negocios({ usuarioId }: { usuarioId: string }) {
             {quitando === n.id ? (
               <div className="pr-confirma" role="group" aria-label={`Confirmar quitar ${n.nombre}`}>
                 <p>¿Quitar «{n.nombre}»? Sus reservas dejarán de aparecer en tu panel.</p>
-                <Button variant="cta" onClick={() => { quitarNegocio(n.id); setQuitando(null) }}>Sí, quitar</Button>
+                <Button variant="cta" onClick={async () => { const r = await quitarNegocio(n.id); setError(r.ok ? '' : r.error); setQuitando(null) }}>Sí, quitar</Button>
                 <Button variant="ghost" onClick={() => setQuitando(null)}>Cancelar</Button>
               </div>
             ) : (
@@ -84,7 +88,7 @@ function Negocios({ usuarioId }: { usuarioId: string }) {
 
 function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo: () => void }) {
   const { lugares: LUGARES, municipios: MUNICIPIOS } = useCatalogo()
-  const { negocios } = useDemo()
+  const { negocios } = useOperacion()
   const reclamados = useMemo(() => new Set(negocios.filter((n) => n.id !== editando?.id).map((n) => n.lugarId)), [negocios, editando])
   const [modo, setModo] = useState<'mapa' | 'nuevo'>(editando && editando.lugarId.startsWith(LUGAR_NEGOCIO) ? 'nuevo' : editando ? 'mapa' : 'mapa')
   const [busca, setBusca] = useState('')
@@ -94,7 +98,9 @@ function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo:
   const [tipo, setTipo] = useState<TipoReserva>(editando?.tipo ?? 'restaurante')
   const [cupo, setCupo] = useState(String(editando?.cupoDiario ?? 10))
   const [descripcion, setDescripcion] = useState(editando?.descripcion ?? '')
+  const [whatsapp, setWhatsapp] = useState(editando?.whatsapp ?? '')
   const [error, setError] = useState('')
+  const [guardando, setGuardando] = useState(false)
 
   const candidatos = useMemo(() => {
     const q = norm(busca.trim())
@@ -113,14 +119,17 @@ function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo:
     if (!editando) { setNombre(''); setMunicipio('') }
   }
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
     if (modo === 'mapa' && !lugarId) return setError('Elige un lugar del mapa o registra uno nuevo.')
     if (modo === 'nuevo' && !municipio) return setError('Elige el municipio.')
-    const r = guardarNegocio({
+    if (whatsapp.replace(/\D/g, '').length < 7) return setError('Escribe el WhatsApp del negocio, con indicativo (ej. 57 3001234567).')
+    setGuardando(true)
+    const r = await guardarNegocio({
       id: editando?.id, lugarId: modo === 'mapa' ? lugarId : editando && editando.lugarId.startsWith(LUGAR_NEGOCIO) ? editando.lugarId : null,
-      nombre, municipio, tipo, cupoDiario: Math.floor(Number(cupo)), descripcion: descripcion.trim(),
+      nombre, municipio, tipo, cupoDiario: Math.floor(Number(cupo)), descripcion: descripcion.trim(), whatsapp: whatsapp.trim(),
     })
+    setGuardando(false)
     if (r.ok) onListo(); else setError(r.error)
   }
 
@@ -167,13 +176,14 @@ function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo:
         </select>
       </div>
       <TextField label="Cupo diario (personas)" type="number" min={1} step={1} inputMode="numeric" value={cupo} onChange={(e) => setCupo(e.target.value)} required />
+      <TextField label="WhatsApp del negocio" type="tel" autoComplete="tel" inputMode="tel" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} hint="Solo lo ve la persona que reserva al avisarte; no se publica." required />
       <div className="vd-field">
         <label htmlFor="pr-desc" className="vd-field-label">Descripción</label>
         <textarea id="pr-desc" className="pr-area" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
       </div>
       <p className="pr-error" role="alert" aria-live="assertive">{error}</p>
       <div className="pr-acciones">
-        <Button type="submit" variant="cta">{editando ? 'Guardar cambios' : 'Guardar negocio'}</Button>
+        <Button type="submit" variant="cta" disabled={guardando}>{guardando ? 'Guardando…' : editando ? 'Guardar cambios' : 'Guardar negocio'}</Button>
         <Button variant="ghost" onClick={onListo}>Cancelar</Button>
       </div>
     </form>
@@ -192,15 +202,16 @@ function contactoEnlace(c: string) {
   return { href: `tel:${t.startsWith('+') ? '+' : ''}${d}`, wa: wa ? `https://wa.me/${wa}` : null, texto: t }
 }
 
-function Reservas({ usuarioId }: { usuarioId: string }) {
-  const datos = useDemo()
-  const mios = datos.negocios.filter((n) => n.usuarioId === usuarioId)
+function Reservas() {
+  const op = useOperacion()
+  const { negocios: mios, cargando: cargandoN } = useMisNegocios()
+  const { reservas: todas, cargando: cargandoR, error: errorCarga } = useReservasDeMisNegocios()
   const [negId, setNegId] = useState('')
   const [filtro, setFiltro] = useState<EstadoReserva | 'todas'>('todas')
   const [error, setError] = useState('')
   const negocio = mios.find((n) => n.id === negId) ?? mios[0]
 
-  const reservas = negocio ? datos.reservas.filter((r) => r.negocioId === negocio.id) : []
+  const reservas = negocio ? todas.filter((r) => r.negocioId === negocio.id) : []
   const hoyStr = hoy()
   const pendientes = reservas.filter((r) => r.estado === 'pendiente').length
   const confirmadasHoy = reservas.filter((r) => r.estado === 'confirmada' && r.fecha === hoyStr).length
@@ -208,15 +219,19 @@ function Reservas({ usuarioId }: { usuarioId: string }) {
     .filter((r) => filtro === 'todas' || r.estado === filtro)
     .sort((a, b) => `${a.fecha} ${a.hora ?? ''}`.localeCompare(`${b.fecha} ${b.hora ?? ''}`))
 
-  function mover(id: string, estado: EstadoReserva) {
-    const r = cambiarEstado(id, estado)
+  async function mover(id: string, estado: EstadoReserva) {
+    const r = await cambiarEstado(id, estado)
     setError(r.ok ? '' : r.error)
   }
 
   return (
     <section className="pr-seccion" aria-labelledby="h-reservas">
       <h2 id="h-reservas" className="t-h2">Reservas</h2>
-      {!negocio ? (
+      {cargandoN || cargandoR ? (
+        <p className="pr-nota" role="status">Cargando reservas…</p>
+      ) : errorCarga ? (
+        <p className="pr-error" role="alert">{errorCarga}</p>
+      ) : !negocio ? (
         <div className="pr-vacio"><p>Agrega un negocio para ver aquí sus solicitudes.</p></div>
       ) : (
         <>
@@ -231,7 +246,7 @@ function Reservas({ usuarioId }: { usuarioId: string }) {
           <div className="pr-cifras" aria-label={`Resumen de ${negocio.nombre}`}>
             <div className="pr-cifra"><strong>{pendientes}</strong><span>Pendientes</span></div>
             <div className="pr-cifra"><strong>{confirmadasHoy}</strong><span>Confirmadas hoy</span></div>
-            <div className="pr-cifra"><strong>{cupoLibre(datos, negocio, hoyStr)}</strong><span>Cupo libre hoy</span></div>
+            <div className="pr-cifra"><strong>{cupoLibre(op, negocio, hoyStr)}</strong><span>Cupo libre hoy</span></div>
           </div>
           <div className="pr-filtros" role="group" aria-label="Filtrar por estado">
             {ESTADOS.map((e) => <Option key={e.id} selected={filtro === e.id} onClick={() => setFiltro(e.id)}>{e.etiqueta}</Option>)}
@@ -253,10 +268,10 @@ function Reservas({ usuarioId }: { usuarioId: string }) {
   )
 }
 
-function FilaReserva({ r, onMover }: { r: Reserva; onMover: (id: string, e: EstadoReserva) => void }) {
+function FilaReserva({ r, onMover }: { r: Reserva; onMover: (id: string, e: EstadoReserva) => Promise<void> }) {
   const c = contactoEnlace(r.contacto)
   const fecha = new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-  const cerrada = r.estado === 'rechazada' || r.estado === 'cancelada'
+  const cerrada = r.estado === 'rechazada' || r.estado === 'cancelada' || r.estado === 'vencida'
   return (
     <li className="pr-item">
       <div className="pr-meta">

@@ -7,7 +7,7 @@ import { CATEGORIA_POR_ID, NOMBRE_MUNICIPIO, tipoReserva, useCatalogo } from '..
 import type { Lugar } from '../data/lugares'
 import { useItinerario } from '../state/itinerario'
 import { MAX_SALTO_M, DIAS_MAX, distanciasRuta, km, ordenRuta } from '../data/generarPlan'
-import { cupoLibre, hoy, negocioDeLugar, useDemo } from '../state/demo'
+import { cupoLibre, hoy, negocioDeLugar, useOperacion } from '../state/reservas'
 import { config } from '../config'
 import { Icon } from '../components/Icon'
 import { usePagina } from '../usePagina'
@@ -34,7 +34,7 @@ export default function Itinerario() {
   usePagina('Tu itinerario')
   const { municipios: MUNICIPIOS } = useCatalogo()
   const { itinerario, eleccion, elegir, setMunicipio, setDias, otro } = useItinerario()
-  const demo = useDemo()
+  const op = useOperacion()
   const plan = itinerario?.plan
   const hosp = itinerario?.hospedaje
 
@@ -42,9 +42,9 @@ export default function Itinerario() {
   let tone: 'strong' | 'soft' = 'soft'
   let icono: 'cupo-verificado' | undefined
   if (hosp) {
-    const n = negocioDeLugar(demo.negocios, hosp.id)
+    const n = negocioDeLugar(op.negocios, hosp.id)
     if (n) {
-      if (cupoLibre(demo, n, hoy()) > 0) { chip = 'Cupo disponible'; tone = 'strong'; icono = 'cupo-verificado' } else chip = 'Sin cupo hoy'
+      if (cupoLibre(op, n, hoy()) > 0) { chip = 'Cupo disponible'; tone = 'strong'; icono = 'cupo-verificado' } else chip = 'Sin cupo hoy'
     }
   }
 
