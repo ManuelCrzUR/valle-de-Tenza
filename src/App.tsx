@@ -5,6 +5,7 @@ import { Layout } from './components/Layout'
 // Cada pantalla se descarga cuando se visita (Layout muestra <Cargando/> mientras tanto).
 const Inicio = lazy(() => import('./pages/Inicio'))
 const Itinerario = lazy(() => import('./pages/Itinerario'))
+const ItinerarioCompartido = lazy(() => import('./pages/ItinerarioCompartido'))
 const Lugares = lazy(() => import('./pages/Lugares'))
 const LugarDetalle = lazy(() => import('./pages/LugarDetalle'))
 const Mapa = lazy(() => import('./pages/Mapa'))
@@ -26,6 +27,7 @@ export default function App() {
       <Route element={<Layout />}>
         <Route index element={<Inicio />} />
         <Route path="itinerario" element={<Itinerario />} />
+        <Route path="i/:id" element={<ItinerarioCompartido />} />
         <Route path="lugares" element={<Lugares />} />
         <Route path="lugares/:id" element={<LugarDetalle />} />
         <Route path="mapa" element={<Mapa />} />

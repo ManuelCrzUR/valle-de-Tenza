@@ -7,12 +7,13 @@ import { DIAS_MAX, construirItinerario, costoEntre, generarPlan } from '../data/
 import type { DepsPlan, Itinerario, RutaPersonal } from '../data/generarPlan'
 import { MUNICIPIOS, metros, tieneUbicacion } from '../data/lugares'
 import type { Lugar } from '../data/lugares'
+import { getPlan } from '../data/planes'
 import type { Categoria } from '../data/planes'
 
 export type Movilidad = 'carro' | 'publico'
 const KEY = 'valle-directo:itinerario'
 
-interface Eleccion { planId: Categoria; municipio: string; semilla: number; dias: number; fecha: string; personas: number; movilidad?: Movilidad; ruta?: RutaPersonal }
+export interface Eleccion { planId: Categoria; municipio: string; semilla: number; dias: number; fecha: string; personas: number; movilidad?: Movilidad; ruta?: RutaPersonal }
 
 // Próximo sábado en hora local (AAAA-MM-DD); si hoy es sábado, hoy.
 export function proximoSabado(): string {
@@ -31,6 +32,7 @@ interface Ctx {
   setPersonas: (n: number) => void            // 1 a PERSONAS_MAX
   setMovilidad: (m: Movilidad) => void        // carro propio o transporte público
   otro: () => void                            // «Generar otro»: nueva semilla
+  cargarEleccion: (e: unknown) => boolean     // carga una elección compartida (/i/:id); false si no es válida
   usarRuta: (r: RutaPersonal) => void         // carga una ruta armada (por el asistente del chat)
   limpiar: () => void
 }
@@ -110,6 +112,16 @@ export function ItinerarioProvider({ children }: { children: ReactNode }) {
     setMovilidad: (movilidad) => setE((x) => x && { ...x, movilidad }),
     otro: () => setE((x) => x && { planId: x.planId, municipio: x.municipio, dias: x.dias, fecha: x.fecha, personas: x.personas, movilidad: x.movilidad, semilla: x.semilla + 1 }),
     usarRuta: (ruta) => setE((x) => ({ planId: ruta.planId, municipio: ruta.municipio, semilla: 0, dias: ruta.dias.length, fecha: x?.fecha ?? proximoSabado(), personas: x?.personas ?? 2, movilidad: x?.movilidad, ruta })),
+    cargarEleccion: (v) => {
+      const x = v as Partial<Eleccion> | null
+      if (!x || typeof x !== 'object' || !getPlan(x.planId as Categoria)) return false
+      const dias = Math.min(DIAS_MAX, Math.max(1, Math.floor(Number(x.dias)) || 2))
+      const fecha = typeof x.fecha === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.fecha) && x.fecha >= hoy() ? x.fecha : proximoSabado()
+      const personas = Math.min(PERSONAS_MAX, Math.max(1, Math.floor(Number(x.personas)) || 2))
+      setE({ planId: x.planId as Categoria, municipio: typeof x.municipio === 'string' ? x.municipio : '', semilla: Math.max(0, Math.floor(Number(x.semilla)) || 0), dias, fecha, personas,
+        movilidad: x.movilidad === 'carro' || x.movilidad === 'publico' ? x.movilidad : undefined, ruta: x.ruta && typeof x.ruta === 'object' ? x.ruta : undefined })
+      return true
+    },
     limpiar: () => setE(null),
   }
   return <ItinerarioCtx.Provider value={value}>{children}</ItinerarioCtx.Provider>

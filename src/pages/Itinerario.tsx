@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Car, Bus, CalendarDays, CloudRain } from 'lucide-react'
+import { Car, Bus, CalendarDays, CloudRain, Copy, Share2, MessageCircle } from 'lucide-react'
 import { Option, PlaceCard, Button, TextField } from '../components/ui'
 import { LinkButton } from '../components/LinkButton'
 import { Foto } from '../components/Foto'
@@ -17,6 +17,7 @@ import type { Dia, PasoRuta } from '../data/generarPlan'
 import { cupoLibre, cupoVerificadoHoy, fechaCorta, hoy, negocioDeLugar, useOperacion } from '../state/reservas'
 import { eventosEntre, useEventos } from '../state/contenido'
 import type { Evento } from '../state/contenido'
+import { compartirItinerario, registrarDemanda } from '../state/compartir'
 import { config } from '../config'
 import { Icon } from '../components/Icon'
 import { usePagina } from '../usePagina'
@@ -29,11 +30,11 @@ const sitio = (l: Lugar) => `${CATEGORIA_POR_ID[l.categoria]?.singular ?? l.cate
 function Distancia({ m, tramo }: { m?: number; tramo?: Tramo }) {
   if (tramo) {
     const lejos = tramo.distancia_m > MAX_SALTO_M
-    return <p className={`it-dist${lejos ? ' it-dist-lejos' : ''}`}>{lejos && <strong>Queda lejos: </strong>}a {minutos(tramo.duracion_s)} min por carretera de la parada anterior ({km(tramo.distancia_m)})</p>
+    return <p className={`it-dist${lejos ? ' it-dist-lejos' : ''}`}>{lejos ? <>{minutos(tramo.duracion_s)} min por carretera desde la anterior ({km(tramo.distancia_m)})</> : <>a {minutos(tramo.duracion_s)} min por carretera de la parada anterior ({km(tramo.distancia_m)})</>}</p>
   }
   if (m === undefined) return null
   const lejos = m > MAX_SALTO_M
-  return <p className={`it-dist${lejos ? ' it-dist-lejos' : ''}`}>{lejos && <strong>Queda lejos: </strong>}a ~{km(m)} (aprox.) de la parada anterior</p>
+  return <p className={`it-dist${lejos ? ' it-dist-lejos' : ''}`}>{lejos ? <>~{km(m)} (aprox.) desde la anterior</> : <>a ~{km(m)} (aprox.) de la parada anterior</>}</p>
 }
 
 const esMirador = (l: Lugar) => l.categoria === 'naturaleza' || (l.categoria === 'atraccion' && /mirador|viewpoint|cerro|peak|cima/i.test(l.subtipo))
@@ -128,9 +129,62 @@ export default function Itinerario() {
 
   const pasos = itinerario ? ordenRuta(itinerario) : []
   const dist = distanciasRuta(pasos)
-  const medidas = dist.filter((d): d is number => d !== undefined)
-  const total = medidas.length ? medidas.reduce((a, b) => a + b, 0) : undefined
   const diasSel = eleccion?.dias ?? 2
+  const resultadoRef = useRef<HTMLDivElement>(null)
+  const irAlResultado = useRef(false)
+  const elegirPlan = (id: Parameters<typeof elegir>[0]) => { irAlResultado.current = window.matchMedia('(max-width: 767px)').matches; elegir(id) }
+  useEffect(() => {
+    if (!irAlResultado.current || !itinerario) return
+    irAlResultado.current = false
+    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    resultadoRef.current?.scrollIntoView({ behavior: quieto ? 'auto' : 'smooth', block: 'start' })
+  }, [itinerario])
+
+  // Demanda anónima: solo si el resultado se queda 3 s sin cambiar; una vez por combinación y sesión.
+  const munResuelto = itinerario?.municipio ?? ''
+  useEffect(() => {
+    if (!eleccion || !itinerario) return
+    const t = setTimeout(() => { void registrarDemanda(eleccion, munResuelto) }, 3000)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eleccion?.planId, munResuelto, eleccion?.dias, eleccion?.personas, eleccion?.fecha, eleccion?.movilidad, !!itinerario])
+
+  // Compartir: el enlace se crea al pulsar y se reutiliza mientras la elección no cambie.
+  const claveEleccion = JSON.stringify(eleccion)
+  const [enlace, setEnlace] = useState<{ clave: string; url: string } | null>(null)
+  const [aviso, setAviso] = useState('')
+  const [error, setError] = useState('')
+  const [ocupado, setOcupado] = useState(false)
+  useEffect(() => { setAviso(''); setError('') }, [claveEleccion])
+  const obtenerEnlace = async (): Promise<string | null> => {
+    if (enlace && enlace.clave === claveEleccion) return enlace.url
+    if (!eleccion) return null
+    setOcupado(true); setError(''); setAviso('')
+    try {
+      const url = await compartirItinerario(eleccion)
+      setEnlace({ clave: claveEleccion, url })
+      return url
+    } catch (e) { setError(e instanceof Error ? e.message : 'No pudimos crear el enlace.'); return null } finally { setOcupado(false) }
+  }
+  const compartirNativo = async () => {
+    const url = await obtenerEnlace()
+    if (!url) return
+    try { await navigator.share({ title: plan?.titulo ?? 'Mi itinerario', text: 'Mira este itinerario por el Valle de Tenza', url }) } catch { /* canceló o no pudo: quedan los otros botones */ }
+  }
+  const compartirWhatsApp = async () => {
+    const w = enlace && enlace.clave === claveEleccion ? null : window.open('', '_blank')   // se abre ya, dentro del toque, y se redirige al tener el enlace
+    const url = await obtenerEnlace()
+    if (!url) { w?.close(); return }
+    const destino = `https://wa.me/?text=${encodeURIComponent(`Mi itinerario por el Valle de Tenza: ${url}`)}`
+    if (w) w.location.href = destino; else window.open(destino, '_blank', 'noopener')
+  }
+  const copiarEnlace = async () => {
+    const url = await obtenerEnlace()
+    if (!url) return
+    try { await navigator.clipboard.writeText(url); setAviso('Enlace copiado') } catch { setAviso('No pudimos copiarlo solo: selecciona el enlace de abajo y cópialo.') }
+  }
+  const etiquetaCarretera = itinerario && itinerario.segundosCarretera > 0 ? `${itinerario.aprox ? '~' : ''}${duracionLarga(Math.max(1, Math.round(itinerario.segundosCarretera / 60)))}${itinerario.aprox ? ' (aprox.)' : ''}` : 'Sin recorridos largos'
+  const estadoHospedaje = itinerario?.avisoHospedaje ?? (hosp && tone === 'strong' ? 'Hospedaje con cupo' : 'Cupo por confirmar')
   const idsRuta = pasos.map((p) => p.lugar.id).join(',')
   useEffect(() => { if (idsRuta) cargarTramos(idsRuta.split(',')) }, [idsRuta])
 
@@ -141,7 +195,7 @@ export default function Itinerario() {
         <p className="sub">Elige tu plan y generamos el itinerario, sin buscar en catálogos.</p>
         <div className="opts opts-col" role="group" aria-label="Plan">
           {PLANES.map((p) => (
-            <Option key={p.id} icon={p.icono} selected={plan?.id === p.id} onClick={() => elegir(p.id)}>{p.opcion}</Option>
+            <Option key={p.id} icon={p.icono} selected={plan?.id === p.id} onClick={() => elegirPlan(p.id)}>{p.opcion}</Option>
           ))}
         </div>
         {eleccion && (
@@ -165,25 +219,24 @@ export default function Itinerario() {
             </div>
             <TextField label="¿Cuándo vas?" type="date" min={hoy()} value={fecha} onChange={(e) => e.target.value && e.target.value >= hoy() && setFecha(e.target.value)} hint="Fecha de llegada." />
             <TextField label="¿Cuántos van?" type="number" inputMode="numeric" min={1} max={PERSONAS_MAX} value={personas} onChange={(e) => e.target.value && setPersonas(Number(e.target.value))} hint={`De 1 a ${PERSONAS_MAX} personas.`} />
-            <Button variant="secondary" onClick={otro}>Generar otro</Button>
+            <Button variant="secondary" onClick={otro}>Probar otra ruta</Button>
           </div>
         )}
       </div>
 
-      <div className="split-main" aria-live="polite">
+      <div className="split-main" aria-live="polite" ref={resultadoRef}>
         {itinerario && plan ? (
           <section key={`${plan.id}-${eleccion?.semilla}-${eleccion?.municipio}-${eleccion?.dias}`} className="panel resultado" aria-label={plan.titulo}>
             <h2 className="t-h2">{plan.titulo}</h2>
-            <p className="sub">
-              Centrada en {NOMBRE_MUNICIPIO[itinerario.municipio] ?? itinerario.municipio} · {itinerario.dias.length} {itinerario.dias.length === 1 ? 'día' : 'días'}
-              {total !== undefined && ` · ~${km(total)} (aprox.) en total`}
-            </p>
+            <dl className="it-resumen" aria-label="Resumen del itinerario">
+              <div><dt>Municipio base</dt><dd>{nombreMun(itinerario.municipio)}</dd></div>
+              <div><dt>Días</dt><dd>{itinerario.dias.length}</dd></div>
+              {fecha && <div><dt>Llegada</dt><dd>{fechaCorta(fecha)}</dd></div>}
+              <div><dt>Personas</dt><dd>{personas}</dd></div>
+              <div><dt>En carretera</dt><dd>{etiquetaCarretera}</dd></div>
+              <div><dt>Hospedaje</dt><dd>{estadoHospedaje}</dd></div>
+            </dl>
             {eleccion?.ruta && <p className="it-aviso" role="status">Esta ruta la armó el asistente del chat. Si cambias el plan, el municipio o los días, la reemplazamos por una nueva.</p>}
-            {itinerario.avisos.length > 0 && (
-              <div className="it-aviso it-avisos" role="status">
-                <ul>{itinerario.avisos.map((a) => <li key={a}>{a}</li>)}</ul>
-              </div>
-            )}
             {!pasos.length && <p className="it-aviso">No encontramos lugares con ubicación para este plan. Prueba con otro municipio o plan.</p>}
             {itinerario.dias.map((d) => (
               <div key={d.n} className="it-dia">
@@ -227,6 +280,14 @@ export default function Itinerario() {
                     </li>
                   ))}
                 </ol>
+                {d.opcional.length > 0 && (
+                  <section className="it-opcional" aria-label={`Día ${d.n}: si te sobra tiempo`}>
+                    <h4 className="it-rol">Si te sobra tiempo (opcional)</h4>
+                    <ul>
+                      {d.opcional.map((l) => <li key={l.id}><span>{l.nombre}</span> <small>{sitio(l)}</small> <Link className="it-enlace" to={`/lugares/${l.id}`}>Ver detalle</Link></li>)}
+                    </ul>
+                  </section>
+                )}
                 {!d.paradas.length && !d.comida && <p className="it-aviso">No hay paradas disponibles para este día.</p>}
               </div>
             ))}
@@ -234,6 +295,19 @@ export default function Itinerario() {
             <Atribucion />
             <p className="embajador"><Icon name="embajador" size={24} />
               <span><strong>Tu embajador.</strong> Red de confianza del Valle de Tenza en {config.ciudadEmbajadores}.</span></p>
+            <div className="it-compartir" role="group" aria-label="Compartir este itinerario">
+              {typeof navigator.share === 'function' && <Button variant="secondary" disabled={ocupado} onClick={() => void compartirNativo()}><Share2 size={20} aria-hidden /> Compartir</Button>}
+              <Button variant="secondary" disabled={ocupado} onClick={() => void compartirWhatsApp()}><MessageCircle size={20} aria-hidden /> Compartir por WhatsApp</Button>
+              <Button variant="secondary" disabled={ocupado} onClick={() => void copiarEnlace()}><Copy size={20} aria-hidden /> Copiar enlace</Button>
+              <div aria-live="polite" className="it-compartir-estado">
+                {ocupado && <p>Creando el enlace…</p>}
+                {aviso && <p>{aviso}</p>}
+                {error && <p className="it-error" role="alert">{error}</p>}
+              </div>
+              {enlace && enlace.clave === claveEleccion && (
+                <div className="it-enlace-campo"><TextField label="Enlace para compartir" readOnly value={enlace.url} onFocus={(e) => e.currentTarget.select()} /></div>
+              )}
+            </div>
             <div className="it-pie">
               <LinkButton to="/mapa?vista=ruta" variant="cta" icon="mapa">Ver mi ruta en el mapa</LinkButton>
               <LinkButton to="/reservas" variant="secondary">Mis reservas</LinkButton>

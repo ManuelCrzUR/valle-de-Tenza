@@ -53,3 +53,19 @@
 .it-rutas svg, .it-dia-aviso svg { flex: none; }
 .it-paso0 .cl-pc { color: var(--accent-text); }
 .it-dia-aviso { margin: 0; display: flex; align-items: flex-start; gap: var(--space-3); border: 1px solid var(--accent); background: var(--accent-soft); color: var(--on-accent-soft); }
+
+/* Resumen, opcionales y compartir */
+.it-resumen { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: var(--space-3); margin: 0; padding: var(--space-4); border-radius: var(--radius-md); background: var(--surface-sunken); }
+.it-resumen div { min-width: 0; }
+.it-resumen dt { font-size: 14px; color: var(--ink-muted); }
+.it-resumen dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+.it-opcional { padding: var(--space-3) var(--space-4); border: 1px dashed var(--line-strong); border-radius: var(--radius-md); color: var(--ink-muted); }
+.it-opcional ul { margin: var(--space-2) 0 0; padding-left: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+.it-opcional li { overflow-wrap: anywhere; }
+.it-compartir { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-4); }
+.it-compartir .vd-btn { min-height: 44px; }
+.it-compartir-estado { width: 100%; }
+.it-compartir-estado p { margin: 0; }
+.it-error { color: var(--accent-text); font-weight: 700; }
+.it-enlace-campo { width: 100%; }
+.it-enlace-campo .vd-input { width: 100%; }
