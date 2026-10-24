@@ -50,7 +50,11 @@ def _consultar(nombre: str) -> dict:
             try:
                 r = Fetcher.post(url, data={"data": q}, headers=HEADERS, timeout=120, retries=1, stealthy_headers=False)
                 if r.status == 200:
-                    return json.loads(r.body)
+                    datos = json.loads(r.body)
+                    if not any(e["type"] == "relation" for e in datos.get("elements", [])):
+                        errores.append(f"{url} → 200 sin la relación de «{nombre}» (nombre mal escrito o servidor sin datos)")
+                        continue   # no se guarda en caché una respuesta vacía
+                    return datos
                 errores.append(f"{url} → {r.status}")
             except Exception as e:  # red caída, tiempo agotado…
                 errores.append(f"{url} → {e}")

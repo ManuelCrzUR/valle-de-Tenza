@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fuentes import datos_gov, manual
-from normalizar import normalizar, publico
+from normalizar import descartar_duplicados, nombre_es, normalizar, publico
 
 fallos = []
 
@@ -65,7 +65,7 @@ ok({x["municipio"] for x in s} == {"almeida", "la-capilla", "guayata"}, "Salud: 
 
 # ---- Cajeros ---------------------------------------------------------------
 caj = datos_gov.cajeros_a_candidatos([{"nombre": "TENZA", "ciudad": "TENZA", "direccion": "CALLE 5 #  9 - 27/29"}, {"ciudad": "BOGOTA", "direccion": "x"}])
-ok(len(caj) == 1 and caj[0]["municipio"] == "tenza", "Cajeros: solo los de los 7 municipios")
+ok(len(caj) == 1 and caj[0]["municipio"] == "tenza", "Cajeros: solo los de los municipios del Valle")
 
 # ---- Normalización: duplicados y privacidad -----------------------------------
 osm_banco = {"osm": "node/1", "nombre": "Banco Agrario de Colombia", "categoria": "cajero", "subtipo": "banco", "municipio": "tenza", "lat": 5.07, "lon": -73.42,
@@ -100,6 +100,38 @@ with tempfile.TemporaryDirectory() as d:
     ok([x["nombre"] for x in ms] == ["Restaurante Doña Ana", "Sin coordenadas"], "Manual: filas válidas con y sin coordenadas")
     ok(len(err) == 4 and all("línea" in e for e in err), f"Manual: 4 errores reportados con número de línea")
     ok(ms[0]["precision"] == "exacta" and ms[1]["precision"] is None, "Manual: precisión exacta solo si trae coordenadas")
+
+# ---- Municipios ----------------------------------------------------------------------------
+from municipios import MUNICIPIOS
+ok(len(MUNICIPIOS) == 14 and len({m["dane"] for m in MUNICIPIOS}) == 14 and len({m["slug"] for m in MUNICIPIOS}) == 14, "Municipios: 14, sin DANE ni slug repetidos")
+ok([m["slug"] for m in MUNICIPIOS[7:9]] == ["guateque", "garagoa"] and all(m["dane"].startswith("15") for m in MUNICIPIOS), "Municipios: Guateque y Garagoa van primero entre los nuevos; todos de Boyacá (15)")
+
+# ---- Nombres de OSM: mayúsculas de título y duplicados --------------------------------------
+ok(nombre_es("antiguo jardin") == "Antiguo Jardín" and nombre_es("PARQUE PRINCIPAL") == "Parque Principal", "Nombres: minúsculas y MAYÚSCULAS → título")
+ok(nombre_es("IGLESIA DE LA VILLA Y EL CERRO") == "Iglesia de la Villa y el Cerro" and nombre_es("de la Plaza") == "De la Plaza", "Nombres: partículas en minúscula salvo al inicio")
+ok(nombre_es("  cajero   ATM banco agrario ") == "Cajero ATM Banco Agrario" and nombre_es("EDS la Esperanza") == "EDS la Esperanza", "Nombres: siglas conocidas se respetan, espacios se limpian")
+ok(nombre_es("Hotel McDonald 4x4") == "Hotel McDonald 4x4" and nombre_es("café-bar (el rincón)") == "Café-Bar (el Rincón)", "Nombres: palabras mixtas y signos se respetan")
+ok(nombre_es("") == "" and nombre_es("Hotel Roca Center") == "Hotel Roca Center", "Nombres: vacío y ya bien escritos no cambian")
+
+
+def lug(**k):
+    base = dict(osm=None, nombre="X", categoria="atraccion", subtipo="", municipio="tenza", direccion="", vereda="", lat=5.0, lon=-73.4, precision="exacta",
+                fuentes=["OpenStreetMap"], rnt=None, anonimo=False, contacto={}, extra={}, tags={})
+    base.update(k)
+    return base
+
+
+d = normalizar([lug(nombre="PARQUE PRINCIPAL", osm="node/1"), lug(nombre="parque principal", osm="node/2", lat=5.0003, categoria="monumento", direccion="Calle 5", fuentes=["OpenStreetMap", "Alcaldía"])])
+ok(len(d) == 1 and d[0]["nombre"] == "Parque Principal" and d[0]["direccion"] == "Calle 5", "Duplicados: mismo nombre normalizado + municipio → uno, con la información más completa")
+d = normalizar([lug(nombre="Parque Principal", precision="cabecera", lat=5.05, lon=-73.45, fuentes=["RNT"], rnt="7"), lug(nombre="PARQUE PRINCIPAL")])
+ok(len(d) == 1 and d[0]["precision"] == "exacta" and d[0]["rnt"] == "7", "Duplicados: gana la mejor precisión y se suma el RNT")
+ok(len(normalizar([lug(nombre="Parque Principal"), lug(nombre="PARQUE PRINCIPAL", municipio="guayata")])) == 2, "Duplicados: mismo nombre en otro municipio NO se descarta")
+ok(len(normalizar([lug(nombre="Parque Principal"), lug(nombre="Parque principal", lat=5.1, lon=-73.4)])) == 2, "Duplicados: mismo nombre con ubicación exacta a más de 1 km NO se descarta")
+ok(len(normalizar([lug(nombre="", subtipo="cajero automático", categoria="cajero", osm="n/1"), lug(nombre="", subtipo="cajero automático", categoria="cajero", osm="n/2", lat=5.2)])) == 2,
+   "Duplicados: dos 'Cajero automático' sin nombre propio NO se funden")
+ok(len(descartar_duplicados([lug(nombre="Finca turística · vereda Rosal", anonimo=True, categoria="alojamiento", rnt="1", lat=None, lon=None, precision=None),
+                             lug(nombre="Finca turística · vereda Rosal", anonimo=True, categoria="alojamiento", rnt="2", lat=None, lon=None, precision=None)])) == 2,
+   "Duplicados: prestadores anónimos del RNT NO se funden")
 
 # ---- Geocodificador (sin red) ----------------------------------------------------
 import geocodificar as geo

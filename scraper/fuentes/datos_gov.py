@@ -4,6 +4,7 @@
 que convierten filas ya descargadas: se pueden probar sin red (ver probar.py).
 Ninguna de estas fuentes trae coordenadas: sus lugares quedan 'sin ubicación' hasta geocodificarlos.
 """
+import hashlib
 import json
 import re
 import sys
@@ -11,11 +12,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from municipios import MUNICIPIOS, POR_DANE, buscar
-from util import HEADERS, con_cache, esperar, norm, titulo
+from util import HEADERS, con_cache, esperar, norm, sin_acentos, titulo
 
 BASE = "https://www.datos.gov.co/resource/{}.json"
 RNT, SALUD, CAJEROS = "thwd-ivmp", "8byh-6agx", "cx4p-wx4m"
-_NOMBRES = "('GUAYATA','GUAYATÁ','SOMONDOCO','TENZA','SUTATENZA','ALMEIDA','CHIVOR','LA CAPILLA')"
+# Nombres en mayúscula, con y sin tilde, para filtrar salud y cajeros por municipio.
+_NOMBRES = "(" + ",".join(sorted({f"'{v}'" for m in MUNICIPIOS for v in (m["nombre"].upper(), sin_acentos(m["nombre"]).upper())})) + ")"
+# La clave de caché incluye los municipios pedidos: al ampliar la lista se descarga de nuevo sin --refrescar.
+_HUELLA = hashlib.md5(",".join(sorted(m["dane"] for m in MUNICIPIOS)).encode()).hexdigest()[:6]
 
 
 def _get(recurso: str, **params) -> list[dict]:
@@ -30,15 +34,15 @@ def _get(recurso: str, **params) -> list[dict]:
 
 def descargar_rnt(refrescar=False):
     dane = ",".join(f"'{m['dane']}'" for m in MUNICIPIOS)
-    return con_cache("rnt", lambda: _get(RNT, **{"$where": f"cod_mun in({dane}) AND estado_rnt='ACTIVO'", "$limit": "500"}), refrescar)
+    return con_cache(f"rnt-{_HUELLA}", lambda: _get(RNT, **{"$where": f"cod_mun in({dane}) AND estado_rnt='ACTIVO'", "$limit": "500"}), refrescar)
 
 
 def descargar_salud(refrescar=False):
-    return con_cache("salud", lambda: _get(SALUD, **{"$where": f"upper(municipio) in{_NOMBRES}", "$limit": "500"}), refrescar)
+    return con_cache(f"salud-{_HUELLA}", lambda: _get(SALUD, **{"$where": f"upper(municipio) in{_NOMBRES}", "$limit": "500"}), refrescar)
 
 
 def descargar_cajeros(refrescar=False):
-    return con_cache("cajeros", lambda: _get(CAJEROS, **{"$where": f"upper(ciudad) in{_NOMBRES}", "$limit": "200"}), refrescar)
+    return con_cache(f"cajeros-{_HUELLA}", lambda: _get(CAJEROS, **{"$where": f"upper(ciudad) in{_NOMBRES}", "$limit": "200"}), refrescar)
 
 
 def _t(texto: str) -> str:
@@ -162,7 +166,7 @@ def cargar_en_cache() -> dict:
     from util import CACHE
     out = {"rnt": [], "salud": [], "cajeros": [], "descartados": {}}
     for clave, fn in (("rnt", None), ("salud", salud_a_candidatos), ("cajeros", cajeros_a_candidatos)):
-        archivos = sorted(CACHE.glob(f"{clave}-*.json"))
+        archivos = sorted(CACHE.glob(f"{clave}-{_HUELLA}-*.json"))
         if not archivos:
             continue
         filas = json.loads(archivos[0].read_text(encoding="utf-8"))

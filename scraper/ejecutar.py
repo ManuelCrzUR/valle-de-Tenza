@@ -3,6 +3,7 @@
     python ejecutar.py                 SIN RED: usa cache/ y datos/osm_inicial.json
     python ejecutar.py --descargar     CON RED: baja OSM y datos.gov.co (guarda en cache/)
     python ejecutar.py --descargar --refrescar    ignora la caché y vuelve a bajar todo
+    python ejecutar.py --descargar --json salida/lugares.json   escribe el JSON en otra ruta (por defecto src/data/lugares.json)
 """
 import argparse
 import csv
@@ -59,7 +60,9 @@ def main():
     ap.add_argument("--descargar", action="store_true", help="usa la red")
     ap.add_argument("--refrescar", action="store_true", help="ignora la caché (con --descargar o --alcaldias)")
     ap.add_argument("--alcaldias", action="store_true", help="descarga los portales de las alcaldías (usa el Chrome instalado; ~6 min)")
+    ap.add_argument("--json", default=str(APP_JSON), help="ruta del JSON público de lugares (por defecto el de la app: src/data/lugares.json)")
     a = ap.parse_args()
+    destino = Path(a.json).resolve()
     notas = []
 
     if a.descargar:
@@ -115,8 +118,8 @@ def main():
         municipios.append({"slug": m["slug"], "nombre": m["nombre"], "centro": [round(centro[0], 6), round(centro[1], 6)] if centro else None,
                            "caja": [round(x, 5) for x in caja] if caja else None})
 
-    APP_JSON.parent.mkdir(parents=True, exist_ok=True)
-    APP_JSON.write_text(json.dumps({"generado": date.today().isoformat(), "atribucion": "© Colaboradores de OpenStreetMap (ODbL); datos.gov.co",
+    destino.parent.mkdir(parents=True, exist_ok=True)
+    destino.write_text(json.dumps({"generado": date.today().isoformat(), "atribucion": "© Colaboradores de OpenStreetMap (ODbL); datos.gov.co",
                                     "municipios": municipios, "lugares": pub}, ensure_ascii=False, indent=1), encoding="utf-8")
 
     SALIDA.mkdir(exist_ok=True)
@@ -134,7 +137,7 @@ def main():
                         "razon_social_privada": ct.get("razon_social", "")})
 
     reporte(pub, municipios, origen_osm, notas, errores_manual, abiertos["descartados"], geo, alc_stats)
-    print(f"{len(pub)} lugares → {APP_JSON.relative_to(APP_JSON.parents[2])}")
+    print(f"{len(pub)} lugares → {destino}")
     print(f"Reporte: {SALIDA / 'reporte.md'}")
 
 
