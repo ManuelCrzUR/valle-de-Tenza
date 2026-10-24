@@ -30,6 +30,7 @@ export function Layout() {
           <Link to="/" className="appbar-logo" aria-label="Valle Directo, inicio"><Logo size={40} /></Link>
           <nav className="topnav" aria-label="Principal">
             {NAV.map((n) => <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
+            <NavLink to="/como-llegar">Cómo llegar</NavLink>
             <NavLink to="/galeria">Galería</NavLink>
           </nav>
         </div>

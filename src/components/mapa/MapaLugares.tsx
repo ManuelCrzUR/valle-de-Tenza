@@ -4,6 +4,7 @@ import { List, SlidersHorizontal } from 'lucide-react'
 import { CATEGORIAS, tieneUbicacion, useCatalogo } from '../../data/lugares'
 import type { CategoriaId, Lugar } from '../../data/lugares'
 import { useMedia } from '../../useMedia'
+import { useLogistica } from '../../state/logistica'
 import { LeyendaMapa } from './LeyendaMapa'
 import { Resultados } from './Resultados'
 import { FichaLugar } from './FichaLugar'
@@ -14,6 +15,7 @@ const TODAS = CATEGORIAS.map((c) => c.id)
 
 export default function MapaLugares() {
   const { lugares: LUGARES } = useCatalogo()
+  const { alertas } = useLogistica({ tramos: false })
   const [params, setParams] = useSearchParams()
   const escritorio = useMedia('(min-width: 1024px)')
   const [panel, setPanel] = useState<'leyenda' | 'lista'>('leyenda')
@@ -46,14 +48,14 @@ export default function MapaLugares() {
   const volverALista = () => { cambiar({ lugar: null }); setPanel('lista') }
 
   const leyenda = (
-    <LeyendaMapa activas={activas} conteo={conteo} municipio={municipio}
+    <LeyendaMapa alertas={alertas} activas={activas} conteo={conteo} municipio={municipio}
       onToggle={(id) => fijarCats(activas.has(id) ? TODAS.filter((c) => c !== id && activas.has(c)) : TODAS.filter((c) => c === id || activas.has(c)))}
       onTodas={() => fijarCats(TODAS)} onNinguna={() => fijarCats([])} onMunicipio={(m) => cambiar({ mun: m, lugar: null })} />
   )
   const lista = <Resultados lugares={visibles} seleccionado={seleccionId} onElegir={elegir} />
   const ficha = (l: Lugar) => <FichaLugar lugar={l} onVolver={volverALista} />
 
-  const mapa = <MapaLeaflet puntos={puntos} seleccionadoId={seleccion && tieneUbicacion(seleccion) ? seleccion.id : null} onElegir={elegir} />
+  const mapa = <MapaLeaflet puntos={puntos} seleccionadoId={seleccion && tieneUbicacion(seleccion) ? seleccion.id : null} onElegir={elegir} alertas={alertas} />
   const sinUbicar = visibles.length - puntos.length
 
   if (escritorio) {
@@ -72,7 +74,7 @@ export default function MapaLugares() {
         </aside>
         <div className="mapa-lienzo">
           {mapa}
-          <p className="mapa-contador" role="status">{puntos.length} en el mapa{sinUbicar > 0 ? ` · ${sinUbicar} sin ubicación (ver lista)` : ''}</p>
+          <p className="mapa-contador" role="status">{puntos.length} en el mapa{sinUbicar > 0 ? ` · ${sinUbicar} sin ubicación (ver lista)` : ''}{alertas.length > 0 ? ` · ${alertas.length} ${alertas.length === 1 ? 'aviso' : 'avisos'} de vía` : ''}</p>
         </div>
       </div>
     )
@@ -84,7 +86,7 @@ export default function MapaLugares() {
     <div className="mapa-app mapa-movil">
       <div className="mapa-lienzo">
         {mapa}
-        <p className="mapa-contador" role="status">{puntos.length} en el mapa{sinUbicar > 0 ? ` · ${sinUbicar} sin ubicación` : ''}</p>
+        <p className="mapa-contador" role="status">{puntos.length} en el mapa{sinUbicar > 0 ? ` · ${sinUbicar} sin ubicación` : ''}{alertas.length > 0 ? ` · ${alertas.length} ${alertas.length === 1 ? 'aviso' : 'avisos'} de vía` : ''}</p>
         <div className="mapa-botones">
           <button type="button" className="vd-btn vd-btn-primary" onClick={() => { setPanel('leyenda'); setHojaAbierta(true) }}><SlidersHorizontal size={20} aria-hidden /> Leyenda</button>
           <button type="button" className="vd-btn vd-btn-primary" onClick={() => { setPanel('lista'); setHojaAbierta(true) }}><List size={20} aria-hidden /> Lista ({visibles.length})</button>

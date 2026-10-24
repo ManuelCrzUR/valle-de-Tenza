@@ -41,3 +41,15 @@
 .it-dist-lejos::before { content: "\26A0\FE0E "; }
 .parada-dia { font-weight: 700; padding-top: var(--space-2); list-style: none; }
 .it-cupo-et { margin: var(--space-2) 0 0; font-size: 14px; font-weight: 700; color: var(--ink-muted); }
+
+/* Logística: movilidad, paso 0 y avisos por día */
+.it-mov { display: flex; flex-direction: column; gap: var(--space-2); }
+.it-etiqueta { font-weight: 700; }
+.it-fecha { font-weight: 400; color: var(--ink-muted); }
+.it-paso0 { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); border-radius: var(--radius-md); background: var(--secondary-soft); color: var(--on-secondary-soft); }
+.it-paso0 p { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
+.it-rutas { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.it-rutas li { display: flex; align-items: flex-start; gap: var(--space-2); overflow-wrap: anywhere; }
+.it-rutas svg, .it-dia-aviso svg { flex: none; }
+.it-paso0 .cl-pc { color: var(--accent-text); }
+.it-dia-aviso { margin: 0; display: flex; align-items: flex-start; gap: var(--space-3); border: 1px solid var(--accent); background: var(--accent-soft); color: var(--on-accent-soft); }

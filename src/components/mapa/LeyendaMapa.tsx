@@ -1,8 +1,12 @@
 import { CATEGORIAS, useCatalogo } from '../../data/lugares'
 import type { CategoriaId } from '../../data/lugares'
 import { CategoriaIcono } from './iconos'
+import { AlertaIcono } from './iconosAlerta'
+import { NOMBRE_TIPO_ALERTA } from '../../state/logistica'
+import type { Alerta } from '../../state/logistica'
 
 interface Props {
+  alertas?: Alerta[]
   activas: Set<CategoriaId>
   conteo: Partial<Record<CategoriaId, number>>   // cantidad por categoría con el municipio elegido
   municipio: string                                // '' = todos
@@ -13,7 +17,7 @@ interface Props {
 }
 
 // Leyenda = filtro. Cada fila es un botón (aria-pressed) con ícono + nombre + cantidad: no depende del color.
-export function LeyendaMapa({ activas, conteo, municipio, onToggle, onTodas, onNinguna, onMunicipio }: Props) {
+export function LeyendaMapa({ alertas = [], activas, conteo, municipio, onToggle, onTodas, onNinguna, onMunicipio }: Props) {
   const { municipios } = useCatalogo()
   return (
     <div className="leyenda">
@@ -45,6 +49,19 @@ export function LeyendaMapa({ activas, conteo, municipio, onToggle, onTodas, onN
           )
         })}
       </ul>
+      {alertas.length > 0 && (
+        <section className="leyenda-avisos" aria-labelledby="h-avisos">
+          <h3 id="h-avisos" className="t-h3">Avisos de la vía</h3>
+          <ul>
+            {alertas.map((a) => (
+              <li key={a.id}>
+                <span className="pin pin-mini pin-alerta" aria-hidden><AlertaIcono tipo={a.tipo} size={18} /></span>
+                <span><strong>{NOMBRE_TIPO_ALERTA[a.tipo]}{a.municipio ? ` · ${municipios.find((m) => m.slug === a.municipio)?.nombre ?? a.municipio}` : ''}</strong><br />{a.mensaje}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       <p className="leyenda-nota"><span className="pin pin-mini pin-aprox" aria-hidden /> Contorno punteado = ubicación aproximada.</p>
     </div>
   )

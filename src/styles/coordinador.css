@@ -1,0 +1,6 @@
+/* Panel del coordinador (reutiliza las clases pr-* de prestador.css). */
+.co-salidas { display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px solid var(--line); }
+.co-salidas h4 { margin: 0; }
+.co-salida { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); list-style: none; }
+.co-dias { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.co-dias .vd-opt { min-width: 56px; justify-content: center; }

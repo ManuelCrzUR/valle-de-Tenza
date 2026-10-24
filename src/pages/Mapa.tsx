@@ -1,4 +1,4 @@
-import { Fragment, Suspense, lazy, useState } from 'react'
+import { Fragment, Suspense, lazy, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Option } from '../components/ui'
 import { NOMBRE_MUNICIPIO, tieneUbicacion, tipoReserva } from '../data/lugares'
@@ -6,6 +6,7 @@ import { LinkButton } from '../components/LinkButton'
 import { Cargando } from '../components/Cargando'
 import { useItinerario } from '../state/itinerario'
 import { distanciasRuta, km, MAX_SALTO_M, ordenRuta } from '../data/generarPlan'
+import { cargarTramos, minutos, useLogistica } from '../state/logistica'
 import { usePagina } from '../usePagina'
 import '../styles/itinerario.css'
 
@@ -17,7 +18,10 @@ const MapaRuta = lazy(() => import('../components/mapa/MapaRuta'))
 function MiRuta() {
   const { itinerario } = useItinerario()
   const [sel, setSel] = useState<string | null>(null)
+  const { tramoEntre } = useLogistica()
   const [corrida, setCorrida] = useState(0)   // sube para repetir la animación del recorrido
+  const idsRuta = itinerario ? ordenRuta(itinerario).map((p) => p.lugar.id).join(',') : ''
+  useEffect(() => { if (idsRuta) cargarTramos(idsRuta.split(',')) }, [idsRuta])
   if (!itinerario) {
     return (
       <div className="vacio vacio-col">
@@ -51,6 +55,7 @@ function MiRuta() {
             {orden.map((p, i) => {
               const l = p.lugar
               const d = dist[i]
+              const t = i > 0 ? tramoEntre(orden[i - 1].lugar.id, l.id) : undefined
               return (
                 <Fragment key={`${p.rol}-${l.id}`}>
                   {(i === 0 || orden[i - 1].dia !== p.dia) && <li className="parada-dia" aria-hidden="true">Día {p.dia}</li>}
@@ -60,7 +65,8 @@ function MiRuta() {
                       <span className="parada-txt">
                         <strong>{l.nombre}</strong>
                         <small>Día {p.dia} · {ROL[p.rol]} · {NOMBRE_MUNICIPIO[l.municipio] ?? l.municipio}</small>
-                        {d !== undefined && <small className={d > MAX_SALTO_M ? 'it-dist-lejos' : undefined}>{d > MAX_SALTO_M ? 'Queda lejos: ' : ''}a {km(d)} del anterior</small>}
+                        {t ? <small className={t.distancia_m > MAX_SALTO_M ? 'it-dist-lejos' : undefined}>{t.distancia_m > MAX_SALTO_M ? 'Queda lejos: ' : ''}a {minutos(t.duracion_s)} min por carretera del anterior</small>
+                          : d !== undefined && <small className={d > MAX_SALTO_M ? 'it-dist-lejos' : undefined}>{d > MAX_SALTO_M ? 'Queda lejos: ' : ''}a ~{km(d)} (aprox.) del anterior</small>}
                       </span>
                     </button>
                     {tipoReserva(l) && <LinkButton to={`/reservar/${l.id}`} variant="secondary">Reservar</LinkButton>}

@@ -26,6 +26,7 @@ export default function Inicio() {
           <div className="hero-acciones aparece" style={{ '--i': 3 } as CSSProperties}>
             <LinkButton to="/itinerario" variant="cta" icon="itinerario">Armar mi itinerario</LinkButton>
             <Link to="/lugares" className="vd-btn vd-btn-ghost">Qué lugares hay</Link>
+            <Link to="/como-llegar" className="vd-btn vd-btn-ghost">Cómo llegar</Link>
           </div>
         </div>
         <Foto n={3} className="hero-arte" />

@@ -1,0 +1,28 @@
+/* Cómo llegar. Solo variables de tokens.css. */
+.cl-seccion { width: 100%; display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-5); }
+.cl-seccion h2 { display: flex; align-items: center; gap: var(--space-2); margin: 0; }
+.cl-lista, .cl-avisos, .cl-destinos, .cl-salidas { list-style: none; margin: 0; padding: 0; }
+.cl-lista { display: flex; flex-direction: column; gap: var(--space-3); }
+.cl-ruta { background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-3); }
+.cl-ruta-cab { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); }
+.cl-ruta-cab h4 { display: flex; align-items: center; gap: var(--space-2); margin: 0; overflow-wrap: anywhere; }
+.cl-datos { margin: 0; display: grid; gap: var(--space-2); }
+.cl-datos > div { display: flex; flex-direction: column; gap: 2px; }
+.cl-datos dt { font-size: 14px; font-weight: 700; color: var(--ink-muted); }
+.cl-datos dd { margin: 0; overflow-wrap: anywhere; }
+.cl-salidas { display: flex; flex-direction: column; gap: var(--space-1); }
+.cl-salidas li { display: flex; align-items: center; gap: var(--space-2); }
+.cl-pc { color: var(--accent-text); font-weight: 700; font-style: normal; }
+.cl-notas, .cl-nota { margin: 0; font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.cl-carro { margin: 0; font-size: 18px; }
+.cl-avisos { display: flex; flex-direction: column; gap: var(--space-2); }
+.cl-aviso { display: flex; align-items: flex-start; gap: var(--space-3); border: 1px solid var(--accent); background: var(--accent-soft); color: var(--on-accent-soft); }
+.cl-aviso svg { flex: none; }
+.cl-destinos { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface-raised); overflow: hidden; }
+.cl-destinos li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 48px; padding: var(--space-2) var(--space-4); border-top: 1px solid var(--line); }
+.cl-destinos li:first-child { border-top: 0; }
+.cl-destinos strong { text-align: right; }
+@media (min-width: 720px) {
+  .cl-lista { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cl-seccion .vd-field { max-width: 360px; }
+}

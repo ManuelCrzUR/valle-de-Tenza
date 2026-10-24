@@ -14,6 +14,8 @@ const Reservar = lazy(() => import('./pages/Reservar'))
 const MisReservas = lazy(() => import('./pages/MisReservas'))
 const PrestadorAcceso = lazy(() => import('./pages/PrestadorAcceso'))
 const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
+const ComoLlegar = lazy(() => import('./pages/ComoLlegar'))
+const Coordinador = lazy(() => import('./pages/Coordinador'))
 const Galeria = lazy(() => import('./pages/Galeria'))
 const Privacidad = lazy(() => import('./pages/Privacidad'))
 const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
@@ -27,6 +29,8 @@ export default function App() {
         <Route path="lugares" element={<Lugares />} />
         <Route path="lugares/:id" element={<LugarDetalle />} />
         <Route path="mapa" element={<Mapa />} />
+        <Route path="como-llegar" element={<ComoLlegar />} />
+        <Route path="coordinador" element={<Coordinador />} />
         <Route path="galeria" element={<Galeria />} />
         <Route path="chat" element={<Chat />} />
         <Route path="prestadores" element={<Prestadores />} />
