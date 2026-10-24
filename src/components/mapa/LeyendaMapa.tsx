@@ -24,7 +24,7 @@ export function LeyendaMapa({ alertas = [], activas, conteo, municipio, onToggle
       <label className="leyenda-mun">
         <span className="vd-field-label">Municipio</span>
         <select className="vd-input" value={municipio} onChange={(e) => onMunicipio(e.target.value)}>
-          <option value="">Los 7 municipios</option>
+          <option value="">Los {municipios.length} municipios</option>
           {municipios.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
         </select>
       </label>

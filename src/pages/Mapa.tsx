@@ -1,7 +1,7 @@
 import { Fragment, Suspense, lazy, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Option } from '../components/ui'
-import { NOMBRE_MUNICIPIO, tieneUbicacion, tipoReserva } from '../data/lugares'
+import { NOMBRE_MUNICIPIO, tieneUbicacion, tipoReserva, useCatalogo } from '../data/lugares'
 import { LinkButton } from '../components/LinkButton'
 import { Cargando } from '../components/Cargando'
 import { useItinerario } from '../state/itinerario'
@@ -84,6 +84,7 @@ function MiRuta() {
 
 export default function Mapa() {
   usePagina('Tu mapa')
+  const { municipios } = useCatalogo()
   const [params, setParams] = useSearchParams()
   const vista = params.get('vista') === 'ruta' ? 'ruta' : 'lugares'
   const ir = (v: 'lugares' | 'ruta') => setParams(v === 'ruta' ? { vista: 'ruta' } : {}, { replace: true })
@@ -91,7 +92,7 @@ export default function Mapa() {
     <div className={`wrap pagina${vista === 'lugares' ? ' pagina-mapa' : ''}`}>
       <h1 id="titulo" tabIndex={-1} className="t-h1">Tu mapa</h1>
       <p className="sub">
-        {vista === 'lugares' ? 'Lugares reales de los siete municipios: dónde comer, dormir, qué visitar y servicios útiles.' : 'Muestra solo la ruta de tu itinerario ya generado. No es un buscador libre.'}
+        {vista === 'lugares' ? `Lugares reales de los ${municipios.length} municipios: dónde comer, dormir, qué visitar y servicios útiles.` : 'Muestra solo la ruta de tu itinerario ya generado. No es un buscador libre.'}
       </p>
       <div className="opts" role="group" aria-label="Vista del mapa">
         <Option selected={vista === 'lugares'} icon="mapa" onClick={() => ir('lugares')}>Lugares del Valle</Option>

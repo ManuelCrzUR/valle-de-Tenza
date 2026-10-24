@@ -53,7 +53,7 @@ export default function Lugares() {
             <label className="lugares-mun">
               <span className="vd-field-label">Municipio</span>
               <select className="vd-input" value={mun} onChange={(e) => cambiar({ mun: e.target.value })}>
-                <option value="">Los 7 municipios</option>
+                <option value="">Los {MUNICIPIOS.length} municipios</option>
                 {MUNICIPIOS.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
               </select>
             </label>
@@ -66,7 +66,7 @@ export default function Lugares() {
         <div className="lugares-vacio">
           <h2 className="t-h3">Aún no hay lugares aquí</h2>
           <p>No encontramos lugares de «{filtroActual.texto}»{mun ? ` en ${NOMBRE_MUNICIPIO[mun]}` : ''}. Prueba con otro municipio o categoría.</p>
-          {mun && <Option onClick={() => cambiar({ mun: '' })}>Ver los 7 municipios</Option>}
+          {mun && <Option onClick={() => cambiar({ mun: '' })}>Ver los {MUNICIPIOS.length} municipios</Option>}
         </div>
       ) : (
         <div className="grid" key={`${cat}-${mun}`}>
