@@ -11,6 +11,7 @@ export const DIAS_MAX = 3
 export const PARADAS_POR_DIA = 3
 export const OPENAI_TIMEOUT_MS = 20_000
 
+// Ids publicados el 2026-11-06 en developers.openai.com (ver docs/configuracion-mvp.md).
 export const MODELO_ITINERARIO = 'gpt-6-luna'
 export const MODELO_TRANSCRIPCION = 'gpt-transcribe'
 export const MODELO_VOZ = 'gpt-4o-mini-tts'

@@ -23,17 +23,15 @@ En local: copia `.env.example` a `.env.local`, completa lo que tengas y corre `n
 
 ## 3. OpenAI
 
-Documentación usada (6 nov 2026):
+Ids comprobados el 6 de noviembre de 2026 en la documentación oficial. Si esa página cambia, pon el id nuevo en la variable; no inventes otro nombre en el código.
 
-| Uso | Variable | Id por defecto | Endpoint |
+| Uso | Variable | Id por defecto | Fuente |
 | --- | --- | --- | --- |
-| Itinerario | `OPENAI_ITINERARY_MODEL` | `gpt-6-luna` | `POST /v1/responses` |
-| Transcripción | `OPENAI_TRANSCRIBE_MODEL` | `gpt-transcribe` | `POST /v1/audio/transcriptions` |
-| Voz opcional | `OPENAI_TTS_MODEL` | `gpt-4o-mini-tts` | `POST /v1/audio/speech` |
+| Itinerario | `OPENAI_ITINERARY_MODEL` | `gpt-6-luna` | [GPT-6 Luna](https://developers.openai.com/api/docs/models/gpt-6-luna): Model ID `gpt-6-luna`, Responses `v1/responses` supported, structured outputs y function calling. No hace transcripción ni voz. |
+| Transcripción | `OPENAI_TRANSCRIBE_MODEL` | `gpt-transcribe` | [GPT-Transcribe](https://developers.openai.com/api/docs/models/gpt-transcribe): Model ID `gpt-transcribe`, Transcription `v1/audio/transcriptions` supported. |
+| Voz opcional | `OPENAI_TTS_MODEL` | `gpt-4o-mini-tts` | [Text to speech](https://developers.openai.com/api/docs/guides/text-to-speech): el ejemplo de `POST /v1/audio/speech` usa `gpt-4o-mini-tts` y la voz `coral`. La misma página dice que `tts-1`, `tts-1-hd` y `gpt-4o-mini-tts` se apagan el 6 de enero de 2027, y que `gpt-realtime-2.1-mini` no sirve para `/v1/audio/speech`. |
 
-La voz `coral` (`OPENAI_TTS_VOICE`) es una de las voces del endpoint de speech. La pantalla dice que es voz sintética y solo suena si la persona pulsa «Escuchar». Se puede detener.
-
-`gpt-4o-mini-tts` está deprecado y se apaga el 6 de enero de 2027. El modelo de realtime no reemplaza este endpoint. Cuando cambie la guía oficial, ajusta `OPENAI_TTS_MODEL`.
+La voz `coral` (`OPENAI_TTS_VOICE`) es la del ejemplo oficial de ese endpoint. La pantalla dice que es voz sintética y solo suena si la persona pulsa «Escuchar». Se puede detener.
 
 El audio del micrófono se corta a 45 s y a 3,5 MB, por debajo del cuerpo de 4,5 MB de las Vercel Functions. No se reenvían 25 MB a OpenAI.
 

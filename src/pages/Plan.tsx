@@ -47,8 +47,12 @@ export default function Plan() {
   const [form, setForm] = useState({ nombre: '', correo: '', telefono: '', fecha: '', personas: '2', nota: '' })
   const [enviando, setEnviando] = useState(false)
   const [recibo, setRecibo] = useState<{ persistido: boolean; comprobante: string; mensaje: string } | null>(null)
+  const [proveedores, setProveedores] = useState<{ openai: boolean; supabase: boolean; resend: boolean; modo: string } | null>(null)
 
   useEffect(() => () => { abortar.current?.abort(); rec.current?.stop(); audio.current?.pause() }, [])
+  useEffect(() => {
+    fetch('/api/estado').then((r) => r.json()).then(setProveedores).catch(() => setProveedores(null))
+  }, [])
   useEffect(() => {
     if (!cargando) return
     setPaso(0)
@@ -71,6 +75,8 @@ export default function Plan() {
       guardar(data.itinerario)
       setCorrida((c) => c + 1)
       setSel(null)
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      requestAnimationFrame(() => document.getElementById('plan-resultado')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' }))
     } catch (e) {
       if ((e as Error).name !== 'AbortError') setError('Se cortó la generación. Puedes intentar otra vez.')
     } finally { setCargando(false) }
@@ -148,6 +154,8 @@ export default function Plan() {
       if (!data?.mensaje || status >= 400) { setError(data?.mensaje || 'No se pudo enviar la solicitud.'); return }
       setRecibo({ persistido: !!data.persistido, comprobante: data.comprobante || 'no_enviado', mensaje: data.mensaje })
       setClave(crypto.randomUUID())
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      requestAnimationFrame(() => document.getElementById('plan-recibo')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }))
     } catch { setError('No hay conexión con el servidor.') }
     finally { setEnviando(false) }
   }
@@ -164,6 +172,9 @@ export default function Plan() {
       <p className="overline">Valle de Tenza</p>
       <h1 id="titulo" tabIndex={-1} className="t-h1">Arma el plan con lugares que sí están en el mapa</h1>
       <p className="sub">Cuéntame el municipio, los días y si quieres naturaleza, comida o cultura. Cubro Guayatá, Somondoco, Tenza, Sutatenza, Almeida, Chivor y La Capilla.</p>
+      {proveedores?.modo === 'demostracion' && (
+        <p className="plan-aviso" role="note"><strong>Modo demostración sin claves.</strong> No hay OpenAI, la solicitud no se guarda en Supabase y no se envía correo.</p>
+      )}
 
       <form className="plan-form" onSubmit={(e) => { e.preventDefault(); void generar(texto.trim()) }}>
         <label className="vd-field" htmlFor="plan-texto">
@@ -202,7 +213,7 @@ export default function Plan() {
       {error && <p className="plan-aviso" role="alert">{error}</p>}
 
       {dto && it && (
-        <section className="plan-grid" aria-live="polite">
+        <section id="plan-resultado" className="plan-grid" aria-live="polite">
           <div className="plan-cards">
             <Chip tone={dto.modo === 'openai' ? 'success' : 'soft'}>{dto.modo === 'openai' ? `OpenAI · ${dto.modelo}` : 'Modo demostración · sin llamada a OpenAI'}</Chip>
             <p>{dto.resumen}</p>
@@ -268,7 +279,7 @@ export default function Plan() {
         </form>
       )}
       {recibo && (
-        <div className="plan-aviso" role="status">
+        <div id="plan-recibo" className="plan-aviso" role="status">
           <p><strong>{recibo.persistido ? 'Solicitud guardada' : 'Vista previa, no guardada'}</strong></p>
           <p>{recibo.mensaje}</p>
           <p>Estado del comprobante: {etiquetaComprobante(recibo.comprobante)}.</p>

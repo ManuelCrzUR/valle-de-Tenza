@@ -23,11 +23,14 @@ function apiDev(): Plugin {
         const headers = new Headers()
         for (const [k, v] of Object.entries(req.headers)) if (typeof v === 'string') headers.set(k, v)
         const sinCuerpo = req.method === 'GET' || req.method === 'HEAD'
-        let mod: { POST?: (r: Request) => Promise<Response> }
+        let mod: { POST?: (r: Request) => Promise<Response>; GET?: (r: Request) => Promise<Response> }
         try { mod = await server.ssrLoadModule(archivo) } catch { res.statusCode = 404; res.end('no'); return }
+        const peticion = new Request(`http://localhost/api${ruta}`, { method: req.method, headers, body: sinCuerpo ? undefined : Buffer.concat(chunks) })
         const out: Response = req.method === 'POST' && mod.POST
-          ? await mod.POST(new Request(`http://localhost/api${ruta}`, { method: 'POST', headers, body: sinCuerpo ? undefined : Buffer.concat(chunks) }))
-          : new Response(null, { status: 405 })
+          ? await mod.POST(peticion)
+          : req.method === 'GET' && mod.GET
+            ? await mod.GET(peticion)
+            : new Response(null, { status: 405 })
         res.statusCode = out.status
         out.headers.forEach((v, k) => res.setHeader(k, v))
         res.end(Buffer.from(await out.arrayBuffer()))
