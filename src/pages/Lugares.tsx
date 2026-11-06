@@ -5,9 +5,7 @@ import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
 import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
 import { etiquetaSubtipo, CATEGORIA_POR_ID, LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
-import type { TipoReserva } from '../data/lugares'
 import { PLANES } from '../data/planes'
-import { LUGAR_NEGOCIO, negocioDeLugar, useDemo } from '../state/demo'
 import { usePagina } from '../usePagina'
 import '../styles/lugares.css'
 
@@ -16,15 +14,11 @@ const FILTROS: { id: Filtro; texto: string; icono: 'naturaleza' | 'gastronomia' 
   ...PLANES.map((p) => ({ id: p.id as Filtro, texto: p.categoria, icono: p.icono })),
   { id: 'dormir', texto: 'Dónde dormir', icono: 'hospedaje' },
 ]
-// Regla para los negocios nuevos de prestadores (no están en el mapa y no tienen plan):
-// hotel -> dormir, restaurante -> gastro, caminata -> aventura, actividad -> cultura.
-const FILTRO_DE_TIPO: Record<TipoReserva, Filtro> = { hotel: 'dormir', restaurante: 'gastro', caminata: 'aventura', actividad: 'cultura' }
 
 export default function Lugares() {
   usePagina('Qué lugares hay')
   const [params, setParams] = useSearchParams()
   const go = useNavigate()
-  const { negocios } = useDemo()
   const cat = FILTROS.find((f) => f.id === params.get('cat'))?.id ?? 'aventura'
   const mun = MUNICIPIOS.some((m) => m.slug === params.get('mun')) ? params.get('mun')! : ''
   const cambiar = (cambios: Record<string, string>) => {
@@ -34,8 +28,7 @@ export default function Lugares() {
   }
 
   const lugares = LUGARES.filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun))
-  const nuevos = negocios.filter((n) => n.lugarId.startsWith(LUGAR_NEGOCIO) && FILTRO_DE_TIPO[n.tipo] === cat && (!mun || n.municipio === mun))
-  const total = lugares.length + nuevos.length
+  const total = lugares.length
   const filtroActual = FILTROS.find((f) => f.id === cat)!
   const foto = FOTO_MUNICIPIO[mun] ?? FOTO_FILTRO[cat]   // el municipio elegido manda; Gastronomía sin municipio conserva la ilustración
 
@@ -69,23 +62,15 @@ export default function Lugares() {
         </div>
       ) : (
         <div className="grid" key={`${cat}-${mun}`}>
-          {lugares.map((l, i) => {
-            const reserva = negocioDeLugar(negocios, l.id)
-            return (
-              <div key={l.id} className="aparece grid-item" style={{ '--i': Math.min(i, 12) } as CSSProperties}>
-                <PlaceCard
-                  chip={CATEGORIA_POR_ID[l.categoria].singular}
-                  title={l.nombre}
-                  description={l.subtipo ? etiquetaSubtipo(l.subtipo) : undefined}
-                  meta={`${NOMBRE_MUNICIPIO[l.municipio]}${reserva ? ' · Recibe reservas' : ''}`}
-                  onClick={() => go(`/lugares/${l.id}`)}
-                />
-              </div>
-            )
-          })}
-          {nuevos.map((n, i) => (
-            <div key={n.id} className="aparece grid-item" style={{ '--i': Math.min(lugares.length + i, 12) } as CSSProperties}>
-              <PlaceCard chip="Recibe reservas" chipTone="strong" title={n.nombre} description={n.descripcion || undefined} meta={NOMBRE_MUNICIPIO[n.municipio] ?? n.municipio} onClick={() => go(`/lugares/${n.lugarId}`)} />
+          {lugares.map((l, i) => (
+            <div key={l.id} className="aparece grid-item" style={{ '--i': Math.min(i, 12) } as CSSProperties}>
+              <PlaceCard
+                chip={CATEGORIA_POR_ID[l.categoria].singular}
+                title={l.nombre}
+                description={l.subtipo ? etiquetaSubtipo(l.subtipo) : undefined}
+                meta={NOMBRE_MUNICIPIO[l.municipio]}
+                onClick={() => go(`/lugares/${l.id}`)}
+              />
             </div>
           ))}
         </div>

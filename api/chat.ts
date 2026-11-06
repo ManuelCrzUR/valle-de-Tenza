@@ -27,7 +27,10 @@ export async function POST(request: Request): Promise<Response> {
   const token = process.env.AUREN_DEMO_TOKEN
   if (!token) return json({ error: 'no_configurado' }, 503)
 
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'local'
+  const xff = request.headers.get('x-real-ip')?.trim()
+    || request.headers.get('x-forwarded-for')?.split(',').map((s) => s.trim()).filter(Boolean).pop()
+    || 'local'
+  const ip = xff
   if (excedeLimite(ip)) return json({ error: 'demasiados_mensajes' }, 429)
 
   let mensaje: unknown

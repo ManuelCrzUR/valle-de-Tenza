@@ -1,7 +1,7 @@
 {
   "name": "Valle Directo",
   "short_name": "Valle Directo",
-  "description": "Itinerarios al Valle de Tenza con cupo verificado hoy.",
+  "description": "Planes al Valle de Tenza con lugares del catálogo. La solicitud no confirma reserva.",
   "lang": "es",
   "start_url": "./",
   "scope": "./",

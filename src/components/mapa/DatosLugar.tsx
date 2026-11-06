@@ -15,7 +15,7 @@ export function DatosLugar({ lugar }: { lugar: Lugar }) {
     <>
       <dl className="ficha-datos">
         <div><dt>Dónde</dt><dd>{lugarTexto}</dd></div>
-        {x?.habitaciones ? <div><dt>Capacidad</dt><dd>{x.habitaciones} habitaciones{x.camas ? `, ${x.camas} camas` : ''}</dd></div> : x?.camas ? <div><dt>Capacidad</dt><dd>{x.camas} camas</dd></div> : null}
+        {x?.habitaciones ? <div><dt>Capacidad en el registro</dt><dd>{x.habitaciones} habitaciones{x.camas ? `, ${x.camas} camas` : ''}. No es disponibilidad de hoy.</dd></div> : x?.camas ? <div><dt>Capacidad en el registro</dt><dd>{x.camas} camas. No es disponibilidad de hoy.</dd></div> : null}
         {x?.horario && <div><dt>Horario</dt><dd>{x.horario}</dd></div>}
         {x?.nivel && <div><dt>Nivel de atención</dt><dd>{x.nivel}</dd></div>}
         {x?.descripcion && <div><dt>Sobre el lugar</dt><dd>{x.descripcion}</dd></div>}
