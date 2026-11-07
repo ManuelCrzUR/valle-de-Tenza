@@ -1,9 +1,9 @@
-import { htmlDossier, pdfDossier, validarEjemplo, type Dossier } from '../server/dossier'
-import { vigente, huella, tokensSupabase } from '../server/descarga'
-import { almacenSupabase } from '../server/almacen'
-import { datosReciboDe } from '../server/solicitud'
-import { supabaseConfig } from '../server/env'
-import { json } from '../server/http'
+import { htmlDossier, pdfDossier, validarEjemplo, type Dossier } from '../server/dossier.js'
+import { vigente, huella, tokensSupabase } from '../server/descarga.js'
+import { almacenSupabase } from '../server/almacen.js'
+import { datosReciboDe } from '../server/solicitud.js'
+import { supabaseConfig } from '../server/env.js'
+import { json } from '../server/http.js'
 
 export async function POST(request: Request): Promise<Response> {
   let cuerpo: { token?: unknown; ejemplo?: unknown; itinerario?: unknown; nombre?: unknown; fecha?: unknown; personas?: unknown; nota?: unknown }

@@ -1,4 +1,4 @@
-import { AUDIO_MAX_BYTES } from '../shared/constantes'
+import { AUDIO_MAX_BYTES } from '../shared/constantes.js'
 
 const TIPOS = new Set(['audio/webm', 'audio/ogg', 'audio/mp4', 'audio/mpeg', 'audio/wav', 'audio/x-wav', 'video/webm'])
 

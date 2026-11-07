@@ -1,13 +1,13 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { LUGARES, metros, tieneUbicacion } from '../src/data/lugares'
-import { almacenMemoria, almacenSupabase } from './almacen'
-import { revisarAudio } from './audio'
-import { htmlRecibo } from './correo'
-import { openaiConfig, resendConfig, supabaseConfig } from './env'
-import { ipCliente, crearLimite } from './http'
-import { armarItinerario, validarPropuesta } from './itinerario'
-import { crearSolicitud, reintentarOutbox } from './solicitud'
-import type { ItinerarioDto } from './itinerario'
+import { LUGARES, metros, tieneUbicacion } from '../src/data/lugares.js'
+import { almacenMemoria, almacenSupabase } from './almacen.js'
+import { revisarAudio } from './audio.js'
+import { htmlRecibo } from './correo.js'
+import { openaiConfig, resendConfig, supabaseConfig } from './env.js'
+import { ipCliente, crearLimite } from './http.js'
+import { armarItinerario, validarPropuesta } from './itinerario.js'
+import { crearSolicitud, reintentarOutbox } from './solicitud.js'
+import type { ItinerarioDto } from './itinerario.js'
 
 const envCopia = { ...process.env }
 afterEach(() => {

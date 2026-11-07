@@ -1,5 +1,5 @@
-import type { ItinerarioDto } from './itinerario'
-import { supabaseConfig } from './env'
+import type { ItinerarioDto } from './itinerario.js'
+import { supabaseConfig } from './env.js'
 
 export type EstadoCorreo = 'pendiente' | 'enviado' | 'fallido' | 'omitido_sin_configuracion'
 

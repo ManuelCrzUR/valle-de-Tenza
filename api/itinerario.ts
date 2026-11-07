@@ -1,6 +1,6 @@
-import { armarItinerario } from '../server/itinerario'
-import { crearLimite, ipCliente, json } from '../server/http'
-import { TEXTO_MAX } from '../shared/constantes'
+import { armarItinerario } from '../server/itinerario.js'
+import { crearLimite, ipCliente, json } from '../server/http.js'
+import { TEXTO_MAX } from '../shared/constantes.js'
 
 const limitado = crearLimite({ max: 20, ventanaMs: 10 * 60 * 1000 })
 

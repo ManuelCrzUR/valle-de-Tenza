@@ -1,7 +1,7 @@
-import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, getLugar, metros, tieneUbicacion } from './lugares'
-import type { Lugar } from './lugares'
-import { getPlan } from './planes'
-import type { Categoria, Plan } from './planes'
+import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, getLugar, metros, tieneUbicacion } from './lugares.js'
+import type { Lugar } from './lugares.js'
+import { getPlan } from './planes.js'
+import type { Categoria, Plan } from './planes.js'
 
 type Punto = Lugar & { lat: number; lon: number }
 export const MAX_SALTO_M = 8_000       // más de esto entre dos paradas seguidas se considera «lejos»

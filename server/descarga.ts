@@ -1,4 +1,4 @@
-import { supabaseConfig } from './env'
+import { supabaseConfig } from './env.js'
 
 export interface TokenGuardado { requestId: string; expira: string }
 

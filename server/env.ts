@@ -1,4 +1,4 @@
-import { MODELO_ITINERARIO, MODELO_TRANSCRIPCION, MODELO_VOZ, VOCES_DOCUMENTADAS, VOZ_DEFECTO } from '../shared/constantes'
+import { MODELO_ITINERARIO, MODELO_TRANSCRIPCION, MODELO_VOZ, VOCES_DOCUMENTADAS, VOZ_DEFECTO } from '../shared/constantes.js'
 
 // Solo nombres de entorno de servidor. Nunca se leen variables VITE_.
 function limpio(nombre: string): string {

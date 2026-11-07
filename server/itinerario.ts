@@ -1,10 +1,10 @@
-import { generarPlan, construirItinerario, ordenRuta, distanciasRuta, km, MAX_SALTO_M } from '../src/data/generarPlan'
-import type { Categoria } from '../src/data/planes'
-import { DIAS_MAX, PARADAS_POR_DIA } from '../shared/constantes'
-import { buscarLugares, leerPreferencias, listaMunicipios, nombreMunicipio, porId, publico, SLUGS } from './catalogo'
-import type { LugarPublico } from './catalogo'
-import { openaiConfig } from './env'
-import { sinDatosPersonales } from './texto'
+import { generarPlan, construirItinerario, ordenRuta, distanciasRuta, km, MAX_SALTO_M } from '../src/data/generarPlan.js'
+import type { Categoria } from '../src/data/planes.js'
+import { DIAS_MAX, PARADAS_POR_DIA } from '../shared/constantes.js'
+import { buscarLugares, leerPreferencias, listaMunicipios, nombreMunicipio, porId, publico, SLUGS } from './catalogo.js'
+import type { LugarPublico } from './catalogo.js'
+import { openaiConfig } from './env.js'
+import { sinDatosPersonales } from './texto.js'
 
 export interface DiaDto { paradas: string[]; comida: string | null }
 export interface ItinerarioDto {

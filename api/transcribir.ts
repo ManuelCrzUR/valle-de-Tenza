@@ -1,7 +1,7 @@
-import { extensionDe, revisarAudio, tipoAudio } from '../server/audio'
-import { openaiConfig } from '../server/env'
-import { crearLimite, ipCliente, json } from '../server/http'
-import { AUDIO_MAX_BYTES, OPENAI_TIMEOUT_MS, TEXTO_MAX } from '../shared/constantes'
+import { extensionDe, revisarAudio, tipoAudio } from '../server/audio.js'
+import { openaiConfig } from '../server/env.js'
+import { crearLimite, ipCliente, json } from '../server/http.js'
+import { AUDIO_MAX_BYTES, OPENAI_TIMEOUT_MS, TEXTO_MAX } from '../shared/constantes.js'
 
 const limitado = crearLimite({ max: 8, ventanaMs: 10 * 60 * 1000 })
 

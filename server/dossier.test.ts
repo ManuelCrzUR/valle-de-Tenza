@@ -1,9 +1,9 @@
 import { inflateSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
-import { LUGARES, tieneUbicacion } from '../src/data/lugares'
-import { htmlCorreo, htmlDossier, pdfDossier, validarEjemplo, asuntoDossier } from './dossier'
-import { huella, memoriaTokens, nuevoToken, vigente } from './descarga'
-import { enviarRecibo } from './correo'
+import { LUGARES, tieneUbicacion } from '../src/data/lugares.js'
+import { htmlCorreo, htmlDossier, pdfDossier, validarEjemplo, asuntoDossier } from './dossier.js'
+import { huella, memoriaTokens, nuevoToken, vigente } from './descarga.js'
+import { enviarRecibo } from './correo.js'
 
 function textoPdf(buf: Buffer): string {
   const marker = Buffer.from('stream')

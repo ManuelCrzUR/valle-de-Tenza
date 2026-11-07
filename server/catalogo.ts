@@ -1,7 +1,7 @@
-import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, tieneUbicacion } from '../src/data/lugares'
-import type { CategoriaId, Lugar } from '../src/data/lugares'
-import type { Categoria } from '../src/data/planes'
-import { norm } from './texto'
+import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, tieneUbicacion } from '../src/data/lugares.js'
+import type { CategoriaId, Lugar } from '../src/data/lugares.js'
+import type { Categoria } from '../src/data/planes.js'
+import { norm } from './texto.js'
 
 export const SLUGS = MUNICIPIOS.map((m) => m.slug)
 export const PLANES_ID: Categoria[] = ['aventura', 'gastro', 'cultura']

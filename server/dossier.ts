@@ -1,8 +1,8 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
-import type { ItinerarioDto } from './itinerario'
-import { validarPropuesta } from './itinerario'
-import { nombreMunicipio, porId } from './catalogo'
-import { escapeHtml } from './texto'
+import type { ItinerarioDto } from './itinerario.js'
+import { validarPropuesta } from './itinerario.js'
+import { nombreMunicipio, porId } from './catalogo.js'
+import { escapeHtml } from './texto.js'
 
 export interface ParadaDossier {
   n: number

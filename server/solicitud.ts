@@ -1,10 +1,10 @@
-import { NOMBRE_MAX, NOTA_MAX, PERSONAS_MAX } from '../shared/constantes'
-import type { ItinerarioDto } from './itinerario'
-import { validarPropuesta } from './itinerario'
-import type { Almacen, EstadoCorreo, SolicitudFila } from './almacen'
-import { dossierDe, type Dossier } from './dossier'
-import type { Envio } from './correo'
-import { correoValido, hoyColombia } from './texto'
+import { NOMBRE_MAX, NOTA_MAX, PERSONAS_MAX } from '../shared/constantes.js'
+import type { ItinerarioDto } from './itinerario.js'
+import { validarPropuesta } from './itinerario.js'
+import type { Almacen, EstadoCorreo, SolicitudFila } from './almacen.js'
+import { dossierDe, type Dossier } from './dossier.js'
+import type { Envio } from './correo.js'
+import { correoValido, hoyColombia } from './texto.js'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 

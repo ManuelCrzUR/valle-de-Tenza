@@ -1,5 +1,5 @@
-import type { Dossier } from './dossier'
-import { asuntoDossier, htmlCorreo, textoDossier } from './dossier'
+import type { Dossier } from './dossier.js'
+import { asuntoDossier, htmlCorreo, textoDossier } from './dossier.js'
 
 export type DatosRecibo = Dossier
 

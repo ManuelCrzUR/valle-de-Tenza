@@ -1,10 +1,10 @@
-import { almacenSupabase } from '../server/almacen'
-import { datosReciboDe, crearSolicitud } from '../server/solicitud'
-import { enviarRecibo } from '../server/correo'
-import { pdfDossier } from '../server/dossier'
-import { nuevoToken, tokensSupabase } from '../server/descarga'
-import { openaiConfig, resendConfig, supabaseConfig } from '../server/env'
-import { crearLimite, ipCliente, json } from '../server/http'
+import { almacenSupabase } from '../server/almacen.js'
+import { datosReciboDe, crearSolicitud } from '../server/solicitud.js'
+import { enviarRecibo } from '../server/correo.js'
+import { pdfDossier } from '../server/dossier.js'
+import { nuevoToken, tokensSupabase } from '../server/descarga.js'
+import { openaiConfig, resendConfig, supabaseConfig } from '../server/env.js'
+import { crearLimite, ipCliente, json } from '../server/http.js'
 
 const limitado = crearLimite({ max: 8, ventanaMs: 60 * 60 * 1000 })
 

@@ -1,9 +1,9 @@
 // Reintenta comprobantes ya guardados (pendiente o fallido, menos de 3 intentos).
 // No es un endpoint público. Lee solo variables de servidor del entorno.
-import { almacenSupabase } from '../server/almacen'
-import { datosReciboDe, reintentarOutbox } from '../server/solicitud'
-import { enviarRecibo } from '../server/correo'
-import { resendConfig, supabaseConfig } from '../server/env'
+import { almacenSupabase } from '../server/almacen.js'
+import { datosReciboDe, reintentarOutbox } from '../server/solicitud.js'
+import { enviarRecibo } from '../server/correo.js'
+import { resendConfig, supabaseConfig } from '../server/env.js'
 
 const sb = supabaseConfig()
 const correo = resendConfig()

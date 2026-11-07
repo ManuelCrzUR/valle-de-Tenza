@@ -1,5 +1,5 @@
-import { openaiConfig, resendConfig, supabaseConfig } from '../server/env'
-import { json } from '../server/http'
+import { openaiConfig, resendConfig, supabaseConfig } from '../server/env.js'
+import { json } from '../server/http.js'
 
 // Solo booleanos. No devuelve claves, modelos ni correos.
 export function GET(): Response {

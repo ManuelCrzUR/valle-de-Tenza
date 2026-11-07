@@ -1,5 +1,5 @@
 // Lugares reales del Valle de Tenza. El JSON lo genera scraper/ejecutar.py (no editar a mano).
-import datos from './lugares.json'
+import datos from './lugares.json' with { type: 'json' }
 
 export type CategoriaId =
   | 'alojamiento' | 'restaurante' | 'comercio' | 'atraccion' | 'monumento' | 'naturaleza'

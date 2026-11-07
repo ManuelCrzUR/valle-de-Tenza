@@ -1,7 +1,7 @@
-import { openaiConfig } from '../server/env'
-import { crearLimite, ipCliente, json } from '../server/http'
-import { OPENAI_TIMEOUT_MS } from '../shared/constantes'
-import { sinDatosPersonales } from '../server/texto'
+import { openaiConfig } from '../server/env.js'
+import { crearLimite, ipCliente, json } from '../server/http.js'
+import { OPENAI_TIMEOUT_MS } from '../shared/constantes.js'
+import { sinDatosPersonales } from '../server/texto.js'
 
 const limitado = crearLimite({ max: 10, ventanaMs: 10 * 60 * 1000 })
 
