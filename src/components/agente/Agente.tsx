@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, ChatBubble, Chip, Option, TextField } from '../ui'
 import { Orbe } from './Orbe'
 import type { EstadoOrbe } from './Orbe'
-import { responderLocal, SUGERENCIAS, validarLink } from '../../data/agente'
-import type { LinkAgente, RespuestaAgente } from '../../data/agente'
+import { empresasDeNegocios, respaldoLocal, SUGERENCIAS, validarLink } from '../../data/agente'
+import type { EmpresaAgente, LinkAgente, RespuestaAgente } from '../../data/agente'
 
 interface Mensaje {
   id: number
@@ -32,7 +32,7 @@ function leerMensajes(): Mensaje[] {
       if (!d || typeof d !== 'object') continue
       const m = d as Record<string, unknown>
       if ((m.de !== 'bot' && m.de !== 'me') || typeof m.texto !== 'string' || typeof m.id !== 'number') continue
-      const links = Array.isArray(m.links) ? m.links.map(validarLink).filter((l): l is LinkAgente => !!l) : []
+      const links = Array.isArray(m.links) ? m.links.map((l) => validarLink(l)).filter((l): l is LinkAgente => !!l) : []
       const modo = m.modo === 'openai' || m.modo === 'catalogo' ? m.modo : undefined
       out.push({ id: m.id, de: m.de, texto: m.texto, links, modo })
     }
@@ -69,7 +69,7 @@ function irAAncla(ancla: string): void {
   requestAnimationFrame(buscar)
 }
 
-async function consultar(pregunta: string, pagina: string, senal: AbortSignal): Promise<RespuestaAgente & { aviso?: true }> {
+async function consultar(pregunta: string, pagina: string, senal: AbortSignal, empresas: EmpresaAgente[]): Promise<RespuestaAgente & { aviso?: true }> {
   const control = new AbortController()
   const cortar = () => control.abort()
   senal.addEventListener('abort', cortar)
@@ -90,7 +90,7 @@ async function consultar(pregunta: string, pagina: string, senal: AbortSignal): 
     if (!r.ok) throw new Error(`estado ${r.status}`)
     const d = (await r.json()) as Partial<RespuestaAgente>
     if (d.modo !== 'openai' || typeof d.texto !== 'string' || !d.texto.trim() || !Array.isArray(d.links)) throw new Error('JSON inválido')
-    return { modo: 'openai', texto: d.texto, links: d.links.map(validarLink).filter((l): l is LinkAgente => !!l).slice(0, 3) }
+    return { modo: 'openai', texto: d.texto, links: d.links.map((l) => validarLink(l, empresas)).filter((l): l is LinkAgente => !!l).slice(0, 3) }
   } finally {
     window.clearTimeout(temporizador)
     senal.removeEventListener('abort', cortar)
@@ -164,15 +164,25 @@ export function Agente(): ReactElement {
     const control = new AbortController()
     pendiente.current = control
     const pagina = `/${pathname.split('/')[1] ?? ''}`
+    let empresas: EmpresaAgente[] = []
+    let lectura: 'ok' | 'error' = 'ok'
     try {
-      const r = await consultar(pregunta, pagina, control.signal)
+      const lista = await fetch('/api/negocios', { cache: 'no-store', signal: control.signal })
+      if (!lista.ok) lectura = 'error'
+      else empresas = empresasDeNegocios(await lista.json())
+    } catch {
+      if (control.signal.aborted) return
+      lectura = 'error'
+    }
+    try {
+      const r = await consultar(pregunta, pagina, control.signal, empresas)
       if (control.signal.aborted) return
       agregar({ de: 'bot', texto: r.texto, links: r.links, modo: r.aviso ? undefined : r.modo })
     } catch {
       if (control.signal.aborted) return
       try {
-        const r = responderLocal(pregunta)
-        agregar({ de: 'bot', texto: r.texto, links: r.links.map(validarLink).filter((l): l is LinkAgente => !!l), modo: 'catalogo' })
+        const r = respaldoLocal(pregunta, empresas, lectura)
+        agregar({ de: 'bot', texto: r.texto, links: r.links, modo: 'catalogo' })
       } catch {
         setFallo(true)
         agregar({ de: 'bot', texto: 'No pude responder ahora. Intenta de nuevo en un momento.', links: [] })

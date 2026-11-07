@@ -3,13 +3,16 @@ import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import { CircleMarker, MapContainer, Marker, Polyline, TileLayer, ZoomControl, useMap } from 'react-leaflet'
 import type { Lugar } from '../../data/lugares'
+import { reducirCarga, cargaInicial, puedeAnimar } from './mapaListo'
+import type { CargaMapa, EventoMapa } from './mapaListo'
 
 export type ParadaMapa = { n: number; lugar: Lugar & { lat: number; lon: number } }   // n = posición en el recorrido (1, 2, 3…)
 
 const MS_POR_TRAMO = 1100
 const PAUSA_INICIAL = 1500   // vista general + vuelo al primer nodo antes de empezar a dibujar
 const ZOOM_SEGUIR = 14.5
-const RESPIRO = 250   // tras ser visible, espera a que termine el scroll suave antes de animar
+const RESPIRO = 250   // tras ser visible y con teselas, espera a que termine el scroll suave antes de animar
+const ESPERA_TILES_MS = 8000
 const reduceMovimiento = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 // Un solo ícono por número/estado: si cambiara de identidad en cada fotograma, Leaflet recrearía el pin y reiniciaría su animación.
@@ -61,9 +64,9 @@ function useRecorrido(total: number, corrida: number, completo: boolean, listo: 
   const [prog, setProg] = useState(() => (completo || reduceMovimiento() ? Math.max(0, total - 1) : 0))
   useEffect(() => {
     const fin = Math.max(0, total - 1)
+    if (!listo && !completo) { setProg(0); return }
     if (completo || reduceMovimiento() || fin === 0) { setProg(fin); return }
     setProg(0)
-    if (!listo) return   // el mapa aún no está a la vista: la línea espera sin dibujar
     let raf = 0
     const t0 = performance.now() + PAUSA_INICIAL
     const paso = (ahora: number) => {
@@ -162,10 +165,104 @@ function Seguir({ paradas, cabeza, empezo, animando, corrida, listo, seleccionad
   return null
 }
 
+function aplicarInteraccion(map: L.Map, activa: boolean) {
+  const accion = activa ? 'enable' : 'disable'
+  map.dragging[accion]()
+  map.scrollWheelZoom[accion]()
+  map.doubleClickZoom[accion]()
+  map.touchZoom[accion]()
+  map.boxZoom[accion]()
+  map.keyboard[accion]()
+}
+
+// Teselas del área visible + tamaño estable. Crear el mapa no cuenta como listo.
+function VigiaBase({ clave, alEstado }: { clave: string; alEstado: (s: CargaMapa) => void }) {
+  const map = useMap()
+  const estado = useRef(cargaInicial())
+  useEffect(() => {
+    let vivo = true
+    let timerTamano = 0
+    let timerTope = 0
+    const emitir = (ev: EventoMapa) => {
+      if (!vivo) return
+      estado.current = reducirCarga(estado.current, ev)
+      alEstado(estado.current)
+      aplicarInteraccion(map, estado.current.fase === 'listo')
+    }
+    emitir({ tipo: 'ruta' })
+    const capa = () => {
+      let encontrada: L.TileLayer | undefined
+      map.eachLayer((l) => { if (l instanceof L.TileLayer) encontrada = l })
+      return encontrada
+    }
+    const alTile = (ev: L.LeafletEvent) => emitir(ev.type === 'tileerror' ? { tipo: 'tileMal' } : { tipo: 'tileOk' })
+    const alCola = () => emitir({ tipo: 'colaVacia' })
+    const enganchar = (layer: L.TileLayer) => {
+      layer.on('tileload', alTile)
+      layer.on('tileerror', alTile)
+      layer.on('load', alCola)
+    }
+    const soltar = (layer: L.TileLayer) => {
+      layer.off('tileload', alTile)
+      layer.off('tileerror', alTile)
+      layer.off('load', alCola)
+    }
+    let layer = capa()
+    let enganchada = false
+    const asegurar = () => {
+      if (!layer) layer = capa()
+      if (layer && !enganchada) { enganchar(layer); enganchada = true }
+    }
+    asegurar()
+    const observar = () => {
+      const r = map.getContainer().getBoundingClientRect()
+      const sirve = r.width >= 40 && r.height >= 40
+      window.clearTimeout(timerTamano)
+      if (!sirve) { emitir({ tipo: 'tamano', estable: false }); return }
+      timerTamano = window.setTimeout(() => {
+        if (!vivo) return
+        map.invalidateSize()
+        asegurar()
+        emitir({ tipo: 'tamano', estable: true })
+        const ok = map.getContainer().querySelectorAll('img.leaflet-tile-loaded').length
+        for (let i = estado.current.tilesOk; i < ok; i++) emitir({ tipo: 'tileOk' })
+        if (map.getContainer().querySelectorAll('img.leaflet-tile-loading').length === 0) emitir({ tipo: 'colaVacia' })
+      }, 140)
+    }
+    const ro = new ResizeObserver(observar)
+    ro.observe(map.getContainer())
+    observar()
+    timerTope = window.setTimeout(() => { if (vivo && estado.current.fase !== 'listo') emitir({ tipo: 'timeout' }) }, ESPERA_TILES_MS)
+    return () => {
+      vivo = false
+      window.clearTimeout(timerTamano)
+      window.clearTimeout(timerTope)
+      ro.disconnect()
+      if (layer) soltar(layer)
+      aplicarInteraccion(map, true)
+    }
+  }, [map, clave, alEstado])
+  return null
+}
+
 // Mapa de «Mi ruta»: nodos numerados y una línea que se dibuja del primero al último, pasando por todos.
-export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida, foco }: { paradas: ParadaMapa[]; seleccionadoId: string | null; onElegir: (id: string) => void; corrida: number; foco?: { id: string; seq: number } | null }) {
+export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida, foco, onBase }: { paradas: ParadaMapa[]; seleccionadoId: string | null; onElegir: (id: string) => void; corrida: number; foco?: { id: string; seq: number } | null; onBase?: (fase: 'cargando' | 'listo' | 'error') => void }) {
   const [contenedor, setContenedor] = useState<HTMLElement | null>(null)
-  const listo = useArranque(contenedor, corrida, !foco && !reduceMovimiento() && paradas.length > 1)
+  const [carga, setCarga] = useState<CargaMapa>(cargaInicial)
+  const [epoch, setEpoch] = useState(0)
+  const avisar = useRef(onBase)
+  avisar.current = onBase
+  const alEstado = useRef((s: CargaMapa) => {
+    setCarga(s)
+    avisar.current?.(s.fase)
+  })
+    const clave = `${corrida}|${epoch}|${paradas.map((p) => p.lugar.id).join()}`
+  const visible = useVisible(contenedor, clave)
+  const base = reducirCarga(carga, { tipo: 'visible', valor: visible })
+  const tilesListos = puedeAnimar(base)
+  const quiereRecorrido = tilesListos && !foco && !reduceMovimiento() && paradas.length > 1
+  const respiro = useArranque(contenedor, corrida, quiereRecorrido)
+  const listo = tilesListos && (!quiereRecorrido || respiro)
   const prog = useRecorrido(paradas.length, corrida, !!foco, listo)
   const alcanzado = Math.floor(prog + 1e-6)
   const seleccionado = useMemo(() => paradas.find((p) => p.lugar.id === seleccionadoId), [paradas, seleccionadoId])
@@ -184,13 +281,15 @@ export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida, f
   const cabeza = linea[linea.length - 1]
 
   return (
+    <div className="mapa-marco">
     <MapContainer className="mapa-leaflet" center={[5.03, -73.42]} zoom={11} zoomSnap={0.25} zoomControl={false} scrollWheelZoom aria-label="Mapa de tu ruta por el Valle de Tenza">
       <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" maxZoom={19} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Colaboradores de OpenStreetMap</a>' />
       <ZoomControl position="bottomright" zoomInTitle="Acercar" zoomOutTitle="Alejar" />
       <Contenedor alListo={setContenedor} />
-      {!foco && <Encuadrar paradas={paradas} seleccionado={seleccionado} />}
+      <VigiaBase clave={clave} alEstado={alEstado.current} />
+      {!foco && <Encuadrar paradas={paradas} seleccionado={tilesListos ? seleccionado : undefined} />}
       {!foco && <Seguir paradas={paradas} cabeza={cabeza} empezo={prog > 0} animando={animando} corrida={corrida} listo={listo} seleccionadoId={seleccionadoId} />}
-      {foco && <Enfocar id={foco.id} seq={foco.seq} paradas={paradas} />}
+      {foco && tilesListos && <Enfocar id={foco.id} seq={foco.seq} paradas={paradas} />}
       {linea.length > 1 && <Polyline positions={linea} interactive={false} className="ruta-linea" pathOptions={{ weight: 5, dashArray: '10 9', lineCap: 'round', lineJoin: 'round' }} />}
       {animando && cabeza && <CircleMarker center={cabeza} radius={8} interactive={false} className="ruta-cabeza" />}
       {paradas.slice(0, alcanzado + 1).map((p) => (
@@ -198,5 +297,16 @@ export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida, f
           zIndexOffset={p.lugar.id === seleccionadoId ? 1000 : p.n} eventHandlers={{ click: () => onElegir(p.lugar.id) }} />
       ))}
     </MapContainer>
+    {carga.fase !== 'listo' && (
+      <div className="mapa-carga" role="status">
+        {carga.fase === 'error' ? (
+          <>
+            <p>El mapa base no cargó. El recorrido no empieza sobre el fondo vacío.</p>
+            <button type="button" className="vd-btn vd-btn-secondary" onClick={() => setEpoch((n) => n + 1)}>Reintentar</button>
+          </>
+        ) : <p>Cargando el mapa…</p>}
+      </div>
+    )}
+    </div>
   )
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { LUGARES } from '../src/data/lugares.js'
-import { RESUMEN_DESTINOS, SUGERENCIAS, responderLocal, validarLink } from '../src/data/agente.js'
+import { RESUMEN_DESTINOS, SUGERENCIAS, empresasDeNegocios, respaldoLocal, responderLocal, validarLink } from '../src/data/agente.js'
 
 const l = (ruta: string, ancla: string | null = null) => validarLink({ etiqueta: 'x', ruta, ancla })
 
@@ -21,6 +21,41 @@ describe('validarLink', () => {
     const id = LUGARES[0].id
     expect(l(`/lugares/${id}`)?.ruta).toBe(`/lugares/${id}`)
     expect(l('/mapa?vista=ruta')?.ruta).toBe('/mapa?vista=ruta')
+  })
+})
+
+const cafe = {
+  id: 'business:11111111-1111-4111-8111-111111111111',
+  nombre: 'Cafe La Esperanza',
+  categoria: 'restaurante',
+  municipio: 'tenza',
+  descripcion: 'Cafe de la plaza',
+}
+
+describe('negocios publicados en el asistente', () => {
+  it('incluye el publicado por nombre y arma links de ficha, mapa y plan', () => {
+    const r = responderLocal('Cuéntame de Cafe La Esperanza', [cafe])
+    expect(r.texto).toContain('Cafe La Esperanza')
+    expect(r.texto).toContain('Cafe de la plaza')
+    expect(r.links.map((x) => x.ruta)).toEqual([
+      `/lugares/${cafe.id}`,
+      `/mapa?lugar=${cafe.id}`,
+      `/plan?lugar=${cafe.id}`,
+    ])
+    for (const link of r.links) expect(validarLink(link, [cafe])).toEqual(link)
+  })
+  it('rechaza un negocio que no está publicado y un borrador', () => {
+    expect(validarLink({ etiqueta: 'X', ruta: `/lugares/${cafe.id}`, ancla: null })).toBeNull()
+    expect(validarLink({ etiqueta: 'X', ruta: `/lugares/${cafe.id}`, ancla: null }, [cafe])?.ruta).toBe(`/lugares/${cafe.id}`)
+    const crudo = { negocios: [{ ...cafe, id: cafe.id, name: cafe.nombre, category: cafe.categoria, municipality: cafe.municipio, description: cafe.descripcion, status: 'draft' }, { id: 'business:22222222-2222-4222-8222-222222222222', name: 'Otro', category: 'restaurante', municipality: 'tenza', status: 'published' }] }
+    expect(empresasDeNegocios(crudo).map((e) => e.nombre)).toEqual(['Otro'])
+    expect(responderLocal('Borrador Secreto', [cafe]).links.some((x) => x.ruta.includes('Borrador'))).toBe(false)
+  })
+  it('si no se pueden leer los negocios, el respaldo lo dice y sigue con el catálogo', () => {
+    const r = respaldoLocal('quiero ver el mapa', [], 'error')
+    expect(r.texto.startsWith('No pude leer los negocios publicados.')).toBe(true)
+    expect(r.links.length).toBeGreaterThan(0)
+    expect(respaldoLocal('¿Dónde dormir en Tenza?').texto).toMatch(/11 lugares para dormir/)
   })
 })
 

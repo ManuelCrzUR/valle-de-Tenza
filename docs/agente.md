@@ -16,7 +16,7 @@ Responde preguntas cortas sobre el viaje al Valle de Tenza (7 municipios) y prop
 
 ## Variables
 
-Solo las existentes: `OPENAI_API_KEY` y, opcionalmente, `OPENAI_ITINERARY_MODEL`.
+Solo las existentes: `OPENAI_API_KEY` y, opcionalmente, `OPENAI_ITINERARY_MODEL`. Los negocios publicados salen de Supabase en cada pregunta (`listarPublicadas`), sin caché. Un borrador no entra. Si esa lectura falla, la respuesta local lo dice y sigue con el catálogo fijo.
 
 ## Respaldo local
 

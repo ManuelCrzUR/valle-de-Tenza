@@ -5,20 +5,23 @@ import type { Lugar } from './lugares.js'
 
 export interface LinkAgente { etiqueta: string; ruta: string; ancla: string | null }
 export interface RespuestaAgente { modo: 'openai' | 'catalogo'; texto: string; links: LinkAgente[] }
+export interface EmpresaAgente { id: string; nombre: string; categoria: string; municipio: string; descripcion?: string }
+
+const ID_EMPRESA = /^business:[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
 export const SUGERENCIAS: string[] = ['¿Qué hacer en Tenza?', 'Dónde dormir', 'Ver el mapa', 'Armar un plan']
 
 const CATS = ['aventura', 'gastro', 'cultura', 'dormir'] as const
 type Cat = (typeof CATS)[number]
 const SLUGS = MUNICIPIOS.map((m) => m.slug)
-const ANCLAS: Record<string, string[]> = { '/plan': ['plan-asistente', 'plan-resultado'] }
+const ANCLAS: Record<string, string[]> = { '/plan': ['plan-asistente', 'plan-resultado', 'plan-solicitud'] }
 
 export const RESUMEN_DESTINOS: string = [
   'Rutas válidas del sitio (la parte después de # en la URL). Usa solo estas; no inventes otras.',
   '- /  : inicio. Sin parámetros ni anclas.',
   '- /plan : armar el plan de viaje. Parámetro opcional lugar=<id de un lugar del catálogo> (precarga «Quiero incluir X»). Anclas: plan-asistente (formulario para pedir el plan), plan-resultado.',
   `- /lugares : catálogo por categoría. Parámetro opcional cat = ${CATS.join(' | ')} (dormir = alojamiento). Parámetro opcional mun = ${SLUGS.join(' | ')}.`,
-  '- /lugares/<id> : ficha de un lugar; el id debe existir en el catálogo.',
+  '- /lugares/<id> : ficha de un lugar del catálogo o de un negocio publicado (id business:<uuid> devuelto por buscar_lugares).',
   '- /mapa : mapa de lugares. Parámetro opcional vista=ruta (muestra la ruta del plan).',
   `- /galeria : fotos del Valle. Parámetro opcional mun = ${SLUGS.join(' | ')}.`,
   'Cada link lleva etiqueta (1 a 60 caracteres), ruta y ancla (o null). Máximo 3 links por respuesta.',
@@ -30,14 +33,24 @@ function normalizar(s: string): string {
 }
 
 // ---------- Validación ----------
-export function validarLink(l: unknown): LinkAgente | null {
+function decodificar(s: string): string {
+  try { return decodeURIComponent(s) } catch { return s }
+}
+
+function lugarExiste(id: string, empresas: EmpresaAgente[]): boolean {
+  const canon = decodificar(id)
+  if (getLugar(canon)) return true
+  return ID_EMPRESA.test(canon) && empresas.some((e) => e.id === canon)
+}
+
+export function validarLink(l: unknown, empresas: EmpresaAgente[] = []): LinkAgente | null {
   if (!l || typeof l !== 'object') return null
   const { etiqueta, ruta, ancla } = l as Record<string, unknown>
   if (typeof etiqueta !== 'string' || typeof ruta !== 'string') return null
   const et = etiqueta.trim()
   if (et.length < 1 || et.length > 60) return null
   if (ancla !== undefined && ancla !== null && typeof ancla !== 'string') return null
-  if (!ruta.startsWith('/') || ruta.startsWith('//') || /[:\\\s]|\.\./.test(ruta)) return null
+  if (!ruta.startsWith('/') || ruta.startsWith('//') || ruta.includes('://') || /[\\\s]|\.\./.test(ruta)) return null
   const [camino, ...resto] = ruta.split('?')
   if (resto.length > 1 || camino.includes('#')) return null
   const params = new URLSearchParams(resto[0] ?? '')
@@ -48,18 +61,22 @@ export function validarLink(l: unknown): LinkAgente | null {
   let rutaOk = ''
   if (camino === '/' || camino === '/mapa' || camino === '/galeria' || camino === '/plan' || camino === '/lugares') {
     rutaOk = camino
-    if (camino === '/mapa') { permitidas = ['vista']; if (params.has('vista') && val('vista') !== 'ruta') return null }
+    if (camino === '/mapa') {
+      permitidas = ['vista', 'lugar']
+      if (params.has('vista') && val('vista') !== 'ruta') return null
+      if (params.has('lugar') && !lugarExiste(val('lugar')!, empresas)) return null
+    }
     if (camino === '/galeria') { permitidas = ['mun']; if (params.has('mun') && !SLUGS.includes(val('mun')!)) return null }
-    if (camino === '/plan') { permitidas = ['lugar']; if (params.has('lugar') && !getLugar(val('lugar')!)) return null }
+    if (camino === '/plan') { permitidas = ['lugar']; if (params.has('lugar') && !lugarExiste(val('lugar')!, empresas)) return null }
     if (camino === '/lugares') {
       permitidas = ['cat', 'mun']
       if (params.has('cat') && !(CATS as readonly string[]).includes(val('cat')!)) return null
       if (params.has('mun') && !SLUGS.includes(val('mun')!)) return null
     }
   } else if (camino.startsWith('/lugares/')) {
-    const id = camino.slice('/lugares/'.length)
-    if (!id || id.includes('/') || !getLugar(id)) return null
-    rutaOk = camino
+    const id = decodificar(camino.slice('/lugares/'.length))
+    if (!id || id.includes('/') || !lugarExiste(id, empresas)) return null
+    rutaOk = `/lugares/${id}`
   } else return null
   if (claves.some((k) => !permitidas.includes(k))) return null
   let anc: string | null = null
@@ -68,8 +85,7 @@ export function validarLink(l: unknown): LinkAgente | null {
     anc = ancla
   }
   const orden = permitidas.filter((k) => params.has(k))
-  const q = new URLSearchParams(orden.map((k) => [k, val(k)!] as [string, string]))
-  const qs = q.toString()
+  const qs = orden.map((k) => `${k}=${k === 'lugar' ? decodificar(val(k)!) : val(k)!}`).join('&')
   return { etiqueta: et, ruta: qs ? `${rutaOk}?${qs}` : rutaOk, ancla: anc }
 }
 
@@ -108,10 +124,32 @@ function detectarMunicipio(t: string): string | null {
   return null
 }
 
-const candidatos = (): Lugar[] => LUGARES.filter((l) => !l.esServicio || l.categoria === 'restaurante' || l.categoria === 'alojamiento')
+function empresasComoLugares(empresas: EmpresaAgente[]): Lugar[] {
+  return empresas.filter((e) => ID_EMPRESA.test(e.id) && SLUGS.includes(e.municipio)).map((e) => ({
+    id: e.id,
+    nombre: e.nombre,
+    categoria: e.categoria as Lugar['categoria'],
+    subtipo: 'empresa',
+    municipio: e.municipio,
+    lat: null,
+    lon: null,
+    precision: null,
+    direccion: '',
+    plan: e.categoria === 'restaurante' ? 'gastro' : e.categoria === 'monumento' ? 'cultura' : (e.categoria === 'atraccion' || e.categoria === 'naturaleza') ? 'aventura' : null,
+    esServicio: false,
+    conRegistro: false,
+    fuentes: ['Empresa publicada'],
+    extra: e.descripcion ? { descripcion: e.descripcion } : undefined,
+  }))
+}
 
-function detectarLugar(t: string): Lugar | null {
-  const cand = candidatos()
+const candidatos = (empresas: EmpresaAgente[] = []): Lugar[] => [
+  ...LUGARES.filter((l) => !l.esServicio || l.categoria === 'restaurante' || l.categoria === 'alojamiento'),
+  ...empresasComoLugares(empresas),
+]
+
+function detectarLugar(t: string, empresas: EmpresaAgente[] = []): Lugar | null {
+  const cand = candidatos(empresas)
   const completos = cand.filter((l) => { const n = normalizar(l.nombre); return n.length >= 4 && ` ${t} `.includes(` ${n} `) })
   if (completos.length) return completos.sort((a, b) => b.nombre.length - a.nombre.length)[0]
   const palabrasPregunta = new Set(t.split(' ').filter((p) => p.length >= 4 && !GENERICAS.has(p)))
@@ -128,8 +166,8 @@ function detectarLugar(t: string): Lugar | null {
   return mejor && !empate ? mejor : null
 }
 
-function contar(cat: Cat, mun: string | null): number {
-  return LUGARES.filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun)).length
+function contar(cat: Cat, mun: string | null, empresas: EmpresaAgente[] = []): number {
+  return candidatos(empresas).filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun)).length
 }
 
 const plural = (n: number, s: string, p: string) => `${n} ${n === 1 ? s : p}`
@@ -137,7 +175,35 @@ const lugarLink = (cat: Cat, mun: string | null, etiqueta: string): LinkAgente =
   etiqueta, ruta: `/lugares?cat=${cat}${mun ? `&mun=${mun}` : ''}`, ancla: null,
 })
 
-export function responderLocal(pregunta: string): RespuestaAgente {
+export function empresasDeNegocios(raw: unknown): EmpresaAgente[] {
+  const lista = (raw as { negocios?: unknown } | null)?.negocios
+  if (!Array.isArray(lista)) return []
+  const out: EmpresaAgente[] = []
+  for (const item of lista) {
+    if (!item || typeof item !== 'object') continue
+    const n = item as Record<string, unknown>
+    if (n.status === 'draft') continue
+    if (typeof n.id !== 'string' || !ID_EMPRESA.test(n.id)) continue
+    if (typeof n.name !== 'string' || typeof n.category !== 'string' || typeof n.municipality !== 'string') continue
+    if (!SLUGS.includes(n.municipality)) continue
+    out.push({
+      id: n.id,
+      nombre: n.name.trim().slice(0, 120),
+      categoria: n.category,
+      municipio: n.municipality,
+      descripcion: typeof n.description === 'string' ? n.description.slice(0, 240) : undefined,
+    })
+  }
+  return out
+}
+
+export function respaldoLocal(pregunta: string, empresas: EmpresaAgente[] = [], lectura: 'ok' | 'error' = 'ok'): RespuestaAgente {
+  const r = responderLocal(pregunta, empresas)
+  if (lectura === 'error') return { ...r, texto: `No pude leer los negocios publicados. ${r.texto}` }
+  return r
+}
+
+export function responderLocal(pregunta: string, empresas: EmpresaAgente[] = []): RespuestaAgente {
   const t = normalizar(String(pregunta ?? ''))
   const links: LinkAgente[] = []
   const frases: string[] = []
@@ -145,7 +211,7 @@ export function responderLocal(pregunta: string): RespuestaAgente {
     const vistos = new Set<string>()
     const validos: LinkAgente[] = []
     for (const l of links) {
-      const v = validarLink(l)
+      const v = validarLink(l, empresas)
       const clave = v ? `${v.ruta}#${v.ancla ?? ''}` : ''
       if (v && !vistos.has(clave)) { vistos.add(clave); validos.push(v) }
     }
@@ -162,13 +228,18 @@ export function responderLocal(pregunta: string): RespuestaAgente {
 
   const mun = detectarMunicipio(t)
   const nomMun = mun ? NOMBRE_MUNICIPIO[mun] : null
-  const lugar = detectarLugar(t)
+  const lugar = detectarLugar(t, empresas)
   const i = Object.fromEntries(Object.entries(RE).map(([k, re]) => [k, reEn(re, t)])) as Record<keyof typeof RE, boolean>
 
   if (lugar) {
     const where = NOMBRE_MUNICIPIO[lugar.municipio] ?? lugar.municipio
     frases.push(`${lugar.nombre} está en el catálogo (${where}).`)
-    links.push({ etiqueta: 'Ver la ficha', ruta: `/lugares/${lugar.id}`, ancla: null }, { etiqueta: 'Incluirlo en un plan', ruta: `/plan?lugar=${lugar.id}`, ancla: null })
+    if (lugar.extra?.descripcion) frases.push(lugar.extra.descripcion)
+    links.push(
+      { etiqueta: 'Ver la ficha', ruta: `/lugares/${lugar.id}`, ancla: null },
+      { etiqueta: 'Verlo en el mapa', ruta: `/mapa?lugar=${lugar.id}`, ancla: null },
+      { etiqueta: 'Incluirlo en un plan', ruta: `/plan?lugar=${lugar.id}`, ancla: null },
+    )
   }
 
   if (i.solicitud) {
@@ -192,7 +263,7 @@ export function responderLocal(pregunta: string): RespuestaAgente {
 
   if (!lugar && cats.length) {
     for (const c of cats) {
-      const n = contar(c, mun)
+      const n = contar(c, mun, empresas)
       if (n > 0) {
         frases.push(`${nomMun ? `En ${nomMun} hay` : 'En el catálogo hay'} ${plural(n, etiq[c][0], etiq[c][1])}.`)
         links.push(lugarLink(c, mun, etiq[c][2]))
@@ -201,7 +272,7 @@ export function responderLocal(pregunta: string): RespuestaAgente {
   } else if (!lugar && mun && !i.mapa && !i.fotos && !i.plan && !i.ruta) {
     const partes: string[] = []
     for (const [c, nombre, et] of [['aventura', 'de naturaleza y aventura', 'Naturaleza y aventura'], ['gastro', 'para comer', 'Dónde comer'], ['dormir', 'para dormir', 'Dónde dormir']] as [Cat, string, string][]) {
-      const n = contar(c, mun)
+      const n = contar(c, mun, empresas)
       if (n > 0) { partes.push(`${n} ${nombre}`); links.push(lugarLink(c, mun, et)) }
     }
     frases.push(partes.length ? `En ${nomMun} el catálogo tiene ${partes.join(', ')}.` : `Por ahora el catálogo no tiene lugares en ${nomMun}.`)

@@ -230,6 +230,12 @@ main { flex: 1; }
 .mapa-app { --alto-mapa: clamp(420px, calc(100dvh - 330px), 680px); width: 100%; display: grid; gap: var(--space-4); margin-top: var(--space-2); }
 .mapa-lienzo { position: relative; height: var(--alto-mapa); border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--line); background: var(--surface-sunken); isolation: isolate; }
 .mapa-leaflet { width: 100%; height: 100%; font: inherit; background: var(--surface-sunken); }
+.mapa-marco { position: relative; width: 100%; height: 100%; min-height: 0; }
+.mapa-carga {
+  position: absolute; inset: 0; z-index: 800; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; padding: 16px; text-align: center; background: color-mix(in srgb, var(--surface) 84%, transparent); color: var(--ink);
+}
+.mapa-carga p { margin: 0; max-width: 36ch; }
 .mapa-contador { position: absolute; top: var(--space-3); left: var(--space-3); z-index: 1000; margin: 0; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--surface-raised); border: 1px solid var(--line); color: var(--ink); font-size: 13px; font-weight: 700; max-width: calc(100% - 24px); }
 .mapa-botones { position: absolute; left: var(--space-3); top: var(--space-3); z-index: 1000; display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .mapa-botones .vd-btn { box-shadow: var(--shadow-float); }
