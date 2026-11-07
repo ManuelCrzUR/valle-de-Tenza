@@ -249,7 +249,7 @@ export async function completarConModelo(opts: {
         ...(previous ? { previous_response_id: previous } : {}),
       }),
     })
-    if (!r.ok) throw new Error('openai_http')
+    if (!r.ok) throw new OpenAIFallo(`http_${r.status}`)
     const data = (await r.json()) as RespApi
     previous = data.id
     const calls = llamadasDe(data)
@@ -268,17 +268,21 @@ export async function completarConModelo(opts: {
       })
       continue
     }
-    if (!texto) throw new Error('openai_vacio')
+    if (!texto) throw new OpenAIFallo('vacio')
     let crudo: Crudo
-    try { crudo = JSON.parse(texto) as Crudo } catch { throw new Error('openai_json') }
+    try { crudo = JSON.parse(texto) as Crudo } catch { throw new OpenAIFallo('json') }
     return { crudo, modelo: opts.modelo }
   }
-  throw new Error('openai_vacio')
+  throw new OpenAIFallo('vacio')
+}
+
+class OpenAIFallo extends Error {
+  constructor(public detalle: string) { super(detalle) }
 }
 
 export type ResultadoArmado =
   | { ok: true; itinerario: ItinerarioDto }
-  | { ok: false; status: number; error: string; mensaje: string }
+  | { ok: false; status: number; error: string; mensaje: string; detalle?: string }
 
 export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetchImpl?: typeof fetch; signal?: AbortSignal }): Promise<ResultadoArmado> {
   const mensaje = typeof entrada.mensaje === 'string' ? entrada.mensaje.slice(0, 500) : ''
@@ -326,6 +330,7 @@ export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetch
     if (nombre === 'TimeoutError' || nombre === 'AbortError') {
       return { ok: false, status: 504, error: 'tiempo_agotado', mensaje: 'La generación tardó demasiado y se canceló. Puedes intentar de nuevo o usar los chips, que arman el plan sin OpenAI.' }
     }
-    return { ok: false, status: 502, error: 'openai_no_disponible', mensaje: 'OpenAI no devolvió un itinerario usable. No lo reemplacé por un resultado presentado como de la IA.' }
+    const detalle = e instanceof OpenAIFallo ? e.detalle : 'excepcion'
+    return { ok: false, status: 502, error: 'openai_no_disponible', detalle, mensaje: 'OpenAI no devolvió un itinerario usable. No lo reemplacé por un resultado presentado como de la IA.' }
   }
 }
