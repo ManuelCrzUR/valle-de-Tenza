@@ -82,6 +82,7 @@
 
 /* Resultado: una columna hasta 1023px; mapa fijo a la izquierda desde 1024px. */
 .plan-grid > * { min-width: 0; }
+#plan-resultado { scroll-margin-top: calc(var(--appbar-height) + var(--space-4)); }
 @media (min-width: 1024px) {
   .plan-grid { grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr); align-items: start; }
   .plan-grid > :first-child { position: sticky; top: calc(var(--appbar-height) + var(--space-4)); }
@@ -90,6 +91,8 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  /* Entrada del resultado: el bloque entra con slide y fade; las tarjetas siguen escalonadas con plan-sube. */
+  #plan-resultado { animation: plan-entra 0.5s ease-out both; }
   .plan-card { animation: plan-sube 0.45s ease both; }
   .plan-card:nth-child(2) { animation-delay: 0.08s; }
   .plan-card:nth-child(3) { animation-delay: 0.16s; }
@@ -97,5 +100,6 @@
   .plan-mic[aria-pressed="true"] { animation: plan-pulso 1.2s ease-in-out infinite; }
   .plan-carga li[data-activo="true"] { animation: plan-sube 0.35s ease both; }
 }
+@keyframes plan-entra { from { opacity: 0; transform: translateY(24px); } }
 @keyframes plan-sube { from { opacity: 0; transform: translateY(10px); } }
 @keyframes plan-pulso { 50% { transform: scale(1.04); } }
