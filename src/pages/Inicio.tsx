@@ -58,6 +58,7 @@ export default function Inicio() {
       <section className="wrap seccion promesa">
         <Chip tone="soft">Solicitud, no reserva</Chip>
         <p className="t-h2">El plan usa lugares del catálogo. Enviar la solicitud no aparta cupo ni confirma una reserva.</p>
+        <p><Link to="/prestadores">Tengo un negocio en el Valle</Link></p>
       </section>
     </>
   )

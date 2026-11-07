@@ -9,7 +9,7 @@ const raiz = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const salida = resolve(raiz, 'dist-runtime')
 rmSync(salida, { recursive: true, force: true })
 
-for (const nombre of ['OPENAI_API_KEY', 'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'RESEND_FROM_EMAIL']) {
+for (const nombre of ['OPENAI_API_KEY', 'SUPABASE_URL', 'SUPABASE_SERVICE_ROLE_KEY', 'RESEND_API_KEY', 'RESEND_FROM_EMAIL', 'RESEND_SANDBOX_RECIPIENT']) {
   delete process.env[nombre]
 }
 
@@ -28,6 +28,12 @@ try {
   await cargar('api/transcribir.js')
   await cargar('api/voz.js')
   await cargar('api/chat.js')
+  const negocios = await cargar('api/negocios.js')
+  const lista = await negocios.GET()
+  const publicados = await lista.json()
+  if (lista.status !== 200 || !Array.isArray(publicados.negocios)) {
+    throw new Error(`negocios inesperado ${lista.status}`)
+  }
   const itinerario = await cargar('api/itinerario.js')
   const pedido = new Request('http://local/api/itinerario', {
     method: 'POST',

@@ -2,7 +2,7 @@
 
 Web app para armar un plan al Valle de Tenza (Boyacá) con el catálogo real de siete municipios y enviar una **solicitud**, que no confirma reserva. Vite + React + TypeScript. El sitio público actual está en Vercel; este repositorio no despliega solo.
 
-Configuración de Supabase, OpenAI y Resend: [docs/configuracion-mvp.md](docs/configuracion-mvp.md). Las claves son de servidor (sin prefijo `VITE_`). Sin ellas, la interfaz muestra modo demostración y no afirma un envío real.
+Configuración de Supabase, OpenAI y Resend: [docs/configuracion-mvp.md](docs/configuracion-mvp.md). OpenAI, Resend y la service role son de servidor. El panel de prestadores usa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (clave publicable). Sin claves, la interfaz muestra modo demostración y no afirma un envío real.
 
 ## Desarrollo
 
@@ -25,7 +25,8 @@ npm run preview   # sirve dist/ para revisar
 - `POST /api/itinerario` arma el plan. Sin `OPENAI_API_KEY` usa el catálogo en el servidor (`modo: demo`). Con clave, llama a la Responses API y el servidor valida los ids.
 - `POST /api/transcribir` recibe un audio corto (webm u otro tipo permitido, máximo 3,5 MB).
 - `POST /api/voz` lee el resumen solo si la persona lo pide. Es voz sintética.
-- `POST /api/solicitudes` valida, guarda en Supabase si hay service role y después intenta el comprobante con Resend. Sin Supabase no guarda. Sin Resend deja el comprobante en `omitido_sin_configuracion`.
+- `POST /api/solicitudes` valida, guarda en Supabase si hay service role y después intenta el comprobante con Resend. Sin Supabase no guarda. Sin Resend deja el comprobante en `omitido_sin_configuracion`. Si el remitente es `@resend.dev` y el correo del formulario no es `RESEND_SANDBOX_RECIPIENT`, el estado es `bloqueado_dominio` y el destinatario no se cambia.
+- `GET /api/negocios` devuelve solo negocios publicados. Sin Supabase responde una lista vacía.
 
 Pruebas: `npm test` (no llama a proveedores reales). Reintento de correos ya guardados: `npm run reintentar-correo`.
 
@@ -55,7 +56,9 @@ scraper/.venv/bin/python scraper/probar.py                      # pruebas sin re
 
 ## Solicitud
 
-La persona viaja sin cuenta. En `/plan` envía nombre, correo, fecha y el plan ya validado. No hay cuentas de prestador en el navegador ni cupo verificado. El estado visible separa «no guardada», «guardada» y «correo enviado». Ninguno de esos estados es una reserva confirmada.
+Quien viaja no necesita cuenta. En `/plan` envía nombre, correo, fecha y el plan ya validado. El estado visible separa «no guardada», «guardada» y «correo enviado». Ninguno de esos estados es una reserva confirmada.
+
+Quien tiene un negocio entra en `/#/prestadores` con correo y contraseña de Supabase Auth. El borrador lo ve solo su titular; lo publicado puede salir en el mapa y en un plan. La migración es `supabase/migrations/003_perfiles_empresas.sql`. Detalle y límites: [docs/cuentas-prestadores.md](docs/cuentas-prestadores.md).
 
 ## Publicación
 

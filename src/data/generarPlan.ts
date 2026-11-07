@@ -131,11 +131,15 @@ export function generarPlan(planId: Categoria, municipio: string, semilla: numbe
 }
 
 // Arma el itinerario a partir de una ruta propuesta por el asistente. Descarta ids que ya no existan.
-export function construirItinerario(r: RutaPersonal): Itinerario | undefined {
+export function construirItinerario(r: RutaPersonal, extras: Lugar[] = []): Itinerario | undefined {
   const plan = getPlan(r.planId)
   if (!plan) return undefined
-  const dias: Dia[] = r.dias.map((d, i) => ({ n: i + 1, paradas: d.paradas.map(getLugar).filter((l): l is Lugar => !!l), comida: d.comida ? getLugar(d.comida) : undefined })).filter((d) => d.paradas.length)
-  const it: Itinerario = { plan, municipio: r.municipio, dias, hospedaje: r.hospedaje ? getLugar(r.hospedaje) : undefined, paradas: dias.flatMap((d) => d.paradas), avisos: [] }
+  const buscar = (id?: string) => {
+    if (!id) return undefined
+    return getLugar(id) ?? extras.find((l) => l.id === id)
+  }
+  const dias: Dia[] = r.dias.map((d, i) => ({ n: i + 1, paradas: d.paradas.map(buscar).filter((l): l is Lugar => !!l), comida: buscar(d.comida) })).filter((d) => d.paradas.length)
+  const it: Itinerario = { plan, municipio: r.municipio, dias, hospedaje: buscar(r.hospedaje), paradas: dias.flatMap((d) => d.paradas), avisos: [] }
   it.avisos.push(...avisosDeSaltos(ordenRuta(it)))
   return it
 }

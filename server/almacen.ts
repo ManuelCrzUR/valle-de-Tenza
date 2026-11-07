@@ -1,7 +1,7 @@
 import type { ItinerarioDto } from './itinerario.js'
 import { supabaseConfig } from './env.js'
 
-export type EstadoCorreo = 'pendiente' | 'enviado' | 'fallido' | 'omitido_sin_configuracion'
+export type EstadoCorreo = 'pendiente' | 'enviado' | 'fallido' | 'omitido_sin_configuracion' | 'bloqueado_dominio'
 
 export interface Outbox {
   id: string

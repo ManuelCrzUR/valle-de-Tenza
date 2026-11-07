@@ -11,6 +11,8 @@ El navegador no lleva claves. Sin las variables de servidor, la app sigue demost
    - `SUPABASE_URL` (Project URL)
    - `SUPABASE_SERVICE_ROLE_KEY` (service role, no la anon key)
 
+La clave publicable del panel de prestadores es otra cosa y va en la sección 8. No sustituye a la service role ni abre estas tablas de solicitudes: siguen revocadas para `anon` y `authenticated`.
+
 Comprobación: en el SQL editor, `select * from reservation_requests` como rol `anon` debe fallar por permisos.
 
 ## 2. Vercel
@@ -46,7 +48,9 @@ El modelo solo recibe texto sin correos ni teléfonos, y una lista de ids del ca
 Cada solicitud guardada tiene una fila en `email_outbox`. Un envío usa la clave `recibo:<id>` también como `Idempotency-Key` de Resend. El estado distingue:
 
 - solicitud `recibida` (guardada; no significa reserva)
-- comprobante `pendiente`, `enviado`, `fallido` u `omitido_sin_configuracion`
+- comprobante `pendiente`, `enviado`, `fallido`, `omitido_sin_configuracion` o `bloqueado_dominio`
+
+Si `RESEND_FROM_EMAIL` es `onboarding@resend.dev` (o cualquier `@resend.dev`), el servidor solo envía cuando el correo del formulario es exactamente `RESEND_SANDBOX_RECIPIENT`. Si no coincide, guarda la solicitud, marca `bloqueado_dominio` y no cambia el destinatario. No afirma un envío.
 
 No hay botón público para reenviar. Con las claves cargadas:
 
@@ -69,3 +73,15 @@ El recorrido guiado es 2D con Leaflet. Un terreno 3D con MapLibre quedaría para
 ## 7. Qué no hace esta versión
 
 No cobra, no escribe por WhatsApp, no confirma cupo y no traza una ruta de carretera. La línea del mapa es un esquema entre coordenadas del catálogo.
+
+## 8. Cuentas de prestadores
+
+Migración nueva, sin tocar `001` ni `002`: `supabase/migrations/003_perfiles_empresas.sql`. Quien opera el proyecto la ejecuta en el SQL editor. Esta app no crea usuarios ni lee secretos.
+
+Variables nuevas, sin valores en el repositorio:
+
+- `VITE_SUPABASE_URL` — la misma URL del proyecto, visible en el build del navegador.
+- `VITE_SUPABASE_ANON_KEY` — clave publicable (anon). El navegador la usa para Auth, el panel y las fotos. RLS limita cada negocio a su titular; un borrador no es público.
+- `RESEND_SANDBOX_RECIPIENT` — ya descrita en la sección 4.
+
+Rutas: `/#/prestadores`, `/#/prestadores/entrar`, `/#/prestadores/panel`. El enlace está en el inicio. La barra de navegación no se tocó en este cambio. El detalle de ids, correo y archivos que no se editan está en [cuentas-prestadores.md](cuentas-prestadores.md).

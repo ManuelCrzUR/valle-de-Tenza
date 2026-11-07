@@ -1,10 +1,13 @@
 import type { CSSProperties } from 'react'
+import { useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { Option, PlaceCard } from '../components/ui'
 import { Montanas } from '../components/Montanas'
 import { Foto } from '../components/Foto'
 import { FOTO_FILTRO, FOTO_MUNICIPIO } from '../data/fotos'
 import { etiquetaSubtipo, CATEGORIA_POR_ID, LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO } from '../data/lugares'
+import { lugarDeFicha } from '../data/empresaLugar'
+import { useNegocios } from '../state/negocios'
 import { PLANES } from '../data/planes'
 import { usePagina } from '../usePagina'
 import '../styles/lugares.css'
@@ -27,7 +30,11 @@ export default function Lugares() {
     setParams(p, { replace: true })
   }
 
-  const lugares = LUGARES.filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun))
+  const empresas = useNegocios()
+  const lugares = useMemo(() => {
+    const todos = [...LUGARES, ...empresas.map(lugarDeFicha)]
+    return todos.filter((l) => (cat === 'dormir' ? l.categoria === 'alojamiento' : l.plan === cat) && (!mun || l.municipio === mun))
+  }, [cat, mun, empresas])
   const total = lugares.length
   const filtroActual = FILTROS.find((f) => f.id === cat)!
   const foto = FOTO_MUNICIPIO[mun] ?? FOTO_FILTRO[cat]   // el municipio elegido manda; Gastronomía sin municipio conserva la ilustración

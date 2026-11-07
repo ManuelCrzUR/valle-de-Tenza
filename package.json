@@ -12,6 +12,7 @@
     "reintentar-correo": "vite-node scripts/reintentar-outbox.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.51.0",
     "pdf-lib": "^1.17.1",

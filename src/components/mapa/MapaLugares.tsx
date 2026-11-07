@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { List, SlidersHorizontal } from 'lucide-react'
 import { CATEGORIAS, LUGARES, tieneUbicacion } from '../../data/lugares'
+import { lugarDeFicha } from '../../data/empresaLugar'
+import { useNegocios } from '../../state/negocios'
 import type { CategoriaId, Lugar } from '../../data/lugares'
 import { useMedia } from '../../useMedia'
 import { LeyendaMapa } from './LeyendaMapa'
@@ -23,7 +25,9 @@ export default function MapaLugares() {
   const catParam = params.get('cat')
   const activas = useMemo(() => new Set<CategoriaId>(catParam === null ? TODAS : (catParam.split(',').filter((c) => TODAS.includes(c as CategoriaId)) as CategoriaId[])), [catParam])
   const seleccionId = params.get('lugar')
-  const seleccion = LUGARES.find((l) => l.id === seleccionId)
+  const empresas = useNegocios()
+  const catalogo = useMemo(() => [...LUGARES, ...empresas.map(lugarDeFicha)], [empresas])
+  const seleccion = catalogo.find((l) => l.id === seleccionId)
 
   const cambiar = (cambios: Record<string, string | null>) => {
     const p = new URLSearchParams(params)
@@ -32,7 +36,7 @@ export default function MapaLugares() {
   }
   const fijarCats = (ids: CategoriaId[]) => cambiar({ cat: ids.length === TODAS.length ? null : ids.length ? ids.join(',') : 'ninguna' })
 
-  const delMunicipio = useMemo(() => LUGARES.filter((l) => !municipio || l.municipio === municipio), [municipio])
+  const delMunicipio = useMemo(() => catalogo.filter((l) => !municipio || l.municipio === municipio), [catalogo, municipio])
   const conteo = useMemo(() => {
     const c: Partial<Record<CategoriaId, number>> = {}
     for (const l of delMunicipio) c[l.categoria] = (c[l.categoria] ?? 0) + 1

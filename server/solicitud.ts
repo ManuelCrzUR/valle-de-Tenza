@@ -4,6 +4,7 @@ import { validarPropuesta } from './itinerario.js'
 import type { Almacen, EstadoCorreo, SolicitudFila } from './almacen.js'
 import { dossierDe, type Dossier } from './dossier.js'
 import type { Envio } from './correo.js'
+import { puertaEnvio } from './puerta.js'
 import { correoValido, hoyColombia } from './texto.js'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
@@ -70,6 +71,8 @@ export async function crearSolicitud(entrada: EntradaSolicitud, deps: {
   hoy?: string
   enviar?: (fila: SolicitudFila) => Promise<Envio>
   eventos?: string[]
+  remitente?: string
+  destinatarioPrueba?: string
 }): Promise<{ ok: true; resultado: ResultadoSolicitud } | { ok: false; status: number; error: string }> {
   const v = validarSolicitud(entrada, { dominio: deps.dominio, hoy: deps.hoy })
   if (!v.ok) return { ok: false, status: 400, error: v.error }
@@ -112,6 +115,13 @@ export async function crearSolicitud(entrada: EntradaSolicitud, deps: {
     await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'omitido_sin_configuracion', intentos: 0, ultimoError: null })
     return { ok: true, resultado: { ok: true, persistido: true, nueva: true, modo: 'supabase', comprobante: 'omitido_sin_configuracion', id: fila.id, mensaje: mensajeDe('omitido_sin_configuracion', true) } }
   }
+  if (deps.remitente) {
+    const puerta = puertaEnvio(deps.remitente, fila.correo, deps.destinatarioPrueba ?? '')
+    if (!puerta.ok) {
+      await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'bloqueado_dominio', intentos: 0, ultimoError: puerta.error })
+      return { ok: true, resultado: { ok: true, persistido: true, nueva: true, modo: 'supabase', comprobante: 'bloqueado_dominio', id: fila.id, mensaje: puerta.mensaje } }
+    }
+  }
   let envio: Envio
   try { envio = await deps.enviar(fila) } catch { envio = { ok: false, error: 'correo_excepcion' } }
   if (envio.ok) {
@@ -127,6 +137,7 @@ function mensajeDe(estado: EstadoCorreo | 'no_enviado', nueva: boolean): string 
   if (estado === 'enviado') return `Solicitud guardada y comprobante enviado. ${base}`
   if (estado === 'omitido_sin_configuracion') return `Solicitud guardada. El correo no se envió porque Resend no está configurado. ${base}`
   if (estado === 'fallido') return `Solicitud guardada. El correo falló y no se reintenta desde el navegador. ${base}`
+  if (estado === 'bloqueado_dominio') return `La solicitud quedó guardada. El correo no se envió porque el remitente de prueba no puede escribir a ese destinatario, y no se cambió el correo del formulario. ${base}`
   if (estado === 'pendiente') return `Solicitud guardada. El comprobante sigue pendiente. ${base}`
   return nueva ? `Modo demostración. ${base}` : `La misma solicitud ya se había registrado. ${base}`
 }

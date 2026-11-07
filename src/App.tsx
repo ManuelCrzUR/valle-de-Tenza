@@ -8,6 +8,9 @@ const Lugares = lazy(() => import('./pages/Lugares'))
 const LugarDetalle = lazy(() => import('./pages/LugarDetalle'))
 const Mapa = lazy(() => import('./pages/Mapa'))
 const Galeria = lazy(() => import('./pages/Galeria'))
+const Prestadores = lazy(() => import('./pages/Prestadores'))
+const PrestadorAcceso = lazy(() => import('./pages/PrestadorAcceso'))
+const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
 const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
 
 export default function App() {
@@ -22,6 +25,9 @@ export default function App() {
         <Route path="lugares/:id" element={<LugarDetalle />} />
         <Route path="mapa" element={<Mapa />} />
         <Route path="galeria" element={<Galeria />} />
+        <Route path="prestadores" element={<Prestadores />} />
+        <Route path="prestadores/entrar" element={<PrestadorAcceso />} />
+        <Route path="prestadores/panel" element={<PrestadorPanel />} />
         <Route path="*" element={<NoEncontrado />} />
       </Route>
     </Routes>

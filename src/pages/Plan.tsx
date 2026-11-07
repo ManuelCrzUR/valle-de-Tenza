@@ -308,7 +308,7 @@ export default function Plan() {
         )}
 
         {dto && (
-          <form className="plan-form" onSubmit={(e) => void enviarSolicitud(e)}>
+          <form id="plan-solicitud" className="plan-form" onSubmit={(e) => void enviarSolicitud(e)}>
             <h2 className="t-h2">Enviar solicitud</h2>
             <p className="sub">Esto pide el plan. No confirma cupo, no cobra y no reserva.</p>
             <TextField label="Tu nombre" value={form.nombre} onChange={(e) => setForm({ ...form, nombre: e.target.value })} autoComplete="name" required />

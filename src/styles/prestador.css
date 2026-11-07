@@ -1,0 +1,59 @@
+.prestador-pin {
+  background: #1f6b4a;
+  border: 2px solid #fff;
+  border-radius: 50%;
+}
+
+.prestador-mapa {
+  height: 280px;
+  width: 100%;
+  border-radius: 12px;
+  margin: 12px 0;
+}
+
+.prestador-fotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.prestador-fotos img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.prestador-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.prestador-lista {
+  display: grid;
+  gap: 12px;
+}
+
+.prestador-card {
+  padding: 16px;
+}
+
+.prestador-aviso {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+  color: var(--ink);
+}
+
+.prestador-form {
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: 16px;
+}

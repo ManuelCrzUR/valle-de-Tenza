@@ -17,6 +17,7 @@ export interface LugarPublico {
   lat: number | null
   lon: number | null
   precision: Lugar['precision']
+  descripcion?: string
 }
 
 export function publico(l: Lugar): LugarPublico {

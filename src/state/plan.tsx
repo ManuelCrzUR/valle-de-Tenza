@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { construirItinerario } from '../data/generarPlan'
 import type { Itinerario } from '../data/generarPlan'
+import { lugarDesdePublico } from '../data/empresaLugar'
+import type { LugarPlano } from '../data/empresaLugar'
 import type { Categoria } from '../data/planes'
 
 const KEY = 'valle-directo:plan'
@@ -17,6 +19,7 @@ export interface PlanDto {
   avisos: string[]
   resumen: string
   esquematico: true
+  lugares?: LugarPlano[]
 }
 export interface PlanActual { dto: PlanDto; itinerario: Itinerario }
 
@@ -24,12 +27,13 @@ interface Ctx { plan: PlanActual | null; guardar: (dto: PlanDto) => void; limpia
 const PlanCtx = createContext<Ctx | null>(null)
 
 function materializar(dto: PlanDto): PlanActual | null {
+  const extras = (dto.lugares ?? []).filter((l) => l.id.startsWith('business:')).map(lugarDesdePublico)
   const itinerario = construirItinerario({
     planId: dto.plan,
     municipio: dto.municipio,
     dias: dto.dias.map((d) => ({ paradas: d.paradas, comida: d.comida ?? undefined })),
     hospedaje: dto.hospedaje ?? undefined,
-  })
+  }, extras)
   if (!itinerario) return null
   itinerario.avisos = [...new Set([...dto.avisos, ...itinerario.avisos])]
   return { dto, itinerario }

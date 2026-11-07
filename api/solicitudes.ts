@@ -37,6 +37,8 @@ export async function POST(request: Request): Promise<Response> {
         })
       }
       : undefined,
+    remitente: correo.configurado ? correo.desde : undefined,
+    destinatarioPrueba: correo.destinatarioPrueba,
   })
   if (!r.ok) return json({ error: 'validacion', mensaje: r.error }, r.status)
   let descarga: { token: string; expira: string } | null = null

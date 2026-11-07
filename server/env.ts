@@ -30,5 +30,6 @@ export function resendConfig() {
   const clave = limpio('RESEND_API_KEY')
   const desde = limpio('RESEND_FROM_EMAIL')
   const dominio = limpio('RESEND_ALLOWED_DOMAIN').replace(/^@/, '').toLowerCase()
-  return { configurado: Boolean(clave && desde), clave, desde, dominio }
+  const destinatarioPrueba = limpio('RESEND_SANDBOX_RECIPIENT').toLowerCase()
+  return { configurado: Boolean(clave && desde), clave, desde, dominio, destinatarioPrueba }
 }

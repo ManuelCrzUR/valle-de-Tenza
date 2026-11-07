@@ -1,8 +1,9 @@
 import { generarPlan, construirItinerario, ordenRuta, distanciasRuta, km, MAX_SALTO_M } from '../src/data/generarPlan.js'
 import type { Categoria } from '../src/data/planes.js'
 import { DIAS_MAX, PARADAS_POR_DIA } from '../shared/constantes.js'
-import { buscarLugares, leerPreferencias, listaMunicipios, nombreMunicipio, porId, publico, SLUGS } from './catalogo.js'
+import { buscarLugares, leerPreferencias, listaMunicipios, nombreMunicipio, SLUGS } from './catalogo.js'
 import type { LugarPublico } from './catalogo.js'
+import { extrasDeEmpresas, empresasCoinciden, listarPublicadas, resolverCatalogo } from './empresas.js'
 import { openaiConfig } from './env.js'
 import { sinDatosPersonales } from './texto.js'
 
@@ -31,20 +32,22 @@ export interface EntradaItinerario {
 
 type Crudo = { plan?: unknown; municipio?: unknown; dias?: unknown; hospedaje?: unknown }
 
-export function validarPropuesta(raw: Crudo, extraAvisos: string[] = []): { ok: true; dto: Omit<ItinerarioDto, 'modo' | 'modelo' | 'resumen'> } | { ok: false; error: string } {
+export function validarPropuesta(raw: Crudo, extraAvisos: string[] = [], empresas: LugarPublico[] = []): { ok: true; dto: Omit<ItinerarioDto, 'modo' | 'modelo' | 'resumen'> } | { ok: false; error: string } {
   const avisos = [...extraAvisos]
   if (typeof raw.plan !== 'string' || !['aventura', 'gastro', 'cultura'].includes(raw.plan)) return { ok: false, error: 'plan_invalido' }
   if (typeof raw.municipio !== 'string' || !SLUGS.includes(raw.municipio)) return { ok: false, error: 'municipio_invalido' }
   if (!Array.isArray(raw.dias)) return { ok: false, error: 'dias_invalidos' }
   const vistos = new Set<string>()
+  const pubs = new Map<string, LugarPublico>()
   let ignorados = 0
   const tomar = (id: unknown, filtro?: (cat: string) => boolean): string | null => {
     if (id == null || id === '') return null
-    if (typeof id !== 'string' || vistos.has(id)) { ignorados++; return null }
-    const l = porId(id)
-    if (!l || (filtro && !filtro(l.categoria))) { ignorados++; return null }
-    vistos.add(id)
-    return id
+    if (typeof id !== 'string') { ignorados++; return null }
+    const res = resolverCatalogo(id, empresas)
+    if (!res || vistos.has(res.canon) || (filtro && !filtro(res.categoria))) { ignorados++; return null }
+    vistos.add(res.canon)
+    pubs.set(res.canon, res.pub)
+    return res.canon
   }
   let dias = raw.dias.slice(0, DIAS_MAX).map((d) => {
     const dia = d as { paradas?: unknown; comida?: unknown }
@@ -64,7 +67,7 @@ export function validarPropuesta(raw: Crudo, extraAvisos: string[] = []): { ok: 
     municipio: raw.municipio,
     dias: dias.map((d) => ({ paradas: d.paradas, comida: d.comida ?? undefined })),
     hospedaje: hospedaje ?? undefined,
-  })
+  }, extrasDeEmpresas([...pubs.values()]))
   if (construido) {
     const dist = distanciasRuta(ordenRuta(construido))
     const largos = dist.filter((m) => m !== undefined && m > MAX_SALTO_M).length
@@ -81,7 +84,7 @@ export function validarPropuesta(raw: Crudo, extraAvisos: string[] = []): { ok: 
       hospedaje,
       avisos,
       esquematico: true,
-      lugares: ids.map(porId).filter((l): l is NonNullable<typeof l> => !!l).map(publico),
+      lugares: ids.map((id) => pubs.get(id)).filter((l): l is LugarPublico => !!l),
     },
   }
 }
@@ -111,22 +114,23 @@ export function itinerarioLocal(prefs: { plan: Categoria; municipio: string; dia
   return empaquetar(v.dto, 'demo', null)
 }
 
-function anclarLugar(dto: ItinerarioDto, id?: string): ItinerarioDto {
-  if (!id || !porId(id)) return dto
-  const ya = dto.hospedaje === id || dto.dias.some((d) => d.paradas.includes(id) || d.comida === id)
+function anclarLugar(dto: ItinerarioDto, id?: string, empresas: LugarPublico[] = []): ItinerarioDto {
+  const canon = id ? resolverCatalogo(id, empresas)?.canon : undefined
+  if (!canon) return dto
+  const ya = dto.hospedaje === canon || dto.dias.some((d) => d.paradas.includes(canon) || d.comida === canon)
   if (ya) return dto
   const dias = dto.dias.map((d) => ({ paradas: [...d.paradas], comida: d.comida }))
-  dias[0].paradas = [id, ...dias[0].paradas].slice(0, PARADAS_POR_DIA)
-  const v = validarPropuesta({ plan: dto.plan, municipio: dto.municipio, hospedaje: dto.hospedaje, dias }, ['Incluí el lugar que pediste del catálogo.'])
+  dias[0].paradas = [canon, ...dias[0].paradas].slice(0, PARADAS_POR_DIA)
+  const v = validarPropuesta({ plan: dto.plan, municipio: dto.municipio, hospedaje: dto.hospedaje, dias }, ['Incluí el lugar que pediste del catálogo.'], empresas)
   return v.ok ? empaquetar(v.dto, dto.modo, dto.modelo) : dto
 }
 
-function quitarId(dto: ItinerarioDto, id: string): ItinerarioDto | null {
+function quitarId(dto: ItinerarioDto, id: string, empresas: LugarPublico[] = []): ItinerarioDto | null {
   const dias = dto.dias.map((d) => ({
     paradas: d.paradas.filter((p) => p !== id),
     comida: d.comida === id ? null : d.comida,
   })).filter((d) => d.paradas.length || d.comida)
-  const v = validarPropuesta({ plan: dto.plan, municipio: dto.municipio, hospedaje: dto.hospedaje === id ? null : dto.hospedaje, dias }, ['Quité esa parada del plan.'])
+  const v = validarPropuesta({ plan: dto.plan, municipio: dto.municipio, hospedaje: dto.hospedaje === id ? null : dto.hospedaje, dias }, ['Quité esa parada del plan.'], empresas)
   if (!v.ok) return null
   return empaquetar(v.dto, 'ajuste', dto.modelo)
 }
@@ -222,6 +226,7 @@ export async function completarConModelo(opts: {
   texto: string
   candidatos: LugarPublico[]
   previo?: ItinerarioDto
+  empresas?: LugarPublico[]
   fetchImpl: typeof fetch
   signal: AbortSignal
   clave: string
@@ -258,12 +263,21 @@ export async function completarConModelo(opts: {
       input = calls.map((c) => {
         let args: { municipio?: string | null; categoria?: string | null; texto?: string | null } = {}
         try { args = JSON.parse(c.arguments) } catch { args = {} }
-        const encontrados = buscarLugares({
+        const textoBusqueda = sinDatosPersonales(args.texto || '', 80)
+        const estaticos = buscarLugares({
           municipio: args.municipio || undefined,
           categoria: (args.categoria || undefined) as LugarPublico['categoria'] | undefined,
-          texto: sinDatosPersonales(args.texto || '', 80),
+          texto: textoBusqueda,
           limite: 8,
-        }).map((l) => ({ id: l.id, nombre: l.nombre, municipio: l.municipio, categoria: l.categoria }))
+        })
+        const publicados = empresasCoinciden(opts.empresas ?? [], {
+          municipio: args.municipio || undefined,
+          categoria: args.categoria || undefined,
+          texto: textoBusqueda,
+        })
+        const encontrados = [...estaticos, ...publicados.filter((e) => !estaticos.some((s) => s.id === e.id))]
+          .slice(0, 12)
+          .map((l) => ({ id: l.id, nombre: l.nombre, municipio: l.municipio, categoria: l.categoria }))
         return { type: 'function_call_output', call_id: c.call_id, output: JSON.stringify(encontrados) }
       })
       continue
@@ -284,7 +298,7 @@ export type ResultadoArmado =
   | { ok: true; itinerario: ItinerarioDto }
   | { ok: false; status: number; error: string; mensaje: string; detalle?: string }
 
-export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetchImpl?: typeof fetch; signal?: AbortSignal }): Promise<ResultadoArmado> {
+export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetchImpl?: typeof fetch; signal?: AbortSignal; empresas?: LugarPublico[] }): Promise<ResultadoArmado> {
   const mensaje = typeof entrada.mensaje === 'string' ? entrada.mensaje.slice(0, 500) : ''
   const leido = leerPreferencias(mensaje, entrada.chips)
   if (!leido.ok) {
@@ -293,15 +307,16 @@ export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetch
       mensaje: `Eso queda fuera del catálogo. Puedo armar planes en ${listaMunicipios()}. No invento lugares de ${leido.fuera.join(', ')}.`,
     }
   }
+  const empresas = deps?.empresas ?? await listarPublicadas()
   const prefs = leido.prefs
   const avisosFuera = prefs.fuera.length
     ? [`${prefs.fuera.join(', ')} no está en el catálogo. El plan usa solo los 7 municipios que sí tenemos.`]
     : []
   if (entrada.chips?.quitar && entrada.itinerario) {
-    const previo = validarPropuesta(entrada.itinerario)
+    const previo = validarPropuesta(entrada.itinerario, [], empresas)
     if (previo.ok) {
-      const quitado = quitarId(empaquetar(previo.dto, 'ajuste', null), entrada.chips.quitar)
-      if (quitado) return { ok: true, itinerario: anclarLugar(quitado, entrada.anclar) }
+      const quitado = quitarId(empaquetar(previo.dto, 'ajuste', null), entrada.chips.quitar, empresas)
+      if (quitado) return { ok: true, itinerario: anclarLugar(quitado, entrada.anclar, empresas) }
     }
   }
   const ai = openaiConfig()
@@ -309,22 +324,23 @@ export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetch
   if (!quiereModelo) {
     const local = itinerarioLocal(prefs, avisosFuera)
     if (!local) return { ok: false, status: 422, error: 'sin_paradas', mensaje: 'No encontré paradas con ubicación para esa combinación. Prueba otro municipio o menos días.' }
-    return { ok: true, itinerario: anclarLugar({ ...local, avisos: [...avisosFuera, ...local.avisos.filter((a) => !avisosFuera.includes(a))] }, entrada.anclar) }
+    return { ok: true, itinerario: anclarLugar({ ...local, avisos: [...avisosFuera, ...local.avisos.filter((a) => !avisosFuera.includes(a))] }, entrada.anclar, empresas) }
   }
-  const candidatos = contextoCatalogo({ ...prefs, texto: sinDatosPersonales(mensaje) })
+  const base = contextoCatalogo({ ...prefs, texto: sinDatosPersonales(mensaje) })
+  const candidatos = [...base, ...empresasCoinciden(empresas, { municipio: prefs.municipio || undefined, texto: sinDatosPersonales(mensaje) }).filter((e) => !base.some((s) => s.id === e.id))].slice(0, 32)
   let previoDto: ItinerarioDto | undefined
   if (entrada.itinerario) {
-    const p = validarPropuesta(entrada.itinerario)
+    const p = validarPropuesta(entrada.itinerario, [], empresas)
     if (p.ok) previoDto = empaquetar(p.dto, 'ajuste', null)
   }
   try {
     const signal = AbortSignal.any([deps?.signal ?? new AbortController().signal, AbortSignal.timeout(20_000)])
     const { crudo, modelo } = await completarConModelo({
-      texto: mensaje, candidatos, previo: previoDto, fetchImpl: deps?.fetchImpl ?? fetch, signal, clave: ai.clave, modelo: ai.modeloItinerario,
+      texto: mensaje, candidatos, previo: previoDto, empresas, fetchImpl: deps?.fetchImpl ?? fetch, signal, clave: ai.clave, modelo: ai.modeloItinerario,
     })
-    const v = validarPropuesta(crudo, avisosFuera)
+    const v = validarPropuesta(crudo, avisosFuera, empresas)
     if (!v.ok) return { ok: false, status: 422, error: v.error, mensaje: 'El modelo no devolvió paradas del catálogo. No completé el plan con lugares inventados.' }
-    return { ok: true, itinerario: anclarLugar(empaquetar(v.dto, 'openai', modelo), entrada.anclar) }
+    return { ok: true, itinerario: anclarLugar(empaquetar(v.dto, 'openai', modelo), entrada.anclar, empresas) }
   } catch (e) {
     const nombre = (e as Error).name
     if (nombre === 'TimeoutError' || nombre === 'AbortError') {
