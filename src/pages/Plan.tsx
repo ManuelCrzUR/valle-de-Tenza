@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Button, Chip, Option, TextField } from '../components/ui'
+import { Orbe } from '../components/agente/Orbe'
+import type { EstadoOrbe } from '../components/agente/Orbe'
 import { Cargando } from '../components/Cargando'
 import { MUNICIPIOS, NOMBRE_MUNICIPIO, getLugar, tieneUbicacion } from '../data/lugares'
 import { PLANES } from '../data/planes'
@@ -19,6 +21,9 @@ const MapaRuta = lazy(() => import('../components/mapa/MapaRuta'))
 type Chips = { plan: Categoria; dias: number; municipio: string }
 type Fase = 'listo' | 'escuchando' | 'transcribiendo' | 'armando' | 'hablando' | 'error'
 const VACIO: Chips = { plan: 'aventura', dias: 2, municipio: '' }
+const MODO_KEY = 'vd-plan-modo'
+type Modo = 'planeador' | 'asistente'
+const ESTADO_ORBE: Record<Fase, EstadoOrbe> = { listo: 'listo', escuchando: 'escuchando', transcribiendo: 'pensando', armando: 'pensando', hablando: 'hablando', error: 'error' }
 const RECIBO_KEY = 'valle-directo:recibo'
 const REINTENTABLES = new Set(['bloqueado_dominio', 'fallido', 'omitido_sin_configuracion'])
 type Recibo = { persistido: boolean; comprobante: string; mensaje: string; token: string | null; expira: string | null }
@@ -47,10 +52,16 @@ async function postJson<T>(url: string, body: unknown, signal?: AbortSignal): Pr
 
 export default function Plan() {
   usePagina('Armar mi plan')
-  const { plan, guardar } = usePlan()
+  const { plan, guardar, limpiar } = usePlan()
   const [params] = useSearchParams()
   const lugarInicial = getLugar(params.get('lugar') ?? undefined)
-  const [texto, setTexto] = useState(lugarInicial ? `Quiero incluir ${lugarInicial.nombre} en el recorrido.` : '')
+  const textoUrl = (params.get('texto') ?? '').trim().slice(0, TEXTO_MAX)
+  const [texto, setTexto] = useState(textoUrl || (lugarInicial ? `Quiero incluir ${lugarInicial.nombre} en el recorrido.` : ''))
+  const [modo, setModo] = useState<Modo>(() => {
+    if (textoUrl || lugarInicial) return 'asistente'
+    try { return sessionStorage.getItem(MODO_KEY) === 'asistente' ? 'asistente' : 'planeador' } catch { return 'planeador' }
+  })
+  const destinoVoz = useRef<'texto' | 'edit'>('texto')
   const [chips, setChips] = useState<Chips>(VACIO)
   const [fase, setFase] = useState<Fase>('listo')
   const [notaVoz, setNotaVoz] = useState('')
@@ -76,6 +87,27 @@ export default function Plan() {
   const [proveedores, setProveedores] = useState<{ openai: boolean; supabase: boolean; resend: boolean; modo: string } | null>(null)
   const [previa, setPrevia] = useState<{ html: string; pdf: string | null; mensaje: string } | null>(null)
   const [narracion, setNarracion] = useState('')
+
+  function elegirModo(m: Modo) {
+    setModo(m)
+    try { sessionStorage.setItem(MODO_KEY, m) } catch { /* sin almacenamiento */ }
+  }
+
+  function empezarDeNuevo() {
+    abortar.current?.abort()
+    limpiar()
+    setChips(VACIO)
+    setTexto('')
+    setEdit('')
+    setTour({ i: 0, modo: 'quieto', seq: 0 })
+    setSel(null)
+    setNarracion('')
+    setNotaVoz('')
+    setPrevia(null)
+    setFase('listo')
+    window.scrollTo(0, 0)
+    requestAnimationFrame(() => document.getElementById('titulo')?.focus())
+  }
 
   useEffect(() => () => { abortar.current?.abort(); rec.current?.stop(); audio.current?.pause() }, [])
   useEffect(() => {
@@ -192,9 +224,10 @@ export default function Plan() {
         return
       }
       if (!r.ok || !data?.texto) { setFase('error'); setNotaVoz(data?.mensaje || 'No se transcribió. Escribe el plan.'); return }
-      setTexto(data.texto.slice(0, TEXTO_MAX))
+      const aEdit = destinoVoz.current === 'edit'
+      if (aEdit) setEdit(data.texto.slice(0, TEXTO_MAX)); else setTexto(data.texto.slice(0, TEXTO_MAX))
       setFase('listo')
-      setNotaVoz('Revisa el texto. No armo el plan hasta que pulses «Armar el plan».')
+      setNotaVoz(aEdit ? 'Revisa el texto. No cambio el plan hasta que pulses «Aplicar el cambio».' : 'Revisa el texto. No armo el plan hasta que pulses «Armar el plan».')
     } catch (e) {
       if ((e as Error).name === 'AbortError') { setFase('listo'); return }
       setFase('error')
@@ -293,16 +326,95 @@ export default function Plan() {
     ? `${actual.lugar.nombre}, en ${NOMBRE_MUNICIPIO[actual.lugar.municipio] ?? actual.lugar.municipio}. Parada ${actual.n} de un esquema, no de una carretera.`
     : ''
 
+  const nombrePlan = dto ? PLANES.find((p) => p.id === dto.plan)?.opcion ?? dto.plan : ''
+  const resumenPedido = dto
+    ? [`${dto.dias.length} ${dto.dias.length === 1 ? 'día' : 'días'}`, nombrePlan, NOMBRE_MUNICIPIO[dto.municipio] ?? dto.municipio].filter(Boolean).join(' · ')
+    : ''
+  function teclasModo(e: React.KeyboardEvent) {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+    e.preventDefault()
+    const m: Modo = modo === 'planeador' ? 'asistente' : 'planeador'
+    elegirModo(m)
+    document.getElementById(`plan-tab-${m}`)?.focus()
+  }
+
   return (
     <div className="wrap pagina plan-escenario">
-      <div className="plan-principal">
+      <header className="plan-cabecera">
         <p className="overline">Valle de Tenza</p>
         <h1 id="titulo" tabIndex={-1} className="t-h1">Arma el plan con lugares que sí están en el mapa</h1>
         {proveedores?.modo === 'demostracion' && (
           <p className="plan-aviso" role="note"><strong>Modo demostración sin claves.</strong> No hay OpenAI, la solicitud no se guarda en Supabase y no se envía correo.</p>
         )}
+      </header>
+
+      {!plan && (
+        <section id="plan-asistente" className="plan-pedido" aria-label="Pedir el plan">
+          <div className="plan-modos" role="tablist" aria-label="Cómo quieres armar el plan">
+            <button type="button" role="tab" id="plan-tab-planeador" className="plan-modo" aria-selected={modo === 'planeador'} aria-controls="plan-panel-planeador" tabIndex={modo === 'planeador' ? 0 : -1} onClick={() => elegirModo('planeador')} onKeyDown={teclasModo}>Planeador</button>
+            <button type="button" role="tab" id="plan-tab-asistente" className="plan-modo" aria-selected={modo === 'asistente'} aria-controls="plan-panel-asistente" tabIndex={modo === 'asistente' ? 0 : -1} onClick={() => elegirModo('asistente')} onKeyDown={teclasModo}>Asistente</button>
+          </div>
+
+          <div className="plan-paneles">
+            <div id="plan-panel-planeador" role="tabpanel" aria-labelledby="plan-tab-planeador" className={`plan-panel${modo === 'planeador' ? '' : ' plan-modo-oculto'}`}>
+              <div className="plan-panel-cab">
+                <div>
+                  <h2 className="t-h3">Planeador</h2>
+                  <p className="plan-panel-sub">Elige y listo, sin escribir.</p>
+                </div>
+              </div>
+              <div className="opts" role="group" aria-label="Tipo de plan">
+                {PLANES.map((p) => <Option key={p.id} icon={p.icono} selected={chips.plan === p.id} onClick={() => setChips({ ...chips, plan: p.id })}>{p.opcion}</Option>)}
+              </div>
+              <div className="opts" role="group" aria-label="Días">
+                {[1, 2, 3].map((n) => <Option key={n} selected={chips.dias === n} onClick={() => setChips({ ...chips, dias: n })}>{n} {n === 1 ? 'día' : 'días'}</Option>)}
+              </div>
+              <label className="vd-field">
+                <span className="vd-field-label">Municipio base</span>
+                <select className="vd-input" value={chips.municipio} onChange={(e) => setChips({ ...chips, municipio: e.target.value })}>
+                  <option value="">El que mejor encaje</option>
+                  {MUNICIPIOS.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
+                </select>
+              </label>
+              <div className="plan-panel-pie">
+                <Button type="button" variant="cta" disabled={fase === 'armando'} onClick={() => void generar('')}>{fase === 'armando' ? 'Armando…' : 'Armar el plan'}</Button>
+              </div>
+            </div>
+
+            <div id="plan-panel-asistente" role="tabpanel" aria-labelledby="plan-tab-asistente" className={`plan-panel${modo === 'asistente' ? '' : ' plan-modo-oculto'}`}>
+              <div className="plan-panel-cab">
+                <Orbe estado={ESTADO_ORBE[fase]} tamano="md" />
+                <h2 className="t-h3">Asistente</h2>
+                <p className="asistente-fase" role="status">{ETIQUETA[fase]}</p>
+              </div>
+              <form onSubmit={(e) => { e.preventDefault(); void generar(texto.trim()) }}>
+                <label className="vd-field" htmlFor="plan-texto">
+                  <span className="vd-field-label">Cuéntame tu viaje</span>
+                  <textarea id="plan-texto" className="vd-input plan-texto" maxLength={TEXTO_MAX} value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Por ejemplo: dos días de naturaleza en Chivor" />
+                </label>
+                <p className="voz-nota">La voz, si suena, es sintética. No empieza sola y puedes detenerla.</p>
+                <div className="voz-fila">
+                  <Button type="button" className="plan-mic" variant="secondary" aria-pressed={fase === 'escuchando'} onClick={() => { destinoVoz.current = 'texto'; void alternarMic() }}>
+                    {fase === 'escuchando' ? 'Detener' : fase === 'transcribiendo' ? 'Transcribiendo…' : 'Hablar'}
+                  </Button>
+                  <Button type="submit" variant="cta" disabled={fase === 'armando'}>{fase === 'armando' ? 'Armando…' : 'Armar el plan'}</Button>
+                  {ocupado && <Button type="button" variant="ghost" onClick={cancelar}>Cancelar</Button>}
+                </div>
+              </form>
+              <p className="plan-panel-nota">Usa también las preferencias del planeador.</p>
+            </div>
+          </div>
+          {notaVoz && <p className="plan-aviso" role="status">{notaVoz}</p>}
+        </section>
+      )}
+
+      <div className="plan-principal">
         {dto && it && (
           <section id="plan-resultado" className="plan-grid" aria-live="polite">
+            <div className="plan-resumen-pedido">
+              <p className="plan-resumen-texto">{resumenPedido}</p>
+              <Button type="button" variant="ghost" onClick={empezarDeNuevo}>Empezar de nuevo</Button>
+            </div>
             <div>
               <p className="plan-esquema">Mapa 2D. La línea es un esquema en línea recta, no una carretera ni un tiempo de viaje.</p>
               <div className="mapa-ruta plan-mapa">
@@ -321,10 +433,26 @@ export default function Plan() {
                 </div>
               )}
               {narracion && <p className="plan-aviso">{narracion}</p>}
+              <form className="plan-ajuste" onSubmit={(e) => { e.preventDefault(); if (!edit.trim()) return; void generar(edit.trim()); setEdit('') }}>
+                <div className="plan-ajuste-cab">
+                  <Orbe estado={ESTADO_ORBE[fase]} tamano="sm" />
+                  <p className="asistente-fase" role="status">{ETIQUETA[fase]}</p>
+                </div>
+                <TextField label="Pídele un cambio al asistente" value={edit} onChange={(e) => setEdit(e.target.value)} maxLength={TEXTO_MAX} placeholder="Más corto, sin caminatas, o céntralo en Tenza" />
+                <div className="voz-fila">
+                  <Button type="button" className="plan-mic" variant="secondary" aria-pressed={fase === 'escuchando'} onClick={() => { destinoVoz.current = 'edit'; void alternarMic() }}>
+                    {fase === 'escuchando' ? 'Detener' : fase === 'transcribiendo' ? 'Transcribiendo…' : 'Hablar'}
+                  </Button>
+                  <Button type="submit" variant="cta" disabled={fase === 'armando' || !edit.trim()}>{fase === 'armando' ? 'Armando…' : 'Aplicar el cambio'}</Button>
+                  {ocupado && <Button type="button" variant="ghost" onClick={cancelar}>Cancelar</Button>}
+                </div>
+                {notaVoz && <p className="plan-aviso" role="status">{notaVoz}</p>}
+              </form>
             </div>
             <div className="plan-cards">
               <Chip tone={dto.modo === 'openai' ? 'success' : 'soft'}>{dto.modo === 'openai' ? `OpenAI · ${dto.modelo}` : 'Modo demostración · sin llamada a OpenAI'}</Chip>
               <p>{dto.resumen}</p>
+              <Button type="button" variant="ghost" onClick={() => void hablar(dto.resumen)}>{fase === 'hablando' ? 'Detener voz' : 'Escuchar el resumen'}</Button>
               {dto.avisos.length > 0 && <ul className="plan-aviso">{dto.avisos.map((a) => <li key={a}>{a}</li>)}</ul>}
               {it.dias.map((d) => (
                 <div key={d.n} className="plan-dia">
@@ -339,10 +467,6 @@ export default function Plan() {
                   ))}
                 </div>
               ))}
-              <form className="plan-chat" onSubmit={(e) => { e.preventDefault(); void generar(edit.trim()); setEdit('') }}>
-                <TextField label="Ajustar con una frase" value={edit} onChange={(e) => setEdit(e.target.value)} maxLength={TEXTO_MAX} placeholder="Más corto, o céntralo en Tenza" />
-                <Button type="submit" variant="secondary" disabled={fase === 'armando' || !edit.trim()}>Aplicar el cambio</Button>
-              </form>
             </div>
           </section>
         )}
@@ -387,41 +511,6 @@ export default function Plan() {
           </section>
         )}
       </div>
-
-      <aside id="plan-asistente" className="asistente" aria-label="Hablar para planear">
-        <div className={`orbe orbe-${fase}`} aria-hidden="true" />
-        <h2 className="t-h3">Hablar para planear</h2>
-        <p className="asistente-fase" role="status">{ETIQUETA[fase]}</p>
-        <p className="voz-nota">La voz, si suena, es sintética. No empieza sola y puedes detenerla.</p>
-        <form onSubmit={(e) => { e.preventDefault(); void generar(texto.trim()) }}>
-          <label className="vd-field" htmlFor="plan-texto">
-            <span className="vd-field-label">Texto para revisar</span>
-            <textarea id="plan-texto" className="vd-input plan-texto" maxLength={TEXTO_MAX} value={texto} onChange={(e) => setTexto(e.target.value)} placeholder="Por ejemplo: dos días de naturaleza en Chivor" />
-          </label>
-          <div className="voz-fila">
-            <Button type="button" className="plan-mic" variant="secondary" aria-pressed={fase === 'escuchando'} onClick={() => void alternarMic()}>
-              {fase === 'escuchando' ? 'Detener' : fase === 'transcribiendo' ? 'Transcribiendo…' : 'Hablar'}
-            </Button>
-            <Button type="submit" variant="cta" disabled={fase === 'armando'}>{fase === 'armando' ? 'Armando…' : 'Armar el plan'}</Button>
-            {ocupado && <Button type="button" variant="ghost" onClick={cancelar}>Cancelar</Button>}
-          </div>
-        </form>
-        {notaVoz && <p className="plan-aviso" role="status">{notaVoz}</p>}
-        <div className="opts" role="group" aria-label="Tipo de plan">
-          {PLANES.map((p) => <Option key={p.id} icon={p.icono} selected={chips.plan === p.id} onClick={() => setChips({ ...chips, plan: p.id })}>{p.opcion}</Option>)}
-        </div>
-        <div className="opts" role="group" aria-label="Días">
-          {[1, 2, 3].map((n) => <Option key={n} selected={chips.dias === n} onClick={() => setChips({ ...chips, dias: n })}>{n} {n === 1 ? 'día' : 'días'}</Option>)}
-        </div>
-        <label className="vd-field">
-          <span className="vd-field-label">Municipio base</span>
-          <select className="vd-input" value={chips.municipio} onChange={(e) => setChips({ ...chips, municipio: e.target.value })}>
-            <option value="">El que mejor encaje</option>
-            {MUNICIPIOS.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
-          </select>
-        </label>
-        {dto && <Button type="button" variant="ghost" onClick={() => void hablar(dto.resumen)}>{fase === 'hablando' ? 'Detener voz' : 'Escuchar el resumen'}</Button>}
-      </aside>
     </div>
   )
 }
