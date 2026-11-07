@@ -20,9 +20,13 @@ Hay que aplicarla en el proyecto antes de que el panel guarde. Sin `VITE_SUPABAS
 
 La solicitud se guarda antes de intentar el envío. Si el remitente es `@resend.dev` y el correo del formulario no es `RESEND_SANDBOX_RECIPIENT`, no se llama a Resend y el estado queda `bloqueado_dominio`. El destinatario del formulario no se reemplaza.
 
+## Cabecera
+
+`src/components/Layout.tsx` solo suma, dentro de `.appbar-in` y después de `.topnav`, un `<nav className="cuenta-nav">` con «Soy prestador» y «Iniciar sesión» (o «Mi panel» si hay sesión). El estilo vive en `src/styles/prestador.css`. El comentario que sigue a `</header>` marca el sitio del `<Agente />`: hermano del header, sin envolver `appbar`, `Outlet` ni `cuenta-nav`.
+
 ## Qué no se tocó a propósito
 
-Otro cambio, en otra rama, agrega el asistente flotante. Este trabajo no edita `src/components/Layout.tsx` ni `src/styles/plan.css`, ni crea archivos bajo `src/components/agente/`, `src/styles/agente.css`, `src/data/agente.ts`, `api/agente.ts`, `server/agente.ts` ni `docs/agente.md`.
+Otro cambio, en otra rama, agrega el asistente flotante. Este trabajo no edita `src/styles/plan.css` ni crea archivos bajo `src/components/agente/`, `src/styles/agente.css`, `src/data/agente.ts`, `api/agente.ts`, `server/agente.ts` ni `docs/agente.md`.
 
 Se conservan las firmas que ese asistente importa: `crearLimite`, `ipCliente` y `json`; `openaiConfig`; `sinDatosPersonales`; `buscarLugares`; y los exports `MUNICIPIOS`, `CATEGORIAS` y `getLugar`.
 

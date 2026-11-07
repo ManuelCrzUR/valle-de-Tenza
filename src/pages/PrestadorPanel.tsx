@@ -210,33 +210,50 @@ export default function PrestadorPanel() {
     nav('/prestadores')
   }
 
-  if (!listo) return <div className="wrap pagina"><p>Cargando la sesión…</p></div>
+  if (!listo) {
+    return (
+      <div className="wrap acceso">
+        <section className="acceso-card" aria-busy="true">
+          <p className="overline">Prestadores</p>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+          <p role="status">Cargando la sesión…</p>
+        </section>
+      </div>
+    )
+  }
   if (!configurado) {
     return (
-      <div className="wrap pagina">
-        <h1 id="titulo" tabIndex={-1} className="t-h1">Panel</h1>
-        <p className="prestador-aviso" role="status">Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. No hay sesión que restaurar.</p>
-        <Link to="/prestadores">Volver</Link>
+      <div className="wrap acceso">
+        <section className="acceso-card">
+          <p className="overline">Prestadores</p>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+          <p className="acceso-aviso" role="status">Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. No hay sesión que restaurar.</p>
+          <p><Link to="/prestadores/entrar">Volver a iniciar sesión</Link></p>
+        </section>
       </div>
     )
   }
   if (!usuario) {
     return (
-      <div className="wrap pagina">
-        <h1 id="titulo" tabIndex={-1} className="t-h1">Panel</h1>
-        <p>Entra para ver tus negocios.</p>
-        <Link to="/prestadores/entrar">Entrar</Link>
+      <div className="wrap acceso">
+        <section className="acceso-card">
+          <p className="overline">Prestadores</p>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+          <p className="sub">Entra para ver tus negocios.</p>
+          <Link to="/prestadores/entrar" className="vd-btn vd-btn-cta">Iniciar sesión</Link>
+        </section>
       </div>
     )
   }
 
   return (
     <div className="wrap pagina">
-      <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
-      <p className="sub">{usuario.email}. La sesión vive en Supabase, no en una contraseña de este navegador.</p>
-      <div className="prestador-acciones">
+      <header className="prestador-sesion">
+        <p className="overline">Sesión activa</p>
+        <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+        <p className="sub">{usuario.email}. La sesión vive en Supabase, no en una contraseña de este navegador.</p>
         <Button variant="secondary" onClick={() => void salir()}>Salir</Button>
-      </div>
+      </header>
 
       <form className="prestador-form" onSubmit={(e) => void guardarPerfil(e)}>
         <h2 className="t-h2">Perfil</h2>

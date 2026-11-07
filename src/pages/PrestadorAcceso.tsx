@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Button, TextField } from '../components/ui'
 import { supabase } from '../lib/supabase'
 import { usePagina } from '../usePagina'
@@ -17,10 +17,11 @@ function traducir(mensaje: string): string {
 }
 
 export default function PrestadorAcceso() {
-  usePagina('Entrar como prestador')
+  usePagina('Iniciar sesión')
   const { configurado, usuario } = useSesion()
   const nav = useNavigate()
-  const [modo, setModo] = useState<'entrar' | 'crear'>('entrar')
+  const [params] = useSearchParams()
+  const [modo, setModo] = useState<'entrar' | 'crear'>(params.get('alta') === '1' ? 'crear' : 'entrar')
   const [nombre, setNombre] = useState('')
   const [correo, setCorreo] = useState('')
   const [clave, setClave] = useState('')
@@ -31,6 +32,12 @@ export default function PrestadorAcceso() {
   useEffect(() => {
     if (usuario) nav('/prestadores/panel', { replace: true })
   }, [usuario, nav])
+
+  function cambiarModo(siguiente: 'entrar' | 'crear') {
+    setModo(siguiente)
+    setError('')
+    setAviso('')
+  }
 
   async function enviar(e: FormEvent) {
     e.preventDefault()
@@ -62,32 +69,68 @@ export default function PrestadorAcceso() {
     }
   }
 
-  if (!configurado) {
-    return (
-      <div className="wrap pagina">
-        <h1 id="titulo" tabIndex={-1} className="t-h1">Entrar</h1>
-        <p role="status">Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. No hay una sesión local que pueda usar.</p>
-        <Link to="/prestadores">Volver</Link>
-      </div>
-    )
-  }
-
+  const titulo = modo === 'crear' ? 'Crear cuenta' : 'Iniciar sesión'
   return (
-    <div className="wrap pagina">
-      <h1 id="titulo" tabIndex={-1} className="t-h1">{modo === 'crear' ? 'Crear cuenta de prestador' : 'Entrar'}</h1>
-      <div className="opts" role="group" aria-label="Modo de acceso">
-        <button type="button" className="vd-opt" aria-pressed={modo === 'entrar'} onClick={() => setModo('entrar')}>Entrar</button>
-        <button type="button" className="vd-opt" aria-pressed={modo === 'crear'} onClick={() => setModo('crear')}>Crear cuenta</button>
-      </div>
-      <form className="prestador-form" onSubmit={(e) => void enviar(e)}>
-        {modo === 'crear' && <TextField label="Nombre del perfil" value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" maxLength={80} />}
-        <TextField label="Correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} autoComplete="email" required />
-        <TextField label="Contraseña" type="password" value={clave} onChange={(e) => setClave(e.target.value)} autoComplete={modo === 'crear' ? 'new-password' : 'current-password'} required minLength={6} />
-        {error && <p role="alert">{error}</p>}
-        {aviso && <p role="status">{aviso}</p>}
-        <Button type="submit" variant="cta" disabled={ocupado}>{ocupado ? 'Espera…' : modo === 'crear' ? 'Crear cuenta' : 'Entrar'}</Button>
-      </form>
-      <p><Link to="/prestadores">Volver</Link></p>
+    <div className="wrap acceso">
+      <section className="acceso-card" aria-busy={ocupado}>
+        <p className="overline">Prestadores</p>
+        <h1 id="titulo" tabIndex={-1} className="t-h1">{titulo}</h1>
+        <p className="sub">
+          {modo === 'crear'
+            ? 'La cuenta es para publicar tu negocio. Quien viaja no la necesita.'
+            : 'Entra para ver tu panel, tus borradores y lo que ya publicaste.'}
+        </p>
+        <div className="opts acceso-modos" role="group" aria-label="Elegir entre entrar y crear cuenta">
+          <button type="button" className="vd-opt" aria-pressed={modo === 'entrar'} onClick={() => cambiarModo('entrar')}>Iniciar sesión</button>
+          <button type="button" className="vd-opt" aria-pressed={modo === 'crear'} onClick={() => cambiarModo('crear')}>Crear cuenta</button>
+        </div>
+        {!configurado && (
+          <p className="acceso-aviso" role="status">
+            Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en este build. El formulario espera esas claves publicables y no guarda una sesión en el navegador.
+          </p>
+        )}
+        <form className="acceso-form" onSubmit={(e) => void enviar(e)}>
+          {modo === 'crear' && (
+            <TextField label="Nombre del perfil" value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" maxLength={80} disabled={!configurado || ocupado} />
+          )}
+          <TextField
+            label="Correo"
+            type="email"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+            autoComplete="email"
+            required
+            disabled={!configurado || ocupado}
+          />
+          <TextField
+            label="Contraseña"
+            type="password"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            autoComplete={modo === 'crear' ? 'new-password' : 'current-password'}
+            enterKeyHint="go"
+            required
+            minLength={6}
+            disabled={!configurado || ocupado}
+          />
+          {error && <p className="acceso-error" role="alert">{error}</p>}
+          {aviso && <p className="acceso-aviso" role="status">{aviso}</p>}
+          <Button type="submit" variant="cta" disabled={!configurado || ocupado}>
+            {ocupado ? 'Espera…' : titulo}
+          </Button>
+        </form>
+        <p className="acceso-cambio">
+          {modo === 'entrar' ? '¿Aún no tienes cuenta? ' : '¿Ya tienes cuenta? '}
+          <button type="button" onClick={() => cambiarModo(modo === 'entrar' ? 'crear' : 'entrar')}>
+            {modo === 'entrar' ? 'Crear cuenta' : 'Iniciar sesión'}
+          </button>
+        </p>
+        <p><Link to="/prestadores">Volver a Soy prestador</Link></p>
+      </section>
     </div>
   )
 }

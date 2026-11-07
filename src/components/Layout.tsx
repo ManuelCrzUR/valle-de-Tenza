@@ -4,6 +4,9 @@ import { TabBar } from './ui'
 import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
+import { useSesion } from '../state/sesion'
+import '../styles/prestador.css'
+
 const NAV: TabBarItem[] = [
   { id: 'plan', label: 'Plan', icon: 'itinerario' },
   { id: 'lugares', label: 'Lugares', icon: 'naturaleza' },
@@ -15,6 +18,7 @@ const base = import.meta.env.BASE_URL
 export function Layout() {
   const { pathname } = useLocation()
   const go = useNavigate()
+  const { usuario } = useSesion()
   const seg = pathname.split('/')[1] ?? ''
   return (
     <div className="shell">
@@ -26,8 +30,15 @@ export function Layout() {
           <nav className="topnav" aria-label="Principal">
             {NAV.map((n) => <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
           </nav>
+          <nav className="cuenta-nav" aria-label="Cuenta de prestador">
+            <NavLink to="/prestadores" end>Soy prestador</NavLink>
+            {usuario
+              ? <NavLink to="/prestadores/panel" className="cuenta-entrar">Mi panel</NavLink>
+              : <NavLink to="/prestadores/entrar" className="cuenta-entrar">Iniciar sesión</NavLink>}
+          </nav>
         </div>
       </header>
+      {/* Asistente flotante: montar <Agente /> aquí, hermano de <header>, sin envolver appbar, Outlet ni cuenta-nav. */}
 
       <main id="contenido" tabIndex={-1}>
         <div key={pathname} className="ruta-entra"><Suspense fallback={<Cargando />}><Outlet /></Suspense></div>

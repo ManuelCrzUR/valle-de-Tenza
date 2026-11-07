@@ -25,7 +25,8 @@
   border-radius: 8px;
 }
 
-.prestador-acciones {
+.prestador-acciones,
+.acceso-acciones {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -41,7 +42,9 @@
   padding: 16px;
 }
 
-.prestador-aviso {
+.prestador-aviso,
+.acceso-aviso,
+.acceso-error {
   width: 100%;
   padding: 12px 14px;
   border-radius: var(--radius-md);
@@ -49,11 +52,180 @@
   color: var(--ink);
 }
 
+.acceso-error {
+  background: color-mix(in srgb, var(--danger) 12%, var(--surface-raised));
+  color: var(--danger);
+  font-weight: 700;
+}
+
 .prestador-form {
   width: 100%;
-  max-width: 640px;
+  max-width: 720px;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   margin-top: 16px;
+}
+
+/* Cabecera: los dos enlaces se ven en el celular y en el escritorio. */
+.cuenta-nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cuenta-nav a {
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1.2;
+  color: var(--heading);
+  text-decoration: none;
+  white-space: nowrap;
+  padding: 8px 2px;
+  border-bottom: 3px solid transparent;
+}
+
+.cuenta-nav a:hover { color: var(--accent-text); }
+
+.cuenta-nav a[aria-current="page"] { border-bottom-color: var(--accent); }
+
+.cuenta-nav a.cuenta-entrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.cuenta-nav a.cuenta-entrar:hover { background: var(--arena); color: var(--on-accent); }
+
+.cuenta-nav a.cuenta-entrar[aria-current="page"] { box-shadow: inset 0 0 0 2px var(--heading); }
+
+@media (max-width: 1023px) {
+  header.appbar .wrap.appbar-in {
+    height: auto;
+    min-height: var(--appbar-height);
+    flex-wrap: wrap;
+    padding-block: 8px;
+    row-gap: 4px;
+  }
+
+  .cuenta-nav { flex: 1 1 100%; }
+}
+
+@media (min-width: 1024px) and (max-width: 1180px) {
+  header.appbar .wrap.appbar-in {
+    height: auto;
+    min-height: var(--appbar-height);
+    flex-wrap: wrap;
+    padding-block: 8px;
+  }
+
+  .cuenta-nav { flex: 1 1 100%; }
+}
+
+/* Tarjeta de acceso, centrada. */
+.acceso {
+  width: 100%;
+  max-width: 100%;
+  min-height: calc(100dvh - var(--appbar-height) - var(--tabbar-height) - 96px);
+  display: grid;
+  place-items: center;
+  padding: 8px 0 24px;
+}
+
+.acceso-card {
+  width: min(440px, 100%);
+  max-width: 100%;
+  margin-inline: auto;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  padding: 28px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  overflow-wrap: anywhere;
+}
+
+.acceso-card .t-h1 { font-size: clamp(28px, 7vw, 36px); line-height: 1.15; }
+
+.acceso-card .sub { max-width: none; }
+
+.acceso-modos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0;
+}
+
+.acceso-modos button {
+  min-height: 48px;
+  min-width: 0;
+  padding: 10px 8px;
+  justify-content: center;
+  text-align: center;
+}
+
+.acceso-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.acceso-form .vd-btn { width: 100%; }
+
+.acceso-cambio {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.acceso-cambio button {
+  font: inherit;
+  font-weight: 700;
+  color: var(--link);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.prestador-sesion {
+  width: 100%;
+  max-width: 720px;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-float);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+@media (max-width: 719px) {
+  .acceso { min-height: 0; padding-top: 8px; padding-bottom: 8px; }
+  .acceso-card { padding: 16px 16px 14px; gap: 8px; }
+  .acceso-aviso { padding: 10px 12px; font-size: 14px; line-height: 1.35; }
+  .acceso-card .sub { font-size: 15px; line-height: 1.35; }
+}
+
+@media (min-width: 720px) {
+  .acceso-card { padding: 36px 32px 28px; }
+}
+
+@media (min-width: 1024px) {
+  .acceso { min-height: calc(100dvh - var(--appbar-height) - 160px); }
 }
