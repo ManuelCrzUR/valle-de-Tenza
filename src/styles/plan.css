@@ -15,43 +15,59 @@
 .plan-carga li[data-activo="true"] { font-weight: 700; color: var(--heading); }
 .voz-fila { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
 
-/* Escenario: una sola columna en todos los anchos; el asistente va arriba como el "pedido" principal. */
+/* Escenario: una columna; .plan-principal se disuelve para ordenar sus hijos junto al asistente:
+   título -> pedido (asistente) -> resultado -> solicitud -> recibo/previa. */
 .plan-escenario { width: 100%; display: flex; flex-direction: column; gap: var(--space-5); padding-bottom: 0; height: auto; }
-.plan-principal { min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.plan-escenario > .plan-principal { display: contents; }
+.plan-principal > *, .plan-escenario > .asistente { min-width: 0; width: 100%; }
+.plan-principal > .overline, .plan-principal > .t-h1, .plan-principal > .plan-aviso[role="note"] { order: 0; }
+.plan-principal > .overline { margin-bottom: calc(var(--space-5) * -1 + var(--space-2)); }
+.plan-principal > .t-h1 { margin-block: 0; }
+.plan-principal > .plan-aviso[role="note"] { margin-top: calc(var(--space-5) * -1 + var(--space-3)); }
+.plan-escenario > .asistente { order: 1; }
+.plan-principal > #plan-resultado { order: 2; }
+.plan-principal > .plan-form { order: 3; }
+.plan-principal > #plan-recibo, .plan-principal > section.plan-aviso { order: 4; }
 
-/* Asistente: tarjeta en flujo normal (sin fixed/sticky), antes del contenido. Móvil: orbe y título en línea. */
+/* Asistente: "compositor" en flujo normal. Cabecera (orbe + título + estado) en una línea, form a ancho
+   completo, preferencias separadas por una línea. */
 .asistente {
-  order: -1; min-width: 0;
-  display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-3); row-gap: var(--space-2);
-  align-items: center;
+  display: flex; flex-wrap: wrap; align-items: center; column-gap: var(--space-3); row-gap: var(--space-3);
   background: var(--surface-raised); border: 1px solid var(--line); border-radius: var(--radius-lg);
   padding: var(--space-4); box-shadow: var(--shadow-float);
 }
 .asistente > * { min-width: 0; }
-.asistente > .orbe { grid-column: 1; grid-row: 1 / span 2; }
-.asistente > h2 { grid-column: 2; grid-row: 1; margin: 0; align-self: end; }
-.asistente > .asistente-fase { grid-column: 2; grid-row: 2; align-self: start; }
-.asistente > .voz-nota,
-.asistente > form,
-.asistente > .plan-aviso,
-.asistente > .opts,
-.asistente > .vd-field,
-.asistente > button { grid-column: 1 / -1; }
-.asistente > .opts, .asistente > .vd-field { margin: 0; }
-.asistente-fase { margin: 0; font-weight: 700; color: var(--heading); }
+.asistente > .orbe { --orbe-t: 48px; flex: 0 0 auto; }
+.asistente > h2 { margin: 0; flex: 0 1 auto; }
+.asistente > .asistente-fase {
+  margin: 0; flex: 0 0 auto; font-size: 13px; font-weight: 700; padding: 2px 10px; border-radius: 999px;
+  background: var(--secondary-soft); color: var(--on-secondary-soft);
+}
+.asistente > .voz-nota, .asistente > form, .asistente > .plan-aviso { flex: 1 0 100%; }
 .voz-nota { margin: 0; font-size: 13px; color: var(--ink-muted); }
+.asistente > form { display: flex; flex-direction: column; gap: var(--space-3); padding-bottom: var(--space-4); border-bottom: 1px solid var(--line); }
+.asistente .plan-texto { min-height: 88px; display: block; }
+.asistente .voz-fila { margin-top: var(--space-3); }
+.asistente .voz-fila > * { flex: 1 1 auto; }
+.asistente > .opts { flex: 1 0 100%; margin: 0; gap: var(--space-2); }
+.asistente .vd-opt { min-height: 44px; padding-inline: var(--space-3); font-size: 15px; }
+.asistente > .vd-field { flex: 1 0 100%; margin: 0; }
+.asistente > button { flex: 0 0 auto; }
 
 @media (min-width: 720px) {
-  .asistente { grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr); column-gap: var(--space-4); align-items: start; box-shadow: none; }
-  .asistente > .orbe { grid-column: 1; grid-row: 1 / span 3; }
-  .asistente > h2 { grid-column: 2; grid-row: 1; align-self: start; }
-  .asistente > .asistente-fase { grid-column: 2; grid-row: 2; }
-  .asistente > .voz-nota { grid-column: 2; grid-row: 3; }
-  .asistente > form { grid-column: 3; grid-row: 1 / span 3; }
-  /* Controles en una fila que se envuelve, a todo el ancho. */
-  .asistente > .plan-aviso, .asistente > .opts, .asistente > .vd-field, .asistente > button { grid-column: 1 / -1; }
-  .asistente > .opts { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-  .asistente > .vd-field { max-width: 360px; }
+  .asistente { box-shadow: none; padding: var(--space-5); }
+  .asistente .voz-fila { justify-content: flex-end; }
+  .asistente .voz-fila > * { flex: 0 0 auto; }
+}
+@media (min-width: 1024px) {
+  .asistente > .opts { flex: 0 0 auto; }
+  .asistente > .vd-field { flex: 0 0 200px; margin-left: auto; }
+  .asistente { column-gap: var(--space-4); align-items: flex-end; }
+  .asistente > .opts { gap: var(--space-1); }
+  .asistente .vd-opt { padding-inline: 12px; font-size: 14px; }
+  .asistente > .orbe, .asistente > h2, .asistente > .asistente-fase { align-self: center; }
+  .asistente > .orbe { margin-right: calc(var(--space-4) * -1 + var(--space-3)); }
+  .asistente > h2 { margin-right: calc(var(--space-4) * -1 + var(--space-3)); }
 }
 
 .plan-card-activa { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224, 144, 47, 0.35); }
