@@ -2,7 +2,7 @@ import { NOMBRE_MAX, NOTA_MAX, PERSONAS_MAX } from '../shared/constantes.js'
 import type { ItinerarioDto } from './itinerario.js'
 import { validarPropuesta } from './itinerario.js'
 import type { Almacen, EstadoCorreo, SolicitudFila } from './almacen.js'
-import { dossierDe, type Dossier } from './dossier.js'
+import { dossierDe, instantaneasDe, type Dossier } from './dossier.js'
 import type { Envio } from './correo.js'
 import { puertaEnvio } from './puerta.js'
 import { correoValido, hoyColombia } from './texto.js'
@@ -53,7 +53,7 @@ export function validarSolicitud(entrada: EntradaSolicitud, opts: { dominio?: st
   const nota = (entrada.nota ?? '').trim().slice(0, NOTA_MAX)
   const propuesto = entrada.itinerario as { plan?: unknown; municipio?: unknown; dias?: unknown; hospedaje?: unknown } | undefined
   if (!propuesto) return { ok: false as const, error: 'Falta el itinerario.' }
-  const it = validarPropuesta(propuesto)
+  const it = validarPropuesta(propuesto, [], instantaneasDe(entrada.itinerario))
   if (!it.ok) return { ok: false as const, error: 'El itinerario tiene lugares que no están en el catálogo.' }
   return { ok: true as const, valor: { clave, nombre, correo: correo.correo, telefono: tel || null, fecha, personas, nota, itinerario: it.dto } }
 }

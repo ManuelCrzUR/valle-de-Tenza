@@ -1,7 +1,9 @@
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import type { ItinerarioDto } from './itinerario.js'
 import { validarPropuesta } from './itinerario.js'
-import { nombreMunicipio, porId } from './catalogo.js'
+import { nombreMunicipio, porId, SLUGS } from './catalogo.js'
+import type { LugarPublico } from './catalogo.js'
+import { idEstatico } from '../shared/ids.js'
 import { escapeHtml } from './texto.js'
 
 export interface ParadaDossier {
@@ -31,20 +33,55 @@ const CREMA = rgb(0.965, 0.953, 0.925)
 const TIERRA = rgb(0.878, 0.565, 0.184)
 const TINTA = rgb(0.12, 0.16, 0.15)
 
-export function paradasDe(it: Pick<ItinerarioDto, 'dias' | 'hospedaje'>): ParadaDossier[] {
+const UUID_EMPRESA = /^business:[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+const CATS = new Set(['alojamiento', 'restaurante', 'comercio', 'atraccion', 'monumento', 'naturaleza', 'operador'])
+
+/** Copia los negocios que ya vienen en `lugares`. No consulta Supabase ni el JSON. */
+export function instantaneasDe(raw: unknown): LugarPublico[] {
+  const lugares = (raw as { lugares?: unknown } | null)?.lugares
+  if (!Array.isArray(lugares)) return []
+  const out: LugarPublico[] = []
+  for (const item of lugares) {
+    if (!item || typeof item !== 'object') continue
+    const l = item as Record<string, unknown>
+    if (typeof l.id !== 'string' || !UUID_EMPRESA.test(l.id)) continue
+    if (typeof l.nombre !== 'string' || l.nombre.trim().length < 2 || l.nombre.length > 120) continue
+    if (typeof l.municipio !== 'string' || !SLUGS.includes(l.municipio)) continue
+    if (typeof l.categoria !== 'string' || !CATS.has(l.categoria)) continue
+    const lat = typeof l.lat === 'number' && Number.isFinite(l.lat) ? l.lat : null
+    const lon = typeof l.lon === 'number' && Number.isFinite(l.lon) ? l.lon : null
+    out.push({
+      id: l.id,
+      nombre: l.nombre.trim(),
+      categoria: l.categoria as LugarPublico['categoria'],
+      municipio: l.municipio,
+      lat,
+      lon,
+      precision: lat != null && lon != null ? 'exacta' : null,
+      descripcion: typeof l.descripcion === 'string' ? l.descripcion.slice(0, 240) : undefined,
+    })
+  }
+  return out
+}
+
+export function paradasDe(it: Pick<ItinerarioDto, 'dias' | 'hospedaje' | 'lugares'>): ParadaDossier[] {
+  const memoria = new Map((it.lugares ?? []).map((l) => [l.id, l]))
   const out: ParadaDossier[] = []
   const push = (id: string | null, rol: string) => {
     if (!id) return
-    const l = porId(id)
-    if (!l || out.some((p) => p.nombre === l.nombre && p.rol === rol)) return
+    const snap = memoria.get(id)
+    const estatico = porId(id) ?? porId(idEstatico(id))
+    const nombre = snap?.nombre ?? estatico?.nombre
+    const municipio = snap?.municipio ?? estatico?.municipio
+    if (!nombre || !municipio || out.some((p) => p.nombre === nombre && p.rol === rol)) return
     out.push({
       n: out.length + 1,
-      nombre: l.nombre,
-      municipio: nombreMunicipio(l.municipio),
+      nombre,
+      municipio: nombreMunicipio(municipio),
       rol,
-      lat: l.lat,
-      lon: l.lon,
-      fuente: l.fuentes.join(', ') || 'Catálogo del Valle',
+      lat: snap?.lat ?? estatico?.lat ?? null,
+      lon: snap?.lon ?? estatico?.lon ?? null,
+      fuente: estatico ? (estatico.fuentes.join(', ') || 'Catálogo del Valle') : 'Empresa publicada al guardar la solicitud',
     })
   }
   for (const d of it.dias) {
@@ -85,7 +122,7 @@ export function validarEjemplo(entrada: {
   nota?: string
   itinerario?: unknown
 }): { ok: true; dossier: Dossier } | { ok: false; error: string } {
-  const it = validarPropuesta((entrada.itinerario ?? {}) as { plan?: unknown; municipio?: unknown; dias?: unknown; hospedaje?: unknown })
+  const it = validarPropuesta((entrada.itinerario ?? {}) as { plan?: unknown; municipio?: unknown; dias?: unknown; hospedaje?: unknown }, [], instantaneasDe(entrada.itinerario))
   if (!it.ok) return { ok: false, error: 'El ejemplo necesita paradas del catálogo.' }
   const completo = { ...it.dto, modo: 'demo' as const, modelo: null, resumen: '' }
   const nombre = (entrada.nombre ?? '').trim()

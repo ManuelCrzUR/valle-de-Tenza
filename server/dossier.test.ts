@@ -1,7 +1,9 @@
 import { inflateSync } from 'node:zlib'
 import { describe, expect, it } from 'vitest'
 import { LUGARES, tieneUbicacion } from '../src/data/lugares.js'
-import { htmlCorreo, htmlDossier, pdfDossier, validarEjemplo, asuntoDossier } from './dossier.js'
+import { htmlCorreo, htmlDossier, pdfDossier, validarEjemplo, asuntoDossier, dossierDe } from './dossier.js'
+import { POST } from '../api/dossier.js'
+import { validarSolicitud } from './solicitud.js'
 import { huella, memoriaTokens, nuevoToken, vigente } from './descarga.js'
 import { enviarRecibo } from './correo.js'
 
@@ -58,6 +60,84 @@ describe('dossier', () => {
     expect(plano).toContain('Niño en la mañana')
     expect(plano).toContain(v.dossier.paradas[0].nombre)
     expect(asuntoDossier(v.dossier.codigo)).toBe('Valle Directo | Solicitud recibida · EJEMPLO')
+  })
+
+  it('el ejemplo y la solicitud guardada conservan el negocio del snapshot', async () => {
+    const parque = LUGARES.find((l) => l.id === 'la-capilla-naturaleza-parque-principal-77eba')
+    if (!parque) throw new Error('falta Parque Principal')
+    const negocio = {
+      id: 'business:11111111-1111-4111-8111-111111111111',
+      nombre: 'Mirador La Peña del Puente',
+      categoria: 'atraccion' as const,
+      municipio: 'la-capilla',
+      lat: 5.09111,
+      lon: -73.45001,
+      precision: 'exacta' as const,
+    }
+    const itinerario = {
+      plan: 'cultura',
+      municipio: 'la-capilla',
+      hospedaje: null,
+      dias: [{ paradas: [parque.id, negocio.id], comida: null }],
+      lugares: [negocio],
+    }
+    const v = validarEjemplo({ itinerario, nombre: 'Ana', fecha: '2026-12-01', personas: 2, nota: '' })
+    expect(v.ok).toBe(true)
+    if (!v.ok) return
+    expect(v.dossier.preferencia).toBe('Cultura')
+    expect(v.dossier.paradas.map((p) => p.nombre)).toEqual([parque.nombre, negocio.nombre])
+    expect(v.dossier.paradas[1].lat).toBe(negocio.lat)
+    expect(v.dossier.paradas[1].lon).toBe(negocio.lon)
+    const html = htmlDossier(v.dossier)
+    expect(html).toContain(parque.nombre)
+    expect(html).toContain(negocio.nombre)
+    const plano = textoPdf(Buffer.from(await pdfDossier(v.dossier)))
+    expect(plano).toContain(parque.nombre)
+    expect(plano).toContain('Mirador La Pe')
+    expect(plano).toContain('del Puente')
+
+    const res = await POST(new Request('http://local/api/dossier', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ ejemplo: true, itinerario, nombre: 'Ana', fecha: '2026-12-01', personas: 2, nota: '' }),
+    }))
+    const cuerpo = await res.json() as { html?: string; pdf?: string }
+    expect(res.status).toBe(200)
+    expect(cuerpo.html).toContain(negocio.nombre)
+    expect(cuerpo.html).toContain(parque.nombre)
+    expect(textoPdf(Buffer.from(cuerpo.pdf ?? '', 'base64'))).toContain('del Puente')
+
+    const guardada = validarSolicitud({
+      idempotencyKey: crypto.randomUUID(),
+      nombre: 'Ana',
+      correo: 'ana@example.com',
+      fecha: '2026-12-01',
+      personas: 2,
+      nota: '',
+      itinerario,
+    }, { hoy: '2026-11-06' })
+    expect(guardada.ok).toBe(true)
+    if (!guardada.ok) return
+    const recibo = dossierDe({
+      ejemplo: false,
+      codigo: 'ABCD1234',
+      nombre: guardada.valor.nombre,
+      fecha: guardada.valor.fecha,
+      personas: guardada.valor.personas,
+      nota: guardada.valor.nota,
+      itinerario: { ...guardada.valor.itinerario, modo: 'ajuste', modelo: null, resumen: 'guardado' },
+    })
+    expect(recibo.paradas.map((p) => p.nombre)).toEqual([parque.nombre, negocio.nombre])
+    expect(recibo.paradas[1].lat).toBe(5.09111)
+    negocio.nombre = 'Nombre editado después'
+    negocio.lat = 9
+    expect(recibo.paradas[1].nombre).toBe('Mirador La Peña del Puente')
+    expect(recibo.paradas[1].lat).toBe(5.09111)
+
+    const sinCopia = validarEjemplo({
+      itinerario: { plan: 'cultura', municipio: 'la-capilla', hospedaje: null, dias: [{ paradas: [parque.id, negocio.id], comida: null }] },
+    })
+    expect(sinCopia.ok && sinCopia.dossier.paradas.map((p) => p.nombre)).toEqual([parque.nombre])
   })
 
   it('rechaza un id fuera del catálogo y no acepta una URL', () => {
