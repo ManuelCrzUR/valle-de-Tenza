@@ -146,10 +146,15 @@ export default function Plan() {
     const ctl = new AbortController()
     abortar.current = ctl
     try {
-      const { status, data } = await postJson<{ itinerario?: PlanDto; mensaje?: string }>('/api/itinerario', {
+      const { status, data } = await postJson<{ itinerario?: PlanDto; mensaje?: string; ref?: string }>('/api/itinerario', {
         mensaje, anclar: extra?.quitar || plan ? undefined : lugarInicial?.id, chips: { ...chips, ...extra }, itinerario: plan?.dto,
       }, ctl.signal)
-      if (!data?.itinerario) { setFase('error'); setNotaVoz(data?.mensaje || (status === 0 ? 'No hay conexión con el servidor.' : 'No pude armar el plan.')); return }
+      if (!data?.itinerario) {
+        setFase('error')
+        const aviso = data?.mensaje || (status === 0 ? 'No hay conexión con el servidor.' : 'No pude armar el plan.')
+        setNotaVoz(data?.ref ? `${aviso} Referencia ${data.ref}.` : aviso)
+        return
+      }
       guardar(data.itinerario)
       setCorrida((c) => c + 1)
       setSel(null)
