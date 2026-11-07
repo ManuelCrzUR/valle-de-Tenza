@@ -1,0 +1,113 @@
+/* ---------- Orbe ---------- */
+
+/* Pupilas: las variables se animan con @property para poder interpolarlas. */
+@property --mirar-x {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
+@property --mirar-y {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 0%;
+}
+
+/* Tamaño base 54 px; las variantes solo cambian --orbe-t. */
+.orbe {
+  --orbe-t: 54px;
+  --mirar-x: 0%;
+  --mirar-y: 0%;
+  position: relative;
+  flex: none;
+  display: inline-block;
+  vertical-align: middle;
+  width: var(--orbe-t);
+  height: var(--orbe-t);
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--crema), var(--teal) 42%, var(--bosque) 72%);
+  box-shadow: 0 0 0 6px rgba(20, 48, 43, 0.12);
+}
+
+.orbe-sm { --orbe-t: 36px; }
+.orbe-md { --orbe-t: 54px; }
+.orbe-lg { --orbe-t: 64px; }
+
+/* Ojos: óvalos blancos con pupila. Medidas en porcentaje del orbe (el orbe es su bloque contenedor). */
+.orbe::before,
+.orbe::after {
+  content: "";
+  position: absolute;
+  top: 23%;
+  width: 18%;
+  height: 26%;
+  border-radius: 50%;
+  transform-origin: center;
+  background:
+    radial-gradient(
+      circle at calc(50% + var(--mirar-x)) calc(50% + var(--mirar-y)),
+      var(--bosque) 0 calc(var(--orbe-t) * 0.045),
+      transparent calc(var(--orbe-t) * 0.045 + 0.5px)
+    ),
+    #fff;
+  box-shadow: 0 0 0 0.5px rgba(20, 48, 43, 0.25);
+}
+
+.orbe::before { left: 26%; }
+.orbe::after { left: 56%; }
+
+/* Escuchando: ojos más grandes y halo ámbar. */
+.orbe-escuchando { box-shadow: 0 0 0 8px rgba(224, 144, 47, 0.35); }
+.orbe-escuchando::before,
+.orbe-escuchando::after { transform: scale(1.15); }
+
+/* Error: fondo rojizo y ojos entrecerrados. */
+.orbe-error {
+  background: radial-gradient(circle at 35% 35%, var(--crema), color-mix(in srgb, var(--danger) 80%, var(--bosque)));
+}
+.orbe-error::before,
+.orbe-error::after { transform: scaleY(0.45); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .orbe::before,
+  .orbe::after {
+    transition: transform 0.2s ease-out;
+  }
+
+  /* Listo: parpadeo breve cada ~4.5 s. */
+  .orbe-listo::before,
+  .orbe-listo::after {
+    animation: orbe-parpadeo 4.5s ease-in-out infinite;
+  }
+
+  /* Escuchando: el halo y el escalado ya son estáticos; sin animación extra. */
+
+  /* Transcribiendo, armando y pensando: las pupilas miran arriba-derecha y vuelven. */
+  .orbe-transcribiendo,
+  .orbe-armando,
+  .orbe-pensando {
+    animation: orbe-mirar 2.8s ease-in-out infinite;
+  }
+
+  /* Hablando: leve rebote del orbe completo. */
+  .orbe-hablando {
+    animation: orbe-rebote 0.9s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes orbe-parpadeo {
+    0%, 92%, 100% { transform: scaleY(1); }
+    95% { transform: scaleY(0.1); }
+  }
+
+  @keyframes orbe-mirar {
+    0%, 100% { --mirar-x: 0%; --mirar-y: 0%; }
+    35%, 65% { --mirar-x: 20%; --mirar-y: -20%; }
+  }
+
+  @keyframes orbe-rebote {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2px) scale(1.03); }
+  }
+}
