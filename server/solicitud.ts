@@ -136,7 +136,7 @@ function mensajeDe(estado: EstadoCorreo | 'no_enviado', nueva: boolean): string 
   const base = 'No es una reserva confirmada ni un cupo verificado.'
   if (estado === 'enviado') return `Solicitud guardada y comprobante enviado. ${base}`
   if (estado === 'omitido_sin_configuracion') return `Solicitud guardada. El correo no se envió porque Resend no está configurado. ${base}`
-  if (estado === 'fallido') return `Solicitud guardada. El correo falló y no se reintenta desde el navegador. ${base}`
+  if (estado === 'fallido') return `Solicitud guardada. El correo falló. Si esta pantalla aún tiene el enlace de descarga, puedes reintentar el envío sin crear otra solicitud. ${base}`
   if (estado === 'bloqueado_dominio') return `La solicitud quedó guardada. El correo no se envió porque el remitente de prueba no puede escribir a ese destinatario, y no se cambió el correo del formulario. ${base}`
   if (estado === 'pendiente') return `Solicitud guardada. El comprobante sigue pendiente. ${base}`
   return nueva ? `Modo demostración. ${base}` : `La misma solicitud ya se había registrado. ${base}`
@@ -156,6 +156,68 @@ export async function reintentarOutbox(almacen: Almacen, enviar: (fila: Solicitu
     }
   }
   return { intentos: filas.length, enviados }
+}
+
+const REINTENTABLES: EstadoCorreo[] = ['bloqueado_dominio', 'fallido', 'omitido_sin_configuracion']
+
+export interface ResultadoReintento {
+  ok: true
+  comprobante: EstadoCorreo
+  reenviado: boolean
+  mensaje: string
+}
+
+export async function reintentarComprobante(token: string, deps: {
+  tokens: { buscar(hash: string): Promise<{ requestId: string; expira: string } | null> }
+  almacen: Almacen
+  ahora?: number
+  remitente?: string
+  destinatarioPrueba?: string
+  enviar?: (fila: SolicitudFila) => Promise<Envio>
+}): Promise<{ ok: true; resultado: ResultadoReintento } | { ok: false; status: number; error: string; mensaje: string }> {
+  const hash = await huella(token)
+  const acceso = await deps.tokens.buscar(hash)
+  const ahora = deps.ahora ?? Date.now()
+  if (!acceso || Date.parse(acceso.expira) <= ahora) {
+    return { ok: false, status: 403, error: 'enlace_vencido', mensaje: 'El enlace de esta solicitud venció o no sirve. No reenvié nada y no creé otra solicitud.' }
+  }
+  const fila = await deps.almacen.buscarPorId(acceso.requestId)
+  if (!fila) return { ok: false, status: 403, error: 'enlace_vencido', mensaje: 'No encontré esa solicitud. No reenvié nada.' }
+  if (fila.outbox.estado === 'enviado') {
+    return { ok: true, resultado: { ok: true, comprobante: 'enviado', reenviado: false, mensaje: 'El comprobante ya se había enviado al correo original. No lo envié otra vez.' } }
+  }
+  if (fila.outbox.estado === 'pendiente') {
+    return { ok: true, resultado: { ok: true, comprobante: 'pendiente', reenviado: false, mensaje: 'Ya hay un envío de este comprobante en curso. No creé otra solicitud ni cambié el destinatario.' } }
+  }
+  if (!REINTENTABLES.includes(fila.outbox.estado)) {
+    return { ok: false, status: 409, error: 'no_reintentable', mensaje: 'Ese comprobante no se puede reintentar desde aquí.' }
+  }
+  const intentos = fila.outbox.intentos + 1
+  const gano = await deps.almacen.reclamar(fila.outbox.id, fila.outbox.estado, fila.outbox.intentos)
+  if (!gano) {
+    const fresco = await deps.almacen.buscarPorId(fila.id)
+    if (fresco?.outbox.estado === 'enviado') {
+      return { ok: true, resultado: { ok: true, comprobante: 'enviado', reenviado: false, mensaje: 'El comprobante ya se había enviado al correo original. No lo envié otra vez.' } }
+    }
+    return { ok: true, resultado: { ok: true, comprobante: fresco?.outbox.estado ?? 'pendiente', reenviado: false, mensaje: 'Ya hay un envío de este comprobante en curso. No creé otra solicitud ni cambié el destinatario.' } }
+  }
+  if (!deps.enviar || !deps.remitente) {
+    await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'omitido_sin_configuracion', intentos, ultimoError: null })
+    return { ok: true, resultado: { ok: true, comprobante: 'omitido_sin_configuracion', reenviado: false, mensaje: 'La solicitud sigue guardada. El correo no se envió porque Resend no está configurado.' } }
+  }
+  const puerta = puertaEnvio(deps.remitente, fila.correo, deps.destinatarioPrueba ?? '')
+  if (!puerta.ok) {
+    await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'bloqueado_dominio', intentos, ultimoError: puerta.error })
+    return { ok: true, resultado: { ok: true, comprobante: 'bloqueado_dominio', reenviado: false, mensaje: puerta.mensaje } }
+  }
+  let envio: Envio
+  try { envio = await deps.enviar(fila) } catch { envio = { ok: false, error: 'correo_excepcion' } }
+  if (envio.ok) {
+    await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'enviado', providerId: envio.id, intentos, ultimoError: null })
+    return { ok: true, resultado: { ok: true, comprobante: 'enviado', reenviado: true, mensaje: 'Comprobante enviado al correo original de la solicitud. No es una reserva confirmada ni un cupo verificado.' } }
+  }
+  await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'fallido', intentos, ultimoError: envio.error, providerId: null })
+  return { ok: true, resultado: { ok: true, comprobante: 'fallido', reenviado: false, mensaje: 'La solicitud sigue guardada. El correo volvió a fallar y el destinatario no cambió.' } }
 }
 
 export function codigoSolicitud(id: string): string {

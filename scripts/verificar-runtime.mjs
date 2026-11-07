@@ -28,6 +28,13 @@ try {
   await cargar('api/transcribir.js')
   await cargar('api/voz.js')
   await cargar('api/chat.js')
+  const reintento = await cargar('api/reintento.js')
+  const sinGuardado = await reintento.POST(new Request('http://local/api/reintento', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ token: 'a'.repeat(40), correo: 'otro@example.com' }),
+  }))
+  if (sinGuardado.status !== 503) throw new Error(`reintento inesperado ${sinGuardado.status}`)
   const negocios = await cargar('api/negocios.js')
   const lista = await negocios.GET()
   const publicados = await lista.json()

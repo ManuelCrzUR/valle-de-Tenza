@@ -42,6 +42,8 @@ export interface Almacen {
   buscarPorId(id: string): Promise<SolicitudFila | null>
   crear(nueva: NuevaSolicitud): Promise<SolicitudFila>
   marcarOutbox(id: string, patch: Partial<Pick<Outbox, 'estado' | 'providerId' | 'intentos' | 'ultimoError'>>): Promise<void>
+  /** Cambia el outbox solo si el estado y los intentos siguen igual. Un segundo intento simultáneo no gana. */
+  reclamar(outboxId: string, estado: EstadoCorreo, intentos: number): Promise<boolean>
   pendientes(limite: number): Promise<SolicitudFila[]>
 }
 
@@ -142,6 +144,19 @@ export function almacenSupabase(fetchImpl: typeof fetch = fetch): Almacen {
       })
       if (!r.ok) throw new Error(`supabase_${r.status}`)
     },
+    async reclamar(outboxId, estado, intentos) {
+      const r = await fetchImpl(
+        `${base}/email_outbox?id=eq.${encodeURIComponent(outboxId)}&estado=eq.${encodeURIComponent(estado)}&intentos=eq.${intentos}`,
+        {
+          method: 'PATCH',
+          headers: { ...headers, prefer: 'return=representation' },
+          body: JSON.stringify({ estado: 'pendiente', intentos: intentos + 1, ultimo_error: 'en_curso' }),
+        },
+      )
+      if (!r.ok) throw new Error(`supabase_${r.status}`)
+      const data = (await r.json()) as unknown[]
+      return Array.isArray(data) && data.length > 0
+    },
     async pendientes(limite) {
       const r = await fetchImpl(`${base}/reservation_requests?select=*,email_outbox!inner(*)&email_outbox.estado=in.(pendiente,fallido)&email_outbox.intentos=lt.3&limit=${limite}`, { headers })
       if (!r.ok) throw new Error(`supabase_${r.status}`)
@@ -199,6 +214,14 @@ export function almacenMemoria(eventos?: string[]): Almacen {
         intentos: patch.intentos ?? fila.outbox.intentos,
         ultimoError: patch.ultimoError === undefined ? fila.outbox.ultimoError : patch.ultimoError,
       })
+    },
+    async reclamar(outboxId, estado, intentos) {
+      const fila = [...porId.values()].find((f) => f.outbox.id === outboxId)
+      if (!fila || fila.outbox.estado !== estado || fila.outbox.intentos !== intentos) return false
+      fila.outbox.estado = 'pendiente'
+      fila.outbox.intentos = intentos + 1
+      fila.outbox.ultimoError = 'en_curso'
+      return true
     },
     async pendientes(limite) {
       return [...porId.values()].filter((f) => (f.outbox.estado === 'pendiente' || f.outbox.estado === 'fallido') && f.outbox.intentos < 3).slice(0, limite)

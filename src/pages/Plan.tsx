@@ -19,6 +19,17 @@ const MapaRuta = lazy(() => import('../components/mapa/MapaRuta'))
 type Chips = { plan: Categoria; dias: number; municipio: string }
 type Fase = 'listo' | 'escuchando' | 'transcribiendo' | 'armando' | 'hablando' | 'error'
 const VACIO: Chips = { plan: 'aventura', dias: 2, municipio: '' }
+const RECIBO_KEY = 'valle-directo:recibo'
+const REINTENTABLES = new Set(['bloqueado_dominio', 'fallido', 'omitido_sin_configuracion'])
+type Recibo = { persistido: boolean; comprobante: string; mensaje: string; token: string | null; expira: string | null }
+
+function leerRecibo(): Recibo | null {
+  try {
+    const raw = JSON.parse(sessionStorage.getItem(RECIBO_KEY) ?? 'null') as Recibo | null
+    if (!raw || typeof raw.mensaje !== 'string' || typeof raw.comprobante !== 'string') return null
+    return { persistido: !!raw.persistido, comprobante: raw.comprobante, mensaje: raw.mensaje, token: typeof raw.token === 'string' ? raw.token : null, expira: typeof raw.expira === 'string' ? raw.expira : null }
+  } catch { return null }
+}
 const ETIQUETA: Record<Fase, string> = {
   listo: 'Listo',
   escuchando: 'Escuchando',
@@ -54,7 +65,14 @@ export default function Plan() {
   const [clave, setClave] = useState(() => crypto.randomUUID())
   const [form, setForm] = useState({ nombre: '', correo: '', telefono: '', fecha: '', personas: '2', nota: '' })
   const [enviando, setEnviando] = useState(false)
-  const [recibo, setRecibo] = useState<{ persistido: boolean; comprobante: string; mensaje: string } | null>(null)
+  const [recibo, setRecibo] = useState<Recibo | null>(leerRecibo)
+  const [reintentando, setReintentando] = useState(false)
+  useEffect(() => {
+    try {
+      if (recibo) sessionStorage.setItem(RECIBO_KEY, JSON.stringify(recibo))
+      else sessionStorage.removeItem(RECIBO_KEY)
+    } catch { /* sin almacenamiento */ }
+  }, [recibo])
   const [proveedores, setProveedores] = useState<{ openai: boolean; supabase: boolean; resend: boolean; modo: string } | null>(null)
   const [previa, setPrevia] = useState<{ html: string; pdf: string | null; mensaje: string } | null>(null)
   const [narracion, setNarracion] = useState('')
@@ -236,16 +254,38 @@ export default function Plan() {
     setEnviando(true)
     setNotaVoz('')
     try {
-      const { data, status } = await postJson<{ persistido?: boolean; comprobante?: string; mensaje?: string }>('/api/solicitudes', {
+      const { data, status } = await postJson<{ persistido?: boolean; comprobante?: string; mensaje?: string; descarga?: { token?: string; expira?: string } | null }>('/api/solicitudes', {
         idempotencyKey: clave, ...form, personas: Number(form.personas), itinerario: plan.dto,
       })
       if (!data?.mensaje || status >= 400) { setNotaVoz(data?.mensaje || 'No se pudo enviar la solicitud.'); return }
-      setRecibo({ persistido: !!data.persistido, comprobante: data.comprobante || 'no_enviado', mensaje: data.mensaje })
+      setRecibo({
+        persistido: !!data.persistido,
+        comprobante: data.comprobante || 'no_enviado',
+        mensaje: data.mensaje,
+        token: data.descarga?.token ?? null,
+        expira: data.descarga?.expira ?? null,
+      })
       setClave(crypto.randomUUID())
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
       requestAnimationFrame(() => document.getElementById('plan-recibo')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }))
     } catch { setNotaVoz('No hay conexión con el servidor.') }
     finally { setEnviando(false) }
+  }
+
+  async function reintentarEnvio() {
+    if (!recibo?.token) return
+    setReintentando(true)
+    try {
+      const { data, status } = await postJson<{ comprobante?: string | null; mensaje?: string; reenviado?: boolean }>('/api/reintento', { token: recibo.token })
+      if (!data?.mensaje) { setNotaVoz('No pude reintentar el envío.'); return }
+      setRecibo({
+        ...recibo,
+        comprobante: data.comprobante || recibo.comprobante,
+        mensaje: data.mensaje,
+        token: status === 403 ? null : recibo.token,
+      })
+    } catch { setNotaVoz('No hay conexión con el servidor.') }
+    finally { setReintentando(false) }
   }
 
   const ocupado = fase === 'escuchando' || fase === 'transcribiendo' || fase === 'armando' || fase === 'hablando'
@@ -329,6 +369,14 @@ export default function Plan() {
             <p><strong>{recibo.persistido ? 'Solicitud guardada' : 'Vista previa, no guardada'}</strong></p>
             <p>{recibo.mensaje}</p>
             <p>Estado del comprobante: {etiquetaComprobante(recibo.comprobante)}.</p>
+            {recibo.persistido && recibo.token && REINTENTABLES.has(recibo.comprobante) && (
+              <Button type="button" variant="secondary" disabled={reintentando} onClick={() => void reintentarEnvio()}>
+                {reintentando ? 'Reintentando…' : 'Reintentar envío'}
+              </Button>
+            )}
+            {recibo.persistido && !recibo.token && REINTENTABLES.has(recibo.comprobante) && (
+              <p>Esta pantalla no tiene el enlace de descarga de esa solicitud. Sin ese enlace no reenvío el comprobante ni creo otra solicitud.</p>
+            )}
           </div>
         )}
         {previa && (
@@ -382,6 +430,7 @@ function etiquetaComprobante(estado: string): string {
   if (estado === 'enviado') return 'correo enviado'
   if (estado === 'omitido_sin_configuracion') return 'correo no configurado'
   if (estado === 'fallido') return 'correo fallido, solicitud guardada'
+  if (estado === 'bloqueado_dominio') return 'correo no enviado: el remitente no podía escribir a ese destinatario'
   if (estado === 'pendiente') return 'correo pendiente'
   return 'correo no enviado'
 }

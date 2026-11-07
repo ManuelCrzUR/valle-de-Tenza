@@ -16,6 +16,10 @@ Hay que aplicarla en el proyecto antes de que el panel guarde. Sin `VITE_SUPABAS
 - Una empresa publicada usa `business:<uuid>`.
 - `getLugar` no resuelve `business:`. `buscarLugares` sigue siendo síncrono y solo del JSON. Las empresas entran por `listarPublicadas` y `validarPropuesta(..., empresas)`, sin cambiar la firma de `buscarLugares`.
 
+## Reintento del comprobante
+
+`POST /api/reintento` recibe solo `{ token }`, el mismo enlace de descarga de dos horas. No acepta un correo nuevo. Si el enlace sigue vigente, reenvía esa solicitud con el snapshot y el destinatario ya guardados, y con el remitente que haya ahora en el servidor. Si el comprobante ya figura como enviado, no llama otra vez. Dos clics a la vez solo dejan pasar uno. Sin ese enlace, una fila vieja no se puede reintentar desde la pantalla: el navegador no guardaba el token y el hash de la base no se puede invertir.
+
 ## Correo
 
 La solicitud se guarda antes de intentar el envío. Si el remitente es `@resend.dev` y el correo del formulario no es `RESEND_SANDBOX_RECIPIENT`, no se llama a Resend y el estado queda `bloqueado_dominio`. El destinatario del formulario no se reemplaza.
