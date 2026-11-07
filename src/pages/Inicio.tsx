@@ -8,10 +8,10 @@ import { Chip } from '../components/ui'
 import { usePagina } from '../usePagina'
 
 const PASOS = [
-  ['Elige tu plan', 'Naturaleza, gastronomía o cultura. Tú decides por dónde empezar.'],
-  ['Recibe tu itinerario', 'Arma una ruta con lugares reales del Valle: paradas cercanas entre sí, dónde comer y dónde dormir.'],
-  ['Mira tu ruta', 'Verla en el mapa, parada por parada.'],
-  ['Reserva y pregunta', 'Reserva hospedaje, comida y actividades directo con los negocios y pregunta lo que falte al chatbot o a un embajador.'],
+  ['Cuéntalo', 'Escribe o habla: municipio, días y si quieres naturaleza, comida o cultura.'],
+  ['Revisa el plan', 'Las paradas salen del catálogo real. Puedes quitarlas o pedir un cambio.'],
+  ['Míralo en el mapa', 'Una línea une las paradas en orden. Es un esquema, no una carretera.'],
+  ['Envía la solicitud', 'Pides el plan. No confirma cupo, no cobra y no reserva.'],
 ]
 
 export default function Inicio() {
@@ -24,7 +24,7 @@ export default function Inicio() {
           <h1 id="titulo" tabIndex={-1} className="t-display aparece" style={{ '--i': 1 } as CSSProperties}>¿Quieres viajar al Valle de Tenza este fin de semana?</h1>
           <p className="lead aparece" style={{ '--i': 2 } as CSSProperties}>Sin perder horas buscando información dispersa. Elige tu plan y te armamos el itinerario.</p>
           <div className="hero-acciones aparece" style={{ '--i': 3 } as CSSProperties}>
-            <LinkButton to="/itinerario" variant="cta" icon="itinerario">Armar mi itinerario</LinkButton>
+            <LinkButton to="/plan" variant="cta" icon="itinerario">Armar mi plan</LinkButton>
             <Link to="/lugares" className="vd-btn vd-btn-ghost">Qué lugares hay</Link>
           </div>
         </div>
@@ -56,8 +56,9 @@ export default function Inicio() {
       </section>
 
       <section className="wrap seccion promesa">
-        <Chip tone="strong" icon="cupo-verificado">Cupo verificado hoy</Chip>
-        <p className="t-h2">Todo lo que ves en la app es cierto ese día. La plata del viaje se queda en los negocios del Valle.</p>
+        <Chip tone="soft">Solicitud, no reserva</Chip>
+        <p className="t-h2">El plan usa lugares del catálogo. Enviar la solicitud no aparta cupo ni confirma una reserva.</p>
+        <p><Link to="/prestadores">Tengo un negocio en el Valle</Link></p>
       </section>
     </>
   )

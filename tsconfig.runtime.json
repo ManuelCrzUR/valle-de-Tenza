@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": false,
+    "outDir": "dist-runtime",
+    "rootDir": ".",
+    "declaration": false,
+    "sourceMap": false,
+    "types": ["node"],
+    "resolveJsonModule": true
+  },
+  "include": ["api", "server", "shared", "src/data/generarPlan.ts", "src/data/lugares.ts", "src/data/planes.ts"],
+  "exclude": ["**/*.test.ts"]
+}

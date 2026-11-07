@@ -71,7 +71,7 @@ Invitar con naturalidad a armar su itinerario con el botón "Armar mi itinerario
 | ¿Cuántos días necesito? | Los planes son de 2 días. | ✅ |
 | ¿Cuánto cuesta? | Aún no hay precios; un embajador los confirma. | ✅ |
 | ¿Hay cupo este fin de semana? | El chat no confirma cupos; genera el itinerario (cupo verificado hoy) o habla con un embajador. | ✅ |
-| ¿Puedo hablar con una persona? | Sí, un embajador en horario de oficina (horario y contacto en `src/config.ts`; hoy son marcadores). | ✅ / ⚠️ horario |
+| ¿Puedo hablar con una persona? | El plan nuevo no publica horario ni contacto de embajadores. Este texto es material viejo de Auren. | ⚠️ |
 | Soy dueño de un negocio, ¿cómo me sumo? | Sección "Soy prestador"; escribir al contacto de la red. | ✅ / ⚠️ contacto |
 | ¿Cómo llego desde Bogotá y cuánto se demora? | No tenemos el dato confirmado; ofrecer embajador. | ⚠️ |
 | ¿Cuál es la mejor época y cómo es el clima? | No tenemos el dato confirmado; ofrecer embajador. | ⚠️ |

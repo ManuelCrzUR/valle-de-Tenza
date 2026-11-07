@@ -1,0 +1,67 @@
+.plan-aviso { width: 100%; padding: 12px 14px; border-radius: var(--radius-md); background: var(--surface-sunken); color: var(--ink); }
+.plan-aviso strong { font-weight: 700; }
+.plan-form, .plan-chat { width: 100%; display: flex; flex-direction: column; gap: var(--space-3); }
+.plan-texto { width: 100%; min-height: 96px; resize: vertical; }
+.plan-mic { min-height: 48px; }
+.plan-mic[aria-pressed="true"] { background: var(--ambar); color: var(--bosque); }
+.plan-grid { width: 100%; display: grid; gap: var(--space-5); }
+.plan-cards { display: flex; flex-direction: column; gap: var(--space-4); }
+.plan-dia { display: flex; flex-direction: column; gap: var(--space-3); }
+.plan-card { border: 1px solid var(--line); border-radius: var(--radius-lg); padding: var(--space-4); background: var(--surface-raised); display: flex; flex-direction: column; gap: 6px; }
+.plan-rol { font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-text); }
+.plan-mapa { height: 260px; }
+.plan-esquema { font-size: 14px; color: var(--ink-muted); }
+.plan-carga { display: flex; flex-direction: column; gap: 8px; }
+.plan-carga li[data-activo="true"] { font-weight: 700; color: var(--heading); }
+.voz-fila { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.voz-nota { font-size: 14px; color: var(--ink-muted); }
+
+.plan-escenario { width: 100%; display: grid; gap: var(--space-5); padding-bottom: 0; }
+@media (max-width: 1023px) {
+  .plan-escenario { height: calc(100dvh - var(--appbar-height) - var(--tabbar-height) - 40px); grid-template-rows: minmax(160px, 1fr) auto; overflow: hidden; }
+  .plan-principal { overflow: auto; min-height: 0; }
+  .asistente { position: static; max-height: 220px; }
+  .plan-mapa { height: 190px; }
+}
+.plan-principal { min-width: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+.asistente {
+  position: fixed; left: 0; right: 0; z-index: 18;
+  bottom: calc(var(--tabbar-height) + env(safe-area-inset-bottom));
+  max-height: 210px; overflow: auto;
+  background: var(--surface-raised); border-top: 1px solid var(--line);
+  padding: 12px var(--space-4) 16px; box-shadow: var(--shadow-float);
+}
+@media (max-width: 1023px) {
+  .asistente { position: static; max-height: 200px; box-shadow: none; }
+  .plan-principal { height: 100%; max-height: 100%; min-height: 0; overflow: auto; }
+}
+.asistente-fase { margin: 0; font-weight: 700; color: var(--heading); }
+.orbe { width: 54px; height: 54px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #f6f3ec, #1f6f62 42%, #14302b 72%); box-shadow: 0 0 0 6px rgba(20, 48, 43, 0.12); }
+.orbe-escuchando { box-shadow: 0 0 0 8px rgba(224, 144, 47, 0.35); }
+.orbe-error { background: radial-gradient(circle at 35% 35%, #f6f3ec, #8a3b32); }
+.plan-card-activa { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224, 144, 47, 0.35); }
+.tour { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+.correo-previa { width: 100%; height: 280px; border: 1px solid var(--line); border-radius: var(--radius-md); background: white; }
+
+@media (min-width: 1024px) {
+  .plan-escenario { grid-template-columns: minmax(0, 1fr) 340px; align-items: start; height: auto; overflow: visible; }
+  .plan-principal { overflow: visible; }
+  .plan-mapa { height: 420px; }
+  .asistente { position: sticky; top: calc(var(--appbar-height) + var(--space-4)); bottom: auto; max-height: calc(100dvh - 120px); border: 1px solid var(--line); border-radius: var(--radius-lg); }
+}
+
+@media (min-width: 720px) {
+  .plan-grid { grid-template-columns: minmax(0, 1fr) minmax(280px, 0.9fr); align-items: start; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .plan-card { animation: plan-sube 0.45s ease both; }
+  .plan-card:nth-child(2) { animation-delay: 0.08s; }
+  .plan-card:nth-child(3) { animation-delay: 0.16s; }
+  .plan-card:nth-child(4) { animation-delay: 0.24s; }
+  .plan-mic[aria-pressed="true"] { animation: plan-pulso 1.2s ease-in-out infinite; }
+  .orbe-escuchando, .orbe-armando, .orbe-hablando { animation: plan-pulso 1.6s ease-in-out infinite; }
+  .plan-carga li[data-activo="true"] { animation: plan-sube 0.35s ease both; }
+}
+@keyframes plan-sube { from { opacity: 0; transform: translateY(10px); } }
+@keyframes plan-pulso { 50% { transform: scale(1.04); } }

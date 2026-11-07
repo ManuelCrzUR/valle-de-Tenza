@@ -1,6 +1,8 @@
 # Valle Directo
 
-Web app para armar un itinerario al Valle de Tenza (Boyacá). Vite + React + TypeScript; se publica en GitHub Pages.
+Web app para armar un plan al Valle de Tenza (Boyacá) con el catálogo real de siete municipios y enviar una **solicitud**, que no confirma reserva. Vite + React + TypeScript. El sitio público actual está en Vercel; este repositorio no despliega solo.
+
+Configuración de Supabase, OpenAI y Resend: [docs/configuracion-mvp.md](docs/configuracion-mvp.md). OpenAI, Resend y la service role son de servidor. El panel de prestadores usa `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` (clave publicable). Sin claves, la interfaz muestra modo demostración y no afirma un envío real.
 
 ## Desarrollo
 
@@ -13,26 +15,24 @@ npm run preview   # sirve dist/ para revisar
 
 ## Dónde cambiar cosas
 
-- **Contacto, horario y redes:** `src/config.ts` (reemplaza los valores `[ENTRE CORCHETES]`).
 - **Planes (metadatos):** `src/data/planes.ts`.
 - **Lugares reales:** `src/data/lugares.json` (lo genera el scraper) y el generador de itinerarios en `src/data/generarPlan.ts`.
-- **Respuestas del chatbot:** `src/data/respuestas.ts`.
+- **Claves y correo:** [docs/configuracion-mvp.md](docs/configuracion-mvp.md) y `.env.example`.
 - **Colores, tipografía y espacios:** vienen del sistema de marca (`scripts/tokens.json`). Tras cambiarlos: `node scripts/gen-tokens.mjs`.
 
-## Chatbot (Auren AI)
+## Plan, voz y solicitud
 
-El chat llama a `/api/chat` (`api/chat.ts`, función de Vercel), que reenvía la pregunta al endpoint de demo de Auren AI. Auren es quien llama a OpenAI; este proyecto no usa ninguna llave de OpenAI.
+- `POST /api/itinerario` arma el plan. Sin `OPENAI_API_KEY` usa el catálogo en el servidor (`modo: demo`). Con clave, llama a la Responses API y el servidor valida los ids.
+- `POST /api/transcribir` recibe un audio corto (webm u otro tipo permitido, máximo 3,5 MB).
+- `POST /api/voz` lee el resumen solo si la persona lo pide. Es voz sintética.
+- `POST /api/solicitudes` valida, guarda en Supabase si hay service role y después intenta el comprobante con Resend. Sin Supabase no guarda. Sin Resend deja el comprobante en `omitido_sin_configuracion`. Si el remitente es `@resend.dev` y el correo del formulario no es `RESEND_SANDBOX_RECIPIENT`, el estado es `bloqueado_dominio` y el destinatario no se cambia.
+- `GET /api/negocios` devuelve solo negocios publicados. Sin Supabase responde una lista vacía.
 
-| Variable | Qué es |
-| --- | --- |
-| `AUREN_DEMO_TOKEN` | Token de la demo de Auren con el conocimiento del Valle (obligatoria) |
-| `AUREN_BASE_URL` | Opcional; por defecto `https://app.getaurenai.com` |
+Pruebas: `npm test` (no llama a proveedores reales). Reintento de correos ya guardados: `npm run reintentar-correo`.
 
-- **Desarrollo:** copia `.env.example` a `.env.local`, completa el token y corre `npm run dev` (sirve `/api/chat` con la misma función).
-- **Vercel:** *Settings → Environment Variables*.
-- **Sin backend** (por ejemplo en GitHub Pages) o si Auren falla, el chat responde con las reglas locales de `src/data/respuestas.ts`.
-- Límites: 500 caracteres por mensaje y 20 mensajes cada 10 minutos por IP (de mejor esfuerzo).
-- El contenido que debe conocer el bot está en [docs/auren-conocimiento-valle.md](docs/auren-conocimiento-valle.md).
+## Chat heredado (Auren)
+
+`/api/chat` sigue en el repo, pero la interfaz ya no lo usa: `/chat` abre el plan. El documento `docs/auren-conocimiento-valle.md` describe municipios y hospedajes que no están en el catálogo; no lo uses como fuente del plan nuevo.
 
 ## Lugares reales y mapa
 
@@ -54,16 +54,14 @@ scraper/.venv/bin/python scraper/probar.py                      # pruebas sin re
 - **Reporte:** cada corrida escribe `scraper/salida/reporte.md` (por municipio y categoría, precisión de ubicación, paradas por tipo de plan y lo que falta completar).
 - **Datos:** © Colaboradores de OpenStreetMap, licencia ODbL; datos abiertos de datos.gov.co.
 
-## Prestadores y reservas (modo demo)
+## Solicitud
 
-- **Prestadores:** entran en `/prestadores/entrar` y administran su negocio desde `/prestadores/panel`. Pueden registrar restaurante, caminata, actividad u hotel, reclamar un lugar del mapa o crear uno nuevo, y definir un cupo diario.
-- **Viajeros:** reservan sin cuenta desde `/reservar/<id>` (botón «Reservar» en Lugares, Mapa e Itinerario) y ven sus solicitudes en `/reservas`.
-- **Confirmación:** el prestador confirma o rechaza cada solicitud desde su panel.
-- **Almacenamiento:** todo se guarda en el `localStorage` del navegador (`src/state/demo.ts`). Es una **DEMO**: no es segura, no se comparte entre dispositivos y las contraseñas no deben ser reales.
-- **Para operar de verdad:** reemplaza solo `src/state/demo.ts` por un backend (por ejemplo, Supabase).
+Quien viaja no necesita cuenta. En `/plan` envía nombre, correo, fecha y el plan ya validado. El estado visible separa «no guardada», «guardada» y «correo enviado». Ninguno de esos estados es una reserva confirmada.
+
+Quien tiene un negocio entra en `/#/prestadores` con correo y contraseña de Supabase Auth. El borrador lo ve solo su titular; lo publicado puede salir en el mapa y en un plan. La migración es `supabase/migrations/003_perfiles_empresas.sql`. Detalle y límites: [docs/cuentas-prestadores.md](docs/cuentas-prestadores.md).
 
 ## Publicación
 
-Cada push a `main` ejecuta `.github/workflows/deploy.yml` y publica en GitHub Pages. En el repositorio: *Settings → Pages → Source: GitHub Actions*. Las rutas usan hash (`/#/mapa`) porque GitHub Pages no tiene fallback para SPA.
+La app usa rutas con hash (`/#/plan`). Vercel también reescribe el resto de rutas a `index.html` (`vercel.json`), sin tocar `/api`. El workflow de GitHub Pages sigue en `.github/workflows/deploy.yml`; en octubre de 2026 esos jobs fallaban antes de publicar. El sitio que responde hoy es el de Vercel, y este cambio no lo actualiza.
 
 `mvp/` conserva el HTML original como referencia.

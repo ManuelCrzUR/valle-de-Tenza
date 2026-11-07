@@ -4,22 +4,21 @@ import { TabBar } from './ui'
 import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
-import { config } from '../config'
-import { useUsuario } from '../state/demo'
+import { useSesion } from '../state/sesion'
+import '../styles/prestador.css'
 
 const NAV: TabBarItem[] = [
-  { id: 'itinerario', label: 'Itinerario', icon: 'itinerario' },
+  { id: 'plan', label: 'Plan', icon: 'itinerario' },
   { id: 'lugares', label: 'Lugares', icon: 'naturaleza' },
   { id: 'mapa', label: 'Mapa', icon: 'mapa' },
-  { id: 'chat', label: 'Chat', icon: 'chat' },
+  { id: 'galeria', label: 'Galería', icon: 'cultura' },
 ]
 const base = import.meta.env.BASE_URL
 
 export function Layout() {
   const { pathname } = useLocation()
   const go = useNavigate()
-  const usuario = useUsuario()
-  const prest = usuario ? { to: '/prestadores/panel', texto: 'Mi panel' } : { to: '/prestadores', texto: 'Soy prestador' }
+  const { usuario } = useSesion()
   const seg = pathname.split('/')[1] ?? ''
   return (
     <div className="shell">
@@ -30,12 +29,16 @@ export function Layout() {
           <Link to="/" className="appbar-logo" aria-label="Valle Directo, inicio"><Logo size={40} /></Link>
           <nav className="topnav" aria-label="Principal">
             {NAV.map((n) => <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
-            <NavLink to="/galeria">Galería</NavLink>
-            <NavLink to={prest.to}>{prest.texto}</NavLink>
           </nav>
-          <Link to={prest.to} className="appbar-prest">{prest.texto}</Link>
+          <nav className="cuenta-nav" aria-label="Cuenta de prestador">
+            <NavLink to="/prestadores" end>Soy prestador</NavLink>
+            {usuario
+              ? <NavLink to="/prestadores/panel" className="cuenta-entrar">Mi panel</NavLink>
+              : <NavLink to="/prestadores/entrar" className="cuenta-entrar">Iniciar sesión</NavLink>}
+          </nav>
         </div>
       </header>
+      {/* Asistente flotante: montar <Agente /> aquí, hermano de <header>, sin envolver appbar, Outlet ni cuenta-nav. */}
 
       <main id="contenido" tabIndex={-1}>
         <div key={pathname} className="ruta-entra"><Suspense fallback={<Cargando />}><Outlet /></Suspense></div>
@@ -44,12 +47,7 @@ export function Layout() {
       <footer className="footer">
         <div className="wrap footer-in">
           <img src={`${base}logos/vd-horizontal-fondo-oscuro.svg`} alt="Valle Directo, Valle de Tenza" height={44} />
-          <dl className="footer-datos">
-            <div><dt>Contacto</dt><dd>{config.contacto}</dd></div>
-            <div><dt>Horario de embajadores</dt><dd>{config.horario}</dd></div>
-            <div><dt>Redes</dt><dd>{config.redes}</dd></div>
-          </dl>
-          <p className="footer-nota">Hecho en el Valle de Tenza, Boyacá.</p>
+          <p className="footer-nota">Prototipo de clase para el Valle de Tenza, Boyacá. Aún no hay horario, redes ni contacto publicados.</p>
         </div>
       </footer>
 

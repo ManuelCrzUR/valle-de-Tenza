@@ -4,7 +4,7 @@ import { Option } from '../components/ui'
 import { NOMBRE_MUNICIPIO, tieneUbicacion, tipoReserva } from '../data/lugares'
 import { LinkButton } from '../components/LinkButton'
 import { Cargando } from '../components/Cargando'
-import { useItinerario } from '../state/itinerario'
+import { usePlan } from '../state/plan'
 import { distanciasRuta, km, MAX_SALTO_M, ordenRuta } from '../data/generarPlan'
 import { usePagina } from '../usePagina'
 import '../styles/itinerario.css'
@@ -15,14 +15,15 @@ const MapaLugares = lazy(() => import('../components/mapa/MapaLugares'))
 const MapaRuta = lazy(() => import('../components/mapa/MapaRuta'))
 
 function MiRuta() {
-  const { itinerario } = useItinerario()
+  const { plan } = usePlan()
+  const itinerario = plan?.itinerario
   const [sel, setSel] = useState<string | null>(null)
   const [corrida, setCorrida] = useState(0)   // sube para repetir la animación del recorrido
   if (!itinerario) {
     return (
       <div className="vacio vacio-col">
         <p>Aún no tienes una ruta. Genera tu itinerario y aquí verás sus puntos en orden.</p>
-        <LinkButton to="/itinerario" variant="cta" icon="itinerario">Armar mi itinerario</LinkButton>
+        <LinkButton to="/plan" variant="cta" icon="itinerario">Armar mi plan</LinkButton>
       </div>
     )
   }
@@ -60,17 +61,17 @@ function MiRuta() {
                       <span className="parada-txt">
                         <strong>{l.nombre}</strong>
                         <small>Día {p.dia} · {ROL[p.rol]} · {NOMBRE_MUNICIPIO[l.municipio] ?? l.municipio}</small>
-                        {d !== undefined && <small className={d > MAX_SALTO_M ? 'it-dist-lejos' : undefined}>{d > MAX_SALTO_M ? 'Queda lejos: ' : ''}a {km(d)} del anterior</small>}
+                        {d !== undefined && <small className={d > MAX_SALTO_M ? 'it-dist-lejos' : undefined}>{d > MAX_SALTO_M ? 'Tramo largo en línea recta: ' : ''}{km(d)} en línea recta</small>}
                       </span>
                     </button>
-                    {tipoReserva(l) && <LinkButton to={`/reservar/${l.id}`} variant="secondary">Reservar</LinkButton>}
+                    {tipoReserva(l) && <LinkButton to={`/plan?lugar=${l.id}`} variant="secondary">Incluir en mi plan</LinkButton>}
                   </li>
                 </Fragment>
               )
             })}
           </ol>
         ) : <p className="sub">Este itinerario no tiene lugares disponibles.</p>}
-        <LinkButton to="/itinerario" variant="secondary">Cambiar de plan</LinkButton>
+        <LinkButton to="/plan" variant="secondary">Cambiar el plan</LinkButton>
       </div>
     </div>
   )
@@ -85,7 +86,7 @@ export default function Mapa() {
     <div className={`wrap pagina${vista === 'lugares' ? ' pagina-mapa' : ''}`}>
       <h1 id="titulo" tabIndex={-1} className="t-h1">Tu mapa</h1>
       <p className="sub">
-        {vista === 'lugares' ? 'Lugares reales de los siete municipios: dónde comer, dormir, qué visitar y servicios útiles.' : 'Muestra solo la ruta de tu itinerario ya generado. No es un buscador libre.'}
+        {vista === 'lugares' ? 'Lugares reales de los siete municipios: dónde comer, dormir, qué visitar y servicios útiles.' : 'La línea une las paradas de tu plan en orden. No es una ruta por carretera.'}
       </p>
       <div className="opts" role="group" aria-label="Vista del mapa">
         <Option selected={vista === 'lugares'} icon="mapa" onClick={() => ir('lugares')}>Lugares del Valle</Option>

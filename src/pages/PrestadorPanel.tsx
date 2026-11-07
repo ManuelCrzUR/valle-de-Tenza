@@ -1,286 +1,335 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Navigate } from 'react-router-dom'
-import { Button, Chip, Option, TextField } from '../components/ui'
-import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, TIPOS_RESERVA, tipoReserva } from '../data/lugares'
-import type { TipoReserva } from '../data/lugares'
-import { cambiarEstado, cupoLibre, guardarNegocio, hoy, LUGAR_NEGOCIO, quitarNegocio, salir, useDemo, useUsuario } from '../state/demo'
-import type { EstadoReserva, Negocio, Reserva } from '../state/demo'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button, TextField } from '../components/ui'
+import { PinEmpresa } from '../components/prestador/PinEmpresa'
+import { CATEGORIAS, MUNICIPIOS } from '../data/lugares'
+import type { CategoriaId } from '../data/lugares'
+import { supabase } from '../lib/supabase'
 import { usePagina } from '../usePagina'
+import { useSesion } from '../state/sesion'
 import '../styles/prestador.css'
 
-const AVISO_DEMO = 'Modo demostración: las cuentas y reservas se guardan solo en este navegador; no uses una contraseña real.'
-const ETIQUETA_TIPO = Object.fromEntries(TIPOS_RESERVA.map((t) => [t.id, t.etiqueta])) as Record<TipoReserva, string>
-const ESTADOS: { id: EstadoReserva | 'todas'; etiqueta: string }[] = [
-  { id: 'todas', etiqueta: 'Todas' }, { id: 'pendiente', etiqueta: 'Pendientes' }, { id: 'confirmada', etiqueta: 'Confirmadas' },
-  { id: 'rechazada', etiqueta: 'Rechazadas' }, { id: 'cancelada', etiqueta: 'Canceladas' },
-]
-const TONO: Record<EstadoReserva, 'soft' | 'success' | 'danger' | 'strong'> = { pendiente: 'soft', confirmada: 'success', rechazada: 'danger', cancelada: 'danger' }
-const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+const CATEGORIAS_OK = new Set<CategoriaId>(['alojamiento', 'restaurante', 'comercio', 'atraccion', 'monumento', 'naturaleza', 'operador'])
+
+interface Empresa {
+  id: string
+  name: string
+  category: CategoriaId
+  municipality: string
+  description: string
+  contact: string | null
+  lat: number | null
+  lng: number | null
+  status: 'draft' | 'published'
+}
+
+interface Foto {
+  id: string
+  storage_path: string
+  alt: string | null
+  sort_order: number
+  is_cover: boolean
+}
+
+const vacia = {
+  name: '',
+  category: 'restaurante' as CategoriaId,
+  municipality: 'tenza',
+  description: '',
+  contact: '',
+  lat: null as number | null,
+  lng: null as number | null,
+  status: 'draft' as 'draft' | 'published',
+}
+
+function urlDe(path: string): string {
+  const base = (import.meta.env.VITE_SUPABASE_URL ?? '').replace(/\/$/, '')
+  return `${base}/storage/v1/object/public/business-photos/${path}`
+}
+
+function nombreSeguro(file: File): string {
+  const base = file.name.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '').slice(-48) || 'foto'
+  return `${crypto.randomUUID()}-${base}`
+}
 
 export default function PrestadorPanel() {
-  usePagina('Panel de prestador')
-  const usuario = useUsuario()
-  if (!usuario) return <Navigate to="/prestadores/entrar" replace />
+  usePagina('Panel del prestador')
+  const { configurado, listo, usuario } = useSesion()
+  const nav = useNavigate()
+  const [perfil, setPerfil] = useState({ name: '', bio: '' })
+  const [empresas, setEmpresas] = useState<Empresa[]>([])
+  const [activa, setActiva] = useState<string | 'nueva' | null>(null)
+  const [form, setForm] = useState(vacia)
+  const [fotos, setFotos] = useState<Foto[]>([])
+  const [aviso, setAviso] = useState('')
+  const [error, setError] = useState('')
+  const [ocupado, setOcupado] = useState(false)
+
+  useEffect(() => {
+    if (!listo || !supabase || !usuario) return
+    let vivo = true
+    Promise.all([
+      supabase.from('profiles').select('name,bio').eq('id', usuario.id).maybeSingle(),
+      supabase.from('businesses').select('id,name,category,municipality,description,contact,lat,lng,status').eq('owner_id', usuario.id).order('created_at'),
+    ]).then(([p, b]) => {
+      if (!vivo) return
+      if (p.data) setPerfil({ name: p.data.name ?? '', bio: p.data.bio ?? '' })
+      if (b.data) setEmpresas(b.data as Empresa[])
+      if (p.error || b.error) setError('No pude leer tu perfil o tus negocios. Si la migración 003 no está aplicada, el panel no puede guardar.')
+    })
+    return () => { vivo = false }
+  }, [listo, usuario])
+
+  useEffect(() => {
+    if (!supabase || activa === 'nueva' || !activa) { setFotos([]); return }
+    let vivo = true
+    supabase.from('business_photos').select('id,storage_path,alt,sort_order,is_cover').eq('business_id', activa).order('sort_order')
+      .then(({ data }) => { if (vivo && data) setFotos(data as Foto[]) })
+    return () => { vivo = false }
+  }, [activa])
+
+  function elegir(empresa: Empresa) {
+    setActiva(empresa.id)
+    setForm({
+      name: empresa.name,
+      category: empresa.category,
+      municipality: empresa.municipality,
+      description: empresa.description,
+      contact: empresa.contact ?? '',
+      lat: empresa.lat,
+      lng: empresa.lng,
+      status: empresa.status,
+    })
+    setError('')
+    setAviso('')
+  }
+
+  async function guardarPerfil(e: FormEvent) {
+    e.preventDefault()
+    if (!supabase || !usuario) return
+    setOcupado(true)
+    setError('')
+    const { error: err } = await supabase.from('profiles').update({ name: perfil.name.trim() || null, bio: perfil.bio.trim() || null }).eq('id', usuario.id)
+    setOcupado(false)
+    setError(err ? 'No guardé el perfil.' : '')
+    setAviso(err ? '' : 'Perfil guardado.')
+  }
+
+  async function guardarEmpresa(e: FormEvent) {
+    e.preventDefault()
+    if (!supabase || !usuario) return
+    if (form.description.trim().length < 10) { setError('La descripción necesita al menos 10 caracteres.'); return }
+    if (form.status === 'published' && (form.lat == null || form.lng == null)) { setError('Para publicar, marca el punto en el mapa.'); return }
+    setOcupado(true)
+    setError('')
+    const fila = {
+      owner_id: usuario.id,
+      name: form.name.trim(),
+      category: form.category,
+      municipality: form.municipality,
+      description: form.description.trim(),
+      contact: form.contact.trim() || null,
+      lat: form.lat,
+      lng: form.lng,
+      status: form.status,
+    }
+    if (activa && activa !== 'nueva') {
+      const { data, error: err } = await supabase.from('businesses').update(fila).eq('id', activa).select('id,name,category,municipality,description,contact,lat,lng,status')
+      setOcupado(false)
+      if (err || !data?.length) { setError('No se guardó. Solo la persona titular puede editar este negocio.'); return }
+      const actual = data[0] as Empresa
+      setEmpresas((lista) => lista.map((item) => item.id === actual.id ? actual : item))
+      setAviso(actual.status === 'published' ? 'Negocio publicado.' : 'Borrador guardado.')
+      return
+    }
+    const { data, error: err } = await supabase.from('businesses').insert(fila).select('id,name,category,municipality,description,contact,lat,lng,status').single()
+    setOcupado(false)
+    if (err || !data) { setError('No pude crear el negocio.'); return }
+    const creada = data as Empresa
+    setEmpresas((lista) => [...lista, creada])
+    setActiva(creada.id)
+    setAviso('Negocio creado. Ya puedes subir fotos.')
+  }
+
+  async function borrarEmpresa() {
+    if (!supabase || !activa || activa === 'nueva') return
+    setOcupado(true)
+    const { error: err } = await supabase.from('businesses').delete().eq('id', activa)
+    setOcupado(false)
+    if (err) { setError('No pude borrar el negocio.'); return }
+    setEmpresas((lista) => lista.filter((item) => item.id !== activa))
+    setActiva(null)
+    setForm(vacia)
+    setAviso('Negocio borrado.')
+  }
+
+  async function subirFotos(files: FileList | null) {
+    if (!supabase || !usuario || !files || !activa || activa === 'nueva') { setError('Guarda el negocio antes de subir fotos.'); return }
+    setOcupado(true)
+    setError('')
+    for (const file of [...files].slice(0, 8)) {
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 4_000_000) {
+        setError('Cada foto debe ser JPG, PNG o WebP de hasta 4 MB.')
+        continue
+      }
+      const path = `${usuario.id}/${activa}/${nombreSeguro(file)}`
+      const subida = await supabase.storage.from('business-photos').upload(path, file, { contentType: file.type })
+      if (subida.error) { setError('No pude subir una foto. Revisa que el bucket business-photos exista.'); continue }
+      const { data, error: err } = await supabase.from('business_photos').insert({
+        business_id: activa,
+        storage_path: path,
+        alt: form.name || 'Foto del negocio',
+        sort_order: fotos.length,
+        is_cover: fotos.length === 0,
+      }).select('id,storage_path,alt,sort_order,is_cover').single()
+      if (!err && data) setFotos((lista) => [...lista, data as Foto])
+    }
+    setOcupado(false)
+    setAviso('Fotos actualizadas.')
+  }
+
+  async function portada(foto: Foto) {
+    if (!supabase || !activa || activa === 'nueva') return
+    await supabase.from('business_photos').update({ is_cover: false }).eq('business_id', activa)
+    const { error: err } = await supabase.from('business_photos').update({ is_cover: true }).eq('id', foto.id)
+    if (err) { setError('No pude marcar la portada.'); return }
+    setFotos((lista) => lista.map((item) => ({ ...item, is_cover: item.id === foto.id })))
+  }
+
+  async function borrarFoto(foto: Foto) {
+    if (!supabase) return
+    await supabase.storage.from('business-photos').remove([foto.storage_path])
+    const { error: err } = await supabase.from('business_photos').delete().eq('id', foto.id)
+    if (err) { setError('No pude borrar la foto.'); return }
+    setFotos((lista) => lista.filter((item) => item.id !== foto.id))
+  }
+
+  async function salir() {
+    await supabase?.auth.signOut()
+    nav('/prestadores')
+  }
+
+  if (!listo) {
+    return (
+      <div className="wrap acceso">
+        <section className="acceso-card" aria-busy="true">
+          <p className="overline">Prestadores</p>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+          <p role="status">Cargando la sesión…</p>
+        </section>
+      </div>
+    )
+  }
+  if (!configurado) {
+    return (
+      <div className="wrap acceso">
+        <section className="acceso-card">
+          <p className="overline">Prestadores</p>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+          <p className="acceso-aviso" role="status">Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. No hay sesión que restaurar.</p>
+          <p><Link to="/prestadores/entrar">Volver a iniciar sesión</Link></p>
+        </section>
+      </div>
+    )
+  }
+  if (!usuario) {
+    return (
+      <div className="wrap acceso">
+        <section className="acceso-card">
+          <p className="overline">Prestadores</p>
+          <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+          <p className="sub">Entra para ver tus negocios.</p>
+          <Link to="/prestadores/entrar" className="vd-btn vd-btn-cta">Iniciar sesión</Link>
+        </section>
+      </div>
+    )
+  }
+
   return (
     <div className="wrap pagina">
-      <div className="pr-cab">
-        <h1 id="titulo" tabIndex={-1} className="t-h1">Hola, {usuario.nombre}</h1>
-        <Button variant="secondary" onClick={salir}>Cerrar sesión</Button>
-      </div>
-      <p className="pr-aviso" role="note">{AVISO_DEMO}</p>
-      <Negocios usuarioId={usuario.id} />
-      <Reservas usuarioId={usuario.id} />
-    </div>
-  )
-}
+      <header className="prestador-sesion">
+        <p className="overline">Sesión activa</p>
+        <h1 id="titulo" tabIndex={-1} className="t-h1">Mi panel</h1>
+        <p className="sub">{usuario.email}. La sesión vive en Supabase, no en una contraseña de este navegador.</p>
+        <Button variant="secondary" onClick={() => void salir()}>Salir</Button>
+      </header>
 
-// ---------- Mis negocios ----------
-function Negocios({ usuarioId }: { usuarioId: string }) {
-  const { negocios } = useDemo()
-  const mios = negocios.filter((n) => n.usuarioId === usuarioId)
-  const [editando, setEditando] = useState<Negocio | null>(null)
-  const [quitando, setQuitando] = useState<string | null>(null)
-  const [abierto, setAbierto] = useState(false)
+      <form className="prestador-form" onSubmit={(e) => void guardarPerfil(e)}>
+        <h2 className="t-h2">Perfil</h2>
+        <TextField label="Nombre" value={perfil.name} onChange={(e) => setPerfil({ ...perfil, name: e.target.value })} maxLength={80} />
+        <TextField label="Bio (opcional)" value={perfil.bio} onChange={(e) => setPerfil({ ...perfil, bio: e.target.value })} maxLength={400} />
+        <Button type="submit" variant="secondary" disabled={ocupado}>Guardar perfil</Button>
+      </form>
 
-  return (
-    <section className="pr-seccion" aria-labelledby="h-negocios">
-      <h2 id="h-negocios" className="t-h2">Mis negocios</h2>
-      {mios.length === 0 && !abierto && (
-        <div className="pr-vacio"><p>Aún no tienes negocios. Agrega uno para empezar a recibir solicitudes de reserva.</p></div>
-      )}
-      <ul className="pr-lista">
-        {mios.map((n) => (
-          <li key={n.id} className="pr-item">
-            <h3 className="t-h3">{n.nombre}</h3>
-            <div className="pr-meta">
-              <Chip tone="strong">{ETIQUETA_TIPO[n.tipo]}</Chip>
-              <span>{NOMBRE_MUNICIPIO[n.municipio] ?? n.municipio}</span>
-              <span>Cupo diario: {n.cupoDiario} {n.cupoDiario === 1 ? 'persona' : 'personas'}</span>
-              {!n.lugarId.startsWith(LUGAR_NEGOCIO) && <span>En el mapa</span>}
-            </div>
-            {n.descripcion && <p className="pr-nota">{n.descripcion}</p>}
-            {quitando === n.id ? (
-              <div className="pr-confirma" role="group" aria-label={`Confirmar quitar ${n.nombre}`}>
-                <p>¿Quitar «{n.nombre}»? Sus reservas dejarán de aparecer en tu panel.</p>
-                <Button variant="cta" onClick={() => { quitarNegocio(n.id); setQuitando(null) }}>Sí, quitar</Button>
-                <Button variant="ghost" onClick={() => setQuitando(null)}>Cancelar</Button>
-              </div>
-            ) : (
-              <div className="pr-acciones">
-                <Button variant="secondary" onClick={() => { setEditando(n); setAbierto(true) }} aria-label={`Editar ${n.nombre}`}>Editar</Button>
-                <Button variant="ghost" onClick={() => setQuitando(n.id)} aria-label={`Quitar ${n.nombre}`}>Quitar</Button>
-              </div>
-            )}
-          </li>
+      <h2 className="t-h2">Negocios</h2>
+      <div className="prestador-lista">
+        {empresas.map((empresa) => (
+          <button key={empresa.id} type="button" className="panel prestador-card" onClick={() => elegir(empresa)}>
+            <strong>{empresa.name}</strong>
+            <span> · {empresa.status === 'published' ? 'publicado' : 'borrador'}</span>
+          </button>
         ))}
-      </ul>
-      {abierto
-        ? <FormNegocio key={editando?.id ?? 'nuevo'} editando={editando} onListo={() => { setAbierto(false); setEditando(null) }} />
-        : <div><Button variant="primary" onClick={() => setAbierto(true)}>Agregar negocio</Button></div>}
-    </section>
-  )
-}
-
-function FormNegocio({ editando, onListo }: { editando: Negocio | null; onListo: () => void }) {
-  const { negocios } = useDemo()
-  const reclamados = useMemo(() => new Set(negocios.filter((n) => n.id !== editando?.id).map((n) => n.lugarId)), [negocios, editando])
-  const [modo, setModo] = useState<'mapa' | 'nuevo'>(editando && editando.lugarId.startsWith(LUGAR_NEGOCIO) ? 'nuevo' : editando ? 'mapa' : 'mapa')
-  const [busca, setBusca] = useState('')
-  const [lugarId, setLugarId] = useState<string | null>(editando && !editando.lugarId.startsWith(LUGAR_NEGOCIO) ? editando.lugarId : null)
-  const [nombre, setNombre] = useState(editando?.nombre ?? '')
-  const [municipio, setMunicipio] = useState(editando?.municipio ?? '')
-  const [tipo, setTipo] = useState<TipoReserva>(editando?.tipo ?? 'restaurante')
-  const [cupo, setCupo] = useState(String(editando?.cupoDiario ?? 10))
-  const [descripcion, setDescripcion] = useState(editando?.descripcion ?? '')
-  const [error, setError] = useState('')
-
-  const candidatos = useMemo(() => {
-    const q = norm(busca.trim())
-    if (q.length < 2) return []
-    return LUGARES.filter((l) => tipoReserva(l) !== null && !reclamados.has(l.id) && norm(l.nombre).includes(q)).slice(0, 8)
-  }, [busca, reclamados])
-
-  const elegir = (id: string) => {
-    const l = LUGARES.find((x) => x.id === id)
-    if (!l) return
-    setLugarId(l.id); setNombre(l.nombre); setMunicipio(l.municipio); setTipo(tipoReserva(l) ?? 'restaurante'); setBusca('')
-  }
-  const cambiarModo = (m: 'mapa' | 'nuevo') => {
-    if (m === modo) return
-    setModo(m); setError(''); setLugarId(null)
-    if (!editando) { setNombre(''); setMunicipio('') }
-  }
-
-  function enviar(e: FormEvent) {
-    e.preventDefault()
-    if (modo === 'mapa' && !lugarId) return setError('Elige un lugar del mapa o registra uno nuevo.')
-    if (modo === 'nuevo' && !municipio) return setError('Elige el municipio.')
-    const r = guardarNegocio({
-      id: editando?.id, lugarId: modo === 'mapa' ? lugarId : editando && editando.lugarId.startsWith(LUGAR_NEGOCIO) ? editando.lugarId : null,
-      nombre, municipio, tipo, cupoDiario: Math.floor(Number(cupo)), descripcion: descripcion.trim(),
-    })
-    if (r.ok) onListo(); else setError(r.error)
-  }
-
-  const lugar = lugarId ? LUGARES.find((l) => l.id === lugarId) : undefined
-  return (
-    <form className="pr-form pr-form-negocio" onSubmit={enviar} noValidate aria-labelledby="h-form-negocio">
-      <h3 id="h-form-negocio" className="t-h3">{editando ? 'Editar negocio' : 'Agregar negocio'}</h3>
-      <div className="pr-tabs" role="group" aria-label="Origen del negocio">
-        <Option selected={modo === 'mapa'} onClick={() => cambiarModo('mapa')}>Elegir del mapa</Option>
-        <Option selected={modo === 'nuevo'} onClick={() => cambiarModo('nuevo')}>Registrar uno nuevo</Option>
+        <Button variant="secondary" onClick={() => { setActiva('nueva'); setForm(vacia); setFotos([]); setAviso(''); setError('') }}>Nuevo negocio</Button>
       </div>
 
-      {modo === 'mapa' ? (
-        <>
-          <TextField label="Buscar tu lugar por nombre" type="search" value={busca} onChange={(e) => setBusca(e.target.value)} hint="Solo aparecen lugares reservables que nadie ha reclamado." autoComplete="off" />
-          {busca.trim().length >= 2 && (
-            candidatos.length > 0
-              ? <ul className="pr-resultados" aria-label="Resultados">
-                  {candidatos.map((l) => (
-                    <li key={l.id}><Option onClick={() => elegir(l.id)}>{l.nombre} · {NOMBRE_MUNICIPIO[l.municipio] ?? l.municipio}</Option></li>
-                  ))}
-                </ul>
-              : <p className="pr-nota" role="status">No encontramos lugares disponibles con ese nombre. Puedes registrarlo como uno nuevo.</p>
-          )}
-          {lugar && <p className="pr-ok" role="status">Lugar elegido: {lugar.nombre}, {NOMBRE_MUNICIPIO[lugar.municipio] ?? lugar.municipio}.</p>}
-        </>
-      ) : (
-        <>
-          <TextField label="Nombre del negocio" value={nombre} onChange={(e) => setNombre(e.target.value)} required />
-          <div className="vd-field">
-            <label htmlFor="pr-mun" className="vd-field-label">Municipio</label>
-            <select id="pr-mun" className="vd-input pr-select" value={municipio} onChange={(e) => setMunicipio(e.target.value)} required>
-              <option value="">Selecciona…</option>
+      {activa && (
+        <form className="prestador-form" onSubmit={(e) => void guardarEmpresa(e)}>
+          <h2 className="t-h2">{activa === 'nueva' ? 'Nuevo negocio' : 'Editar negocio'}</h2>
+          <TextField label="Nombre" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required minLength={2} maxLength={120} />
+          <label className="vd-field">
+            <span className="vd-field-label">Categoría</span>
+            <select className="vd-input" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value as CategoriaId })}>
+              {CATEGORIAS.filter((c) => CATEGORIAS_OK.has(c.id)).map((c) => <option key={c.id} value={c.id}>{c.etiqueta}</option>)}
+            </select>
+          </label>
+          <label className="vd-field">
+            <span className="vd-field-label">Municipio</span>
+            <select className="vd-input" value={form.municipality} onChange={(e) => setForm({ ...form, municipality: e.target.value })}>
               {MUNICIPIOS.map((m) => <option key={m.slug} value={m.slug}>{m.nombre}</option>)}
             </select>
-          </div>
-        </>
-      )}
-
-      <div className="vd-field">
-        <label htmlFor="pr-tipo" className="vd-field-label">Tipo de módulo de reserva</label>
-        <select id="pr-tipo" className="vd-input pr-select" value={tipo} onChange={(e) => setTipo(e.target.value as TipoReserva)}>
-          {TIPOS_RESERVA.map((t) => <option key={t.id} value={t.id}>{t.etiqueta}</option>)}
-        </select>
-      </div>
-      <TextField label="Cupo diario (personas)" type="number" min={1} step={1} inputMode="numeric" value={cupo} onChange={(e) => setCupo(e.target.value)} required />
-      <div className="vd-field">
-        <label htmlFor="pr-desc" className="vd-field-label">Descripción</label>
-        <textarea id="pr-desc" className="pr-area" value={descripcion} onChange={(e) => setDescripcion(e.target.value)} />
-      </div>
-      <p className="pr-error" role="alert" aria-live="assertive">{error}</p>
-      <div className="pr-acciones">
-        <Button type="submit" variant="cta">{editando ? 'Guardar cambios' : 'Guardar negocio'}</Button>
-        <Button variant="ghost" onClick={onListo}>Cancelar</Button>
-      </div>
-    </form>
-  )
-}
-
-// ---------- Reservas ----------
-function contactoEnlace(c: string) {
-  const t = c.trim()
-  if (/^\S+@\S+\.\S+$/.test(t)) return { href: `mailto:${t}`, texto: t }
-  if (!/^\+?[\d\s().-]+$/.test(t)) return null
-  const d = t.replace(/\D/g, '')
-  if (d.length < 7 || d.length > 15) return null
-  // wa.me exige código de país: solo se arma con «+» o con celular colombiano de 10 dígitos que empieza en 3.
-  const wa = t.startsWith('+') ? d : d.length === 10 && d.startsWith('3') ? `57${d}` : d.length === 12 && d.startsWith('57') ? d : null
-  return { href: `tel:${t.startsWith('+') ? '+' : ''}${d}`, wa: wa ? `https://wa.me/${wa}` : null, texto: t }
-}
-
-function Reservas({ usuarioId }: { usuarioId: string }) {
-  const datos = useDemo()
-  const mios = datos.negocios.filter((n) => n.usuarioId === usuarioId)
-  const [negId, setNegId] = useState('')
-  const [filtro, setFiltro] = useState<EstadoReserva | 'todas'>('todas')
-  const [error, setError] = useState('')
-  const negocio = mios.find((n) => n.id === negId) ?? mios[0]
-
-  const reservas = negocio ? datos.reservas.filter((r) => r.negocioId === negocio.id) : []
-  const hoyStr = hoy()
-  const pendientes = reservas.filter((r) => r.estado === 'pendiente').length
-  const confirmadasHoy = reservas.filter((r) => r.estado === 'confirmada' && r.fecha === hoyStr).length
-  const visibles = reservas
-    .filter((r) => filtro === 'todas' || r.estado === filtro)
-    .sort((a, b) => `${a.fecha} ${a.hora ?? ''}`.localeCompare(`${b.fecha} ${b.hora ?? ''}`))
-
-  function mover(id: string, estado: EstadoReserva) {
-    const r = cambiarEstado(id, estado)
-    setError(r.ok ? '' : r.error)
-  }
-
-  return (
-    <section className="pr-seccion" aria-labelledby="h-reservas">
-      <h2 id="h-reservas" className="t-h2">Reservas</h2>
-      {!negocio ? (
-        <div className="pr-vacio"><p>Agrega un negocio para ver aquí sus solicitudes.</p></div>
-      ) : (
-        <>
-          {mios.length > 1 && (
-            <div className="vd-field">
-              <label htmlFor="pr-neg" className="vd-field-label">Negocio</label>
-              <select id="pr-neg" className="vd-input pr-select" value={negocio.id} onChange={(e) => { setNegId(e.target.value); setError('') }}>
-                {mios.map((n) => <option key={n.id} value={n.id}>{n.nombre}</option>)}
-              </select>
-            </div>
+          </label>
+          <label className="vd-field">
+            <span className="vd-field-label">Descripción</span>
+            <textarea className="vd-input" required minLength={10} maxLength={800} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          </label>
+          <TextField label="Contacto público (opcional)" value={form.contact} onChange={(e) => setForm({ ...form, contact: e.target.value })} maxLength={160} />
+          <p>Marca el punto en el mapa de este sitio. No se crea un lugar en OpenStreetMap.</p>
+          <PinEmpresa lat={form.lat} lng={form.lng} onCambio={(lat, lng) => setForm({ ...form, lat, lng })} />
+          {form.lat != null && <p>Punto: {form.lat.toFixed(5)}, {form.lng?.toFixed(5)}</p>}
+          <label className="vd-field">
+            <span className="vd-field-label">Estado</span>
+            <select className="vd-input" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value as 'draft' | 'published' })}>
+              <option value="draft">Borrador</option>
+              <option value="published">Publicado</option>
+            </select>
+          </label>
+          {activa !== 'nueva' && (
+            <>
+              <label className="vd-field">
+                <span className="vd-field-label">Fotos (JPG, PNG o WebP)</span>
+                <input className="vd-input" type="file" accept="image/jpeg,image/png,image/webp" multiple onChange={(e) => void subirFotos(e.target.files)} />
+              </label>
+              <div className="prestador-fotos">
+                {fotos.map((foto) => (
+                  <figure key={foto.id}>
+                    <img src={urlDe(foto.storage_path)} alt={foto.alt ?? ''} />
+                    <figcaption>{foto.is_cover ? 'Portada' : 'Galería'}</figcaption>
+                    <button type="button" onClick={() => void portada(foto)}>Hacer portada</button>
+                    <button type="button" onClick={() => void borrarFoto(foto)}>Borrar</button>
+                  </figure>
+                ))}
+              </div>
+            </>
           )}
-          <div className="pr-cifras" aria-label={`Resumen de ${negocio.nombre}`}>
-            <div className="pr-cifra"><strong>{pendientes}</strong><span>Pendientes</span></div>
-            <div className="pr-cifra"><strong>{confirmadasHoy}</strong><span>Confirmadas hoy</span></div>
-            <div className="pr-cifra"><strong>{cupoLibre(datos, negocio, hoyStr)}</strong><span>Cupo libre hoy</span></div>
+          <div className="prestador-acciones">
+            <Button type="submit" variant="cta" disabled={ocupado}>{ocupado ? 'Guardando…' : 'Guardar negocio'}</Button>
+            {activa !== 'nueva' && <Button type="button" variant="secondary" onClick={() => void borrarEmpresa()}>Borrar</Button>}
           </div>
-          <div className="pr-filtros" role="group" aria-label="Filtrar por estado">
-            {ESTADOS.map((e) => <Option key={e.id} selected={filtro === e.id} onClick={() => setFiltro(e.id)}>{e.etiqueta}</Option>)}
-          </div>
-          <p className="pr-error" role="alert" aria-live="assertive">{error}</p>
-          {visibles.length === 0 ? (
-            <div className="pr-vacio">
-              <p>{reservas.length === 0 ? 'Todavía no hay solicitudes para este negocio.' : 'No hay reservas con ese estado.'}</p>
-              {reservas.length === 0 && <p>Las solicitudes llegan cuando un viajero usa «Reservar» en Lugares, Mapa o Itinerario.</p>}
-            </div>
-          ) : (
-            <ul className="pr-lista">
-              {visibles.map((r) => <FilaReserva key={r.id} r={r} onMover={mover} />)}
-            </ul>
-          )}
-        </>
+        </form>
       )}
-    </section>
-  )
-}
-
-function FilaReserva({ r, onMover }: { r: Reserva; onMover: (id: string, e: EstadoReserva) => void }) {
-  const c = contactoEnlace(r.contacto)
-  const fecha = new Date(`${r.fecha}T12:00:00`).toLocaleDateString('es-CO', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })
-  const cerrada = r.estado === 'rechazada' || r.estado === 'cancelada'
-  return (
-    <li className="pr-item">
-      <div className="pr-meta">
-        <h3 className="t-h3">{r.nombre}</h3>
-        <Chip tone={TONO[r.estado]}>{r.estado[0].toUpperCase() + r.estado.slice(1)}</Chip>
-      </div>
-      <div className="pr-meta">
-        <span>{fecha}{r.hora ? `, ${r.hora}` : ''}</span>
-        <span>{r.personas} {r.personas === 1 ? 'persona' : 'personas'}</span>
-        {r.noches ? <span>{r.noches} {r.noches === 1 ? 'noche' : 'noches'}</span> : null}
-      </div>
-      <div className="pr-meta">
-        <span>Contacto:</span>
-        {c ? (
-          <>
-            <a className="pr-tel" href={c.href}>{c.texto}</a>
-            {'wa' in c && c.wa && <a className="pr-tel" href={c.wa} target="_blank" rel="noopener noreferrer">WhatsApp</a>}
-          </>
-        ) : <span>{r.contacto}</span>}
-      </div>
-      {r.nota && <p className="pr-nota">Nota: {r.nota}</p>}
-      <div className="pr-acciones">
-        {r.estado !== 'confirmada' && r.estado !== 'cancelada' && <Button variant="primary" onClick={() => onMover(r.id, 'confirmada')} aria-label={`Confirmar reserva de ${r.nombre}`}>Confirmar</Button>}
-        {!cerrada && <Button variant="secondary" onClick={() => onMover(r.id, 'rechazada')} aria-label={`Rechazar reserva de ${r.nombre}`}>Rechazar</Button>}
-      </div>
-    </li>
+      {error && <p role="alert">{error}</p>}
+      {aviso && <p className="prestador-aviso" role="status">{aviso}</p>}
+    </div>
   )
 }

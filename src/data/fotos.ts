@@ -1,6 +1,6 @@
 // Fotos del Valle (public/fotos). Cada una lleva su pie y su fuente: se muestran como crédito junto a la imagen.
 // Nunca van en el mapa; solo reemplazan las ilustraciones de marcador en las pantallas.
-import type { Lugar } from './lugares'
+import type { Lugar } from './lugares.js'
 
 export interface FotoInfo { archivo: string; pie: string; fuente: string; municipio: string; url?: string }
 const SITUR = 'Sistema de Información Turística de Boyacá'

@@ -1,39 +1,30 @@
-import type { CSSProperties } from 'react'
-import { Foto } from '../components/Foto'
-import { LinkButton } from '../components/LinkButton'
-import { useUsuario } from '../state/demo'
-import { config } from '../config'
-import '../styles/prestador.css'
+import { Link } from 'react-router-dom'
 import { usePagina } from '../usePagina'
-
-const BENEFICIOS = [
-  ['Red de integración', 'Conecta y comunica a empresas, prestadores y emprendimientos locales.'],
-  ['Disponibilidad real', 'Cada negocio mantiene su propia disponibilidad al día, organizada por municipio y vereda.'],
-  ['Cadena de suministro', 'Intercambio de insumos y economía circular entre los negocios de la región.'],
-]
+import { useSesion } from '../state/sesion'
+import '../styles/prestador.css'
 
 export default function Prestadores() {
-  usePagina('Para prestadores y emprendedores')
-  const usuario = useUsuario()
+  usePagina('Soy prestador')
+  const { configurado, usuario } = useSesion()
   return (
-    <div className="wrap pagina">
-      <h1 id="titulo" tabIndex={-1} className="t-h1">Para prestadores y emprendedores</h1>
-      <p className="sub">Una red que conecta hospedajes, guías, artesanos y gastronomía de todo el Valle de Tenza, sin intermediarios externos.</p>
-      <div className="prest-grid">
-        <dl className="beneficios">
-          {BENEFICIOS.map(([t, d], i) => <div key={t} className="aparece" style={{ '--i': i } as CSSProperties}><dt className="t-h3">{t}</dt><dd>{d}</dd></div>)}
-        </dl>
-        <aside className="panel prest-aside">
-          <Foto n={14} className="prest-arte" />
-          <p className="contacto-prest">¿Quieres hacer parte? Escríbenos a <strong>{config.contacto}</strong>.</p>
-        </aside>
-      </div>
-      <p className="sub">Recibe solicitudes de reserva con cuatro módulos: restaurante, caminata, actividad y hotel.</p>
-      <div className="acciones-fila">
-        {usuario
-          ? <LinkButton to="/prestadores/panel" variant="cta">Ir a mi panel</LinkButton>
-          : <><LinkButton to="/prestadores/entrar" variant="cta">Crear mi cuenta</LinkButton><LinkButton to="/prestadores/entrar" variant="secondary">Entrar</LinkButton></>}
-      </div>
+    <div className="wrap acceso">
+      <section className="acceso-card">
+        <p className="overline">Prestadores</p>
+        <h1 id="titulo" tabIndex={-1} className="t-h1">Soy prestador</h1>
+        <p className="sub">Publica tu negocio para que pueda verse en el mapa y entrar en un plan. Quien viaja sigue sin cuenta. Publicar no confirma cupo ni reserva.</p>
+        {!configurado && (
+          <p className="acceso-aviso" role="status">
+            El panel necesita VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY. Son la clave publicable, no la service role. Sin ellas no hay registro ni sesión.
+          </p>
+        )}
+        <div className="acceso-acciones">
+          {usuario
+            ? <Link to="/prestadores/panel" className="vd-btn vd-btn-cta">Ir a mi panel</Link>
+            : <Link to="/prestadores/entrar" className="vd-btn vd-btn-cta">Iniciar sesión</Link>}
+          {!usuario && <Link to="/prestadores/entrar?alta=1" className="vd-btn vd-btn-secondary">Crear cuenta</Link>}
+        </div>
+        <p><Link to="/">Volver al inicio</Link></p>
+      </section>
     </div>
   )
 }

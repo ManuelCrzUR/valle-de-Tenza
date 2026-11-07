@@ -1,5 +1,5 @@
 // Lugares reales del Valle de Tenza. El JSON lo genera scraper/ejecutar.py (no editar a mano).
-import datos from './lugares.json'
+import datos from './lugares.json' with { type: 'json' }
 
 export type CategoriaId =
   | 'alojamiento' | 'restaurante' | 'comercio' | 'atraccion' | 'monumento' | 'naturaleza'
@@ -49,7 +49,13 @@ export const NOMBRE_MUNICIPIO = Object.fromEntries(MUNICIPIOS.map((m) => [m.slug
 export const tieneUbicacion = (l: Lugar): l is Lugar & { lat: number; lon: number } => l.lat !== null && l.lon !== null
 export const esAproximado = (l: Lugar) => l.precision !== null && l.precision !== 'exacta'
 
-export const getLugar = (id: string | undefined) => LUGARES.find((l) => l.id === id)
+// `place:<id>` es el id público del catálogo estático. El id viejo, sin prefijo, sigue encontrando el mismo lugar.
+// `business:` no es un lugar del JSON: lo resuelve el catálogo de empresas.
+export const getLugar = (id: string | undefined) => {
+  if (!id || id.startsWith('business:')) return undefined
+  const canon = id.startsWith('place:') ? id.slice('place:'.length) : id
+  return LUGARES.find((l) => l.id === canon)
+}
 
 // ---------- Reservas ----------
 export type TipoReserva = 'hotel' | 'restaurante' | 'caminata' | 'actividad'

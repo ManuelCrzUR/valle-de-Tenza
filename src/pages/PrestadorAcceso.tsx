@@ -1,66 +1,136 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
-import { Button, Option, TextField } from '../components/ui'
-import { entrar, registrar, useUsuario } from '../state/demo'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Button, TextField } from '../components/ui'
+import { supabase } from '../lib/supabase'
 import { usePagina } from '../usePagina'
+import { useSesion } from '../state/sesion'
 import '../styles/prestador.css'
 
-const AVISO_DEMO = 'Modo demostración: las cuentas y reservas se guardan solo en este navegador; no uses una contraseña real.'
+function traducir(mensaje: string): string {
+  const m = mensaje.toLowerCase()
+  if (m.includes('invalid login') || m.includes('invalid credentials')) return 'Correo o contraseña incorrectos.'
+  if (m.includes('already registered') || m.includes('already been registered')) return 'Ese correo ya tiene cuenta. Entra con la contraseña.'
+  if (m.includes('password')) return 'La contraseña no cumple lo que pide el proyecto. Prueba una más larga.'
+  if (m.includes('email')) return 'Revisa el correo. No pude crear la cuenta con ese dato.'
+  return 'No pude completar el acceso. Revisa los datos e inténtalo de nuevo.'
+}
 
 export default function PrestadorAcceso() {
-  usePagina('Acceso de prestadores')
-  const usuario = useUsuario()
-  const go = useNavigate()
-  const [modo, setModo] = useState<'entrar' | 'crear'>('entrar')
+  usePagina('Iniciar sesión')
+  const { configurado, usuario } = useSesion()
+  const nav = useNavigate()
+  const [params] = useSearchParams()
+  const [modo, setModo] = useState<'entrar' | 'crear'>(params.get('alta') === '1' ? 'crear' : 'entrar')
   const [nombre, setNombre] = useState('')
   const [correo, setCorreo] = useState('')
   const [clave, setClave] = useState('')
-  const [ver, setVer] = useState(false)
   const [error, setError] = useState('')
-  const [enviando, setEnviando] = useState(false)
+  const [aviso, setAviso] = useState('')
+  const [ocupado, setOcupado] = useState(false)
 
-  if (usuario) return <Navigate to="/prestadores/panel" replace />
+  useEffect(() => {
+    if (usuario) nav('/prestadores/panel', { replace: true })
+  }, [usuario, nav])
 
-  const crear = modo === 'crear'
+  function cambiarModo(siguiente: 'entrar' | 'crear') {
+    setModo(siguiente)
+    setError('')
+    setAviso('')
+  }
+
   async function enviar(e: FormEvent) {
     e.preventDefault()
+    if (!supabase) return
     setError('')
-    setEnviando(true)
-    const r = crear ? await registrar(nombre, correo, clave) : await entrar(correo, clave)
-    setEnviando(false)
-    if (r.ok) go('/prestadores/panel', { replace: true })
-    else setError(r.error)
+    setAviso('')
+    setOcupado(true)
+    try {
+      if (modo === 'crear') {
+        const { data, error: err } = await supabase.auth.signUp({ email: correo.trim(), password: clave })
+        if (err) { setError(traducir(err.message)); return }
+        if (data.session && data.user && nombre.trim()) {
+          await supabase.from('profiles').update({ name: nombre.trim() }).eq('id', data.user.id)
+        }
+        if (!data.session) {
+          setAviso('Cuenta creada. Si el proyecto pide confirmación, abre el enlace del correo antes de entrar. La contraseña no queda guardada en este navegador.')
+          setClave('')
+          return
+        }
+        nav('/prestadores/panel')
+      } else {
+        const { error: err } = await supabase.auth.signInWithPassword({ email: correo.trim(), password: clave })
+        if (err) { setError(traducir(err.message)); return }
+        setClave('')
+        nav('/prestadores/panel')
+      }
+    } finally {
+      setOcupado(false)
+    }
   }
-  const cambiar = (m: 'entrar' | 'crear') => { setModo(m); setError('') }
 
+  const titulo = modo === 'crear' ? 'Crear cuenta' : 'Iniciar sesión'
   return (
-    <div className="wrap pagina">
-      <h1 id="titulo" tabIndex={-1} className="t-h1">Acceso para prestadores</h1>
-      <p className="sub">Administra tus negocios y las solicitudes de reserva que llegan desde Valle Directo.</p>
-      <div className="pr-acceso">
-        <p className="pr-aviso" role="note">{AVISO_DEMO}</p>
-        <div className="pr-tabs" role="group" aria-label="Tipo de acceso">
-          <Option selected={!crear} onClick={() => cambiar('entrar')}>Entrar</Option>
-          <Option selected={crear} onClick={() => cambiar('crear')}>Crear cuenta</Option>
+    <div className="wrap acceso">
+      <section className="acceso-card" aria-busy={ocupado}>
+        <p className="overline">Prestadores</p>
+        <h1 id="titulo" tabIndex={-1} className="t-h1">{titulo}</h1>
+        <p className="sub">
+          {modo === 'crear'
+            ? 'La cuenta es para publicar tu negocio. Quien viaja no la necesita.'
+            : 'Entra para ver tu panel, tus borradores y lo que ya publicaste.'}
+        </p>
+        <div className="opts acceso-modos" role="group" aria-label="Elegir entre entrar y crear cuenta">
+          <button type="button" className="vd-opt" aria-pressed={modo === 'entrar'} onClick={() => cambiarModo('entrar')}>Iniciar sesión</button>
+          <button type="button" className="vd-opt" aria-pressed={modo === 'crear'} onClick={() => cambiarModo('crear')}>Crear cuenta</button>
         </div>
-        <form className="pr-form" onSubmit={enviar} noValidate>
-          {crear && <TextField label="Nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" required />}
-          <TextField label="Correo" type="email" value={correo} onChange={(e) => setCorreo(e.target.value)} autoComplete="email" inputMode="email" required />
-          <div className="pr-clave-fila">
-            <TextField
-              label="Contraseña" type={ver ? 'text' : 'password'} value={clave} onChange={(e) => setClave(e.target.value)}
-              autoComplete={crear ? 'new-password' : 'current-password'} minLength={crear ? 8 : undefined} required
-              hint={crear ? 'Mínimo 8 caracteres.' : undefined}
-            />
-            <Button variant="secondary" aria-pressed={ver} onClick={() => setVer((v) => !v)}>{ver ? 'Ocultar' : 'Mostrar'}</Button>
-          </div>
-          <p className="pr-error" role="alert" aria-live="assertive">{error}</p>
-          <Button type="submit" variant="cta" block disabled={enviando}>
-            {enviando ? 'Enviando…' : crear ? 'Crear mi cuenta' : 'Entrar'}
+        {!configurado && (
+          <p className="acceso-aviso" role="status">
+            Faltan VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en este build. El formulario espera esas claves publicables y no guarda una sesión en el navegador.
+          </p>
+        )}
+        <form className="acceso-form" onSubmit={(e) => void enviar(e)}>
+          {modo === 'crear' && (
+            <TextField label="Nombre del perfil" value={nombre} onChange={(e) => setNombre(e.target.value)} autoComplete="name" maxLength={80} disabled={!configurado || ocupado} />
+          )}
+          <TextField
+            label="Correo"
+            type="email"
+            inputMode="email"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            value={correo}
+            onChange={(e) => setCorreo(e.target.value)}
+            autoComplete="email"
+            required
+            disabled={!configurado || ocupado}
+          />
+          <TextField
+            label="Contraseña"
+            type="password"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            autoComplete={modo === 'crear' ? 'new-password' : 'current-password'}
+            enterKeyHint="go"
+            required
+            minLength={6}
+            disabled={!configurado || ocupado}
+          />
+          {error && <p className="acceso-error" role="alert">{error}</p>}
+          {aviso && <p className="acceso-aviso" role="status">{aviso}</p>}
+          <Button type="submit" variant="cta" disabled={!configurado || ocupado}>
+            {ocupado ? 'Espera…' : titulo}
           </Button>
         </form>
-      </div>
+        <p className="acceso-cambio">
+          {modo === 'entrar' ? '¿Aún no tienes cuenta? ' : '¿Ya tienes cuenta? '}
+          <button type="button" onClick={() => cambiarModo(modo === 'entrar' ? 'crear' : 'entrar')}>
+            {modo === 'entrar' ? 'Crear cuenta' : 'Iniciar sesión'}
+          </button>
+        </p>
+        <p><Link to="/prestadores">Volver a Soy prestador</Link></p>
+      </section>
     </div>
   )
 }

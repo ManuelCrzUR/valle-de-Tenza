@@ -6,11 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "vitest run && node scripts/verificar-runtime.mjs",
+    "test:runtime": "node scripts/verificar-runtime.mjs",
+    "reintentar-correo": "vite-node scripts/reintentar-outbox.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.51.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "react-leaflet": "^5.0.0",
@@ -24,6 +29,7 @@
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.1",
     "typescript": "^7.0.2",
-    "vite": "^8.3.2"
+    "vite": "^8.3.2",
+    "vitest": "^5.1.0"
   }
 }
