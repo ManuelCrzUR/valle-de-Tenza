@@ -39,6 +39,7 @@ export interface NuevaSolicitud {
 
 export interface Almacen {
   buscar(idempotencyKey: string): Promise<SolicitudFila | null>
+  buscarPorId(id: string): Promise<SolicitudFila | null>
   crear(nueva: NuevaSolicitud): Promise<SolicitudFila>
   marcarOutbox(id: string, patch: Partial<Pick<Outbox, 'estado' | 'providerId' | 'intentos' | 'ultimoError'>>): Promise<void>
   pendientes(limite: number): Promise<SolicitudFila[]>
@@ -50,6 +51,13 @@ export function cabecerasServicio(clave: string): Record<string, string> {
     authorization: `Bearer ${clave}`,
     'content-type': 'application/json',
   }
+}
+
+function filaConItinerario(row: Record<string, unknown>): SolicitudFila {
+  const box = Array.isArray(row.email_outbox) ? row.email_outbox[0] : row.email_outbox
+  const anidado = row.itineraries as { itinerario?: ItinerarioDto } | { itinerario?: ItinerarioDto }[] | null | undefined
+  const desdeTabla = Array.isArray(anidado) ? anidado[0]?.itinerario : anidado?.itinerario
+  return filaDe({ ...row, outbox: box, itinerario: row.itinerario ?? desdeTabla })
 }
 
 function filaDe(row: Record<string, unknown>): SolicitudFila {
@@ -82,14 +90,19 @@ export function almacenSupabase(fetchImpl: typeof fetch = fetch): Almacen {
   const base = `${cfg.url}/rest/v1`
   const headers = cabecerasServicio(cfg.clave)
   return {
+    async buscarPorId(id) {
+      const r = await fetchImpl(`${base}/reservation_requests?id=eq.${encodeURIComponent(id)}&select=*,email_outbox(*),itineraries(itinerario)`, { headers })
+      if (!r.ok) throw new Error(`supabase_${r.status}`)
+      const data = (await r.json()) as Record<string, unknown>[]
+      return data[0] ? filaConItinerario(data[0]) : null
+    },
     async buscar(clave) {
-      const r = await fetchImpl(`${base}/reservation_requests?idempotency_key=eq.${encodeURIComponent(clave)}&select=*,email_outbox(*)`, { headers })
+      const r = await fetchImpl(`${base}/reservation_requests?idempotency_key=eq.${encodeURIComponent(clave)}&select=*,email_outbox(*),itineraries(itinerario)`, { headers })
       if (!r.ok) throw new Error(`supabase_${r.status}`)
       const data = (await r.json()) as Record<string, unknown>[]
       const row = data[0]
       if (!row) return null
-      const box = Array.isArray(row.email_outbox) ? row.email_outbox[0] : row.email_outbox
-      return filaDe({ ...row, outbox: box })
+      return filaConItinerario(row)
     },
     async crear(nueva) {
       const r = await fetchImpl(`${base}/rpc/crear_solicitud`, {
@@ -147,6 +160,7 @@ export function almacenMemoria(eventos?: string[]): Almacen {
   const porId = new Map<string, SolicitudFila>()
   return {
     async buscar(clave) { return porClave.get(clave) ?? null },
+    async buscarPorId(id) { return porId.get(id) ?? null },
     async crear(nueva) {
       eventos?.push('itinerario')
       eventos?.push('solicitud')

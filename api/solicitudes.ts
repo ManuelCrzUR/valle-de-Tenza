@@ -1,6 +1,8 @@
 import { almacenSupabase } from '../server/almacen'
 import { datosReciboDe, crearSolicitud } from '../server/solicitud'
 import { enviarRecibo } from '../server/correo'
+import { pdfDossier } from '../server/dossier'
+import { nuevoToken, tokensSupabase } from '../server/descarga'
 import { openaiConfig, resendConfig, supabaseConfig } from '../server/env'
 import { crearLimite, ipCliente, json } from '../server/http'
 
@@ -20,16 +22,30 @@ export async function POST(request: Request): Promise<Response> {
     almacen,
     dominio: correo.dominio,
     enviar: almacen && correo.configurado
-      ? async (fila) => enviarRecibo({
-        fetchImpl: fetch,
-        clave: correo.clave,
-        desde: correo.desde,
-        para: fila.correo,
-        idempotencyKey: fila.outbox.idempotencyKey,
-        datos: datosReciboDe(fila),
-      })
+      ? async (fila) => {
+        const datos = datosReciboDe(fila)
+        let pdf: Uint8Array | null = null
+        try { pdf = await pdfDossier(datos) } catch { pdf = null }
+        return enviarRecibo({
+          fetchImpl: fetch,
+          clave: correo.clave,
+          desde: correo.desde,
+          para: fila.correo,
+          idempotencyKey: fila.outbox.idempotencyKey,
+          datos,
+          pdf,
+        })
+      }
       : undefined,
   })
   if (!r.ok) return json({ error: 'validacion', mensaje: r.error }, r.status)
-  return json({ ...r.resultado, openaiConfigurado: openaiConfig().configurado })
+  let descarga: { token: string; expira: string } | null = null
+  if (r.resultado.nueva && r.resultado.persistido && r.resultado.id && sb.configurado) {
+    try {
+      const t = await nuevoToken()
+      await tokensSupabase().guardar(t.hash, r.resultado.id, t.expira)
+      descarga = { token: t.token, expira: t.expira }
+    } catch { descarga = null }
+  }
+  return json({ ...r.resultado, descarga, openaiConfigurado: openaiConfig().configurado })
 }

@@ -154,9 +154,12 @@ describe('solicitud, correo e idempotencia', () => {
   })
 
   it('escapa el nombre en la plantilla fija', () => {
-    const html = htmlRecibo({ nombre: 'Ana <script>', fecha: '2026-12-01', personas: 2, nota: '', lugares: ['Parque'], municipio: 'Tenza' })
+    const html = htmlRecibo({
+      ejemplo: false, codigo: 'ABC12345', nombre: 'Ana <script>', fecha: '2026-12-01', personas: 2, nota: '',
+      preferencia: 'Cultura', municipio: 'Tenza', paradas: [{ n: 1, nombre: 'Parque', municipio: 'Tenza', rol: 'Parada', lat: null, lon: null, fuente: 'Catálogo' }],
+    })
     expect(html).toContain('Ana &lt;script&gt;')
-    expect(html).toContain('No es una reserva confirmada')
+    expect(html).toContain('Solicitud recibida, pendiente de confirmación')
     expect(html).not.toContain('<script>')
   })
 })

@@ -56,6 +56,16 @@ npm run reintentar-correo
 
 Eso reintenta filas `pendiente` o `fallido` con menos de 3 intentos. Los tests no llaman a Resend ni a OpenAI ni a Supabase reales.
 
-## 5. Qué no hace esta versión
+## 5. Dossier
+
+Si ya ejecutaste la primera migración, corre también `supabase/migrations/002_dossier_tokens.sql`. Ahí solo se guarda la huella del enlace de descarga, durante dos horas, y la clave anónima no puede leerla. El PDF del correo es el mismo archivo que esa descarga. No hay variables nuevas.
+
+Sin Supabase, la pantalla ofrece un **ejemplo** marcado «EJEMPLO / no guardada / no enviada». No es un envío.
+
+## 6. Mapa en relieve
+
+El recorrido guiado es 2D con Leaflet. Un terreno 3D con MapLibre quedaría para más adelante: haría falta un estilo y un modelo de elevación con licencia clara, y la clave de OpenAI no trae ese mapa. No hay un relieve simulado.
+
+## 7. Qué no hace esta versión
 
 No cobra, no escribe por WhatsApp, no confirma cupo y no traza una ruta de carretera. La línea del mapa es un esquema entre coordenadas del catálogo.

@@ -21,11 +21,11 @@ function icono(n: number, sel: boolean): L.DivIcon {
 }
 
 // Progreso 0…(n-1): la parte entera es el último nodo alcanzado; la fracción, el avance hacia el siguiente.
-function useRecorrido(total: number, corrida: number) {
-  const [prog, setProg] = useState(() => (reduceMovimiento() ? Math.max(0, total - 1) : 0))
+function useRecorrido(total: number, corrida: number, completo: boolean) {
+  const [prog, setProg] = useState(() => (completo || reduceMovimiento() ? Math.max(0, total - 1) : 0))
   useEffect(() => {
     const fin = Math.max(0, total - 1)
-    if (reduceMovimiento() || fin === 0) { setProg(fin); return }
+    if (completo || reduceMovimiento() || fin === 0) { setProg(fin); return }
     setProg(0)
     let raf = 0
     const t0 = performance.now() + PAUSA_INICIAL
@@ -36,8 +36,21 @@ function useRecorrido(total: number, corrida: number) {
     }
     raf = requestAnimationFrame(paso)
     return () => cancelAnimationFrame(raf)
-  }, [total, corrida])
+  }, [total, corrida, completo])
   return prog
+}
+
+function Enfocar({ id, seq, paradas }: { id: string | null; seq: number; paradas: ParadaMapa[] }) {
+  const map = useMap()
+  useEffect(() => {
+    if (!id) return
+    const p = paradas.find((x) => x.lugar.id === id)
+    if (!p) return
+    const destino: [number, number] = [p.lugar.lat, p.lugar.lon]
+    if (reduceMovimiento()) map.setView(destino, 14, { animate: false })
+    else map.flyTo(destino, 14, { duration: 0.9 })
+  }, [id, seq, map, paradas])
+  return null
 }
 
 function Encuadrar({ paradas, seleccionado }: { paradas: ParadaMapa[]; seleccionado: ParadaMapa | undefined }) {
@@ -113,8 +126,8 @@ function Seguir({ paradas, cabeza, empezo, animando, corrida, seleccionadoId }: 
 }
 
 // Mapa de «Mi ruta»: nodos numerados y una línea que se dibuja del primero al último, pasando por todos.
-export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida }: { paradas: ParadaMapa[]; seleccionadoId: string | null; onElegir: (id: string) => void; corrida: number }) {
-  const prog = useRecorrido(paradas.length, corrida)
+export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida, foco }: { paradas: ParadaMapa[]; seleccionadoId: string | null; onElegir: (id: string) => void; corrida: number; foco?: { id: string; seq: number } | null }) {
+  const prog = useRecorrido(paradas.length, corrida, !!foco)
   const alcanzado = Math.floor(prog + 1e-6)
   const seleccionado = useMemo(() => paradas.find((p) => p.lugar.id === seleccionadoId), [paradas, seleccionadoId])
 
@@ -135,8 +148,9 @@ export default function MapaRuta({ paradas, seleccionadoId, onElegir, corrida }:
     <MapContainer className="mapa-leaflet" center={[5.03, -73.42]} zoom={11} zoomSnap={0.25} zoomControl={false} scrollWheelZoom aria-label="Mapa de tu ruta por el Valle de Tenza">
       <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png" maxZoom={19} attribution='&copy; <a href="https://www.openstreetmap.org/copyright">Colaboradores de OpenStreetMap</a>' />
       <ZoomControl position="bottomright" zoomInTitle="Acercar" zoomOutTitle="Alejar" />
-      <Encuadrar paradas={paradas} seleccionado={seleccionado} />
-      <Seguir paradas={paradas} cabeza={cabeza} empezo={prog > 0} animando={animando} corrida={corrida} seleccionadoId={seleccionadoId} />
+      {!foco && <Encuadrar paradas={paradas} seleccionado={seleccionado} />}
+      {!foco && <Seguir paradas={paradas} cabeza={cabeza} empezo={prog > 0} animando={animando} corrida={corrida} seleccionadoId={seleccionadoId} />}
+      {foco && <Enfocar id={foco.id} seq={foco.seq} paradas={paradas} />}
       {linea.length > 1 && <Polyline positions={linea} interactive={false} className="ruta-linea" pathOptions={{ weight: 5, dashArray: '10 9', lineCap: 'round', lineJoin: 'round' }} />}
       {animando && cabeza && <CircleMarker center={cabeza} radius={8} interactive={false} className="ruta-cabeza" />}
       {paradas.slice(0, alcanzado + 1).map((p) => (

@@ -2,9 +2,9 @@ import { NOMBRE_MAX, NOTA_MAX, PERSONAS_MAX } from '../shared/constantes'
 import type { ItinerarioDto } from './itinerario'
 import { validarPropuesta } from './itinerario'
 import type { Almacen, EstadoCorreo, SolicitudFila } from './almacen'
-import { lugaresDelPlan, type Envio } from './correo'
+import { dossierDe, type Dossier } from './dossier'
+import type { Envio } from './correo'
 import { correoValido, hoyColombia } from './texto'
-import { nombreMunicipio } from './catalogo'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 
@@ -147,14 +147,18 @@ export async function reintentarOutbox(almacen: Almacen, enviar: (fila: Solicitu
   return { intentos: filas.length, enviados }
 }
 
-export function datosReciboDe(fila: SolicitudFila) {
-  const it = fila.itinerario
-  return {
+export function codigoSolicitud(id: string): string {
+  return id.replace(/-/g, '').slice(0, 8).toUpperCase()
+}
+
+export function datosReciboDe(fila: SolicitudFila): Dossier {
+  return dossierDe({
+    ejemplo: false,
+    codigo: codigoSolicitud(fila.id),
     nombre: fila.nombre,
     fecha: fila.fecha,
     personas: fila.personas,
     nota: fila.nota ?? '',
-    lugares: it.lugares?.length ? lugaresDelPlan(it) : [],
-    municipio: nombreMunicipio(it.municipio),
-  }
+    itinerario: fila.itinerario,
+  })
 }
