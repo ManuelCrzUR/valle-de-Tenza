@@ -1,13 +1,20 @@
-import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { PDFArray, PDFDocument, PDFName, PDFString, StandardFonts, clip, endPath, popGraphicsState, pushGraphicsState, rectangle, rgb } from 'pdf-lib'
+import type { PDFFont, PDFPage } from 'pdf-lib'
 import type { ItinerarioDto } from './itinerario.js'
 import { validarPropuesta } from './itinerario.js'
 import { nombreMunicipio, porId, SLUGS } from './catalogo.js'
 import type { LugarPublico } from './catalogo.js'
-import { idEstatico } from '../shared/ids.js'
-import { escapeHtml } from './texto.js'
+import { esEmpresa, idEstatico } from '../shared/ids.js'
+import { escapeHtml, hoyColombia } from './texto.js'
+import { LUGARES } from '../src/data/lugares.js'
+import { FOTOS, FOTO_MUNICIPIO } from '../src/data/fotos.js'
 
 export interface ParadaDossier {
   n: number
+  /** Id del catálogo estático (para el enlace a la ficha). Vacío si es un negocio sin ficha pública. */
+  id?: string
+  /** Día del viaje (1..n); null para el hospedaje (todas las noches). */
+  dia?: number | null
   nombre: string
   municipio: string
   rol: string
@@ -25,6 +32,7 @@ export interface Dossier {
   nota: string
   preferencia: string
   municipio: string
+  municipioSlug?: string
   paradas: ParadaDossier[]
 }
 
@@ -67,7 +75,7 @@ export function instantaneasDe(raw: unknown): LugarPublico[] {
 export function paradasDe(it: Pick<ItinerarioDto, 'dias' | 'hospedaje' | 'lugares'>): ParadaDossier[] {
   const memoria = new Map((it.lugares ?? []).map((l) => [l.id, l]))
   const out: ParadaDossier[] = []
-  const push = (id: string | null, rol: string) => {
+  const push = (id: string | null, rol: string, dia: number | null) => {
     if (!id) return
     const snap = memoria.get(id)
     const estatico = porId(id) ?? porId(idEstatico(id))
@@ -76,6 +84,9 @@ export function paradasDe(it: Pick<ItinerarioDto, 'dias' | 'hospedaje' | 'lugare
     if (!nombre || !municipio || out.some((p) => p.nombre === nombre && p.rol === rol)) return
     out.push({
       n: out.length + 1,
+      // Ficha pública: la del catálogo o, si es una empresa publicada, /lugares/business:<uuid>.
+      id: estatico?.id ?? (snap && esEmpresa(id) ? id : ''),
+      dia,
       nombre,
       municipio: nombreMunicipio(municipio),
       rol,
@@ -84,11 +95,11 @@ export function paradasDe(it: Pick<ItinerarioDto, 'dias' | 'hospedaje' | 'lugare
       fuente: estatico ? (estatico.fuentes.join(', ') || 'Catálogo del Valle') : 'Empresa publicada al guardar la solicitud',
     })
   }
-  for (const d of it.dias) {
-    for (const id of d.paradas) push(id, 'Parada')
-    push(d.comida, 'Comer')
-  }
-  push(it.hospedaje, 'Dormir')
+  it.dias.forEach((d, i) => {
+    for (const id of d.paradas) push(id, 'Parada', i + 1)
+    push(d.comida, 'Comer', i + 1)
+  })
+  push(it.hospedaje, 'Dormir', null)
   return out.map((p, i) => ({ ...p, n: i + 1 }))
 }
 
@@ -111,6 +122,7 @@ export function dossierDe(opts: {
     nota: opts.nota,
     preferencia,
     municipio: nombreMunicipio(opts.itinerario.municipio),
+    municipioSlug: opts.itinerario.municipio,
     paradas: paradasDe(opts.itinerario),
   }
 }
@@ -144,34 +156,97 @@ export function asuntoDossier(codigo: string): string {
   return `Valle Directo | Solicitud recibida · ${codigo}`
 }
 
-export function htmlDossier(d: Dossier): string {
+const POR_CONFIRMAR = 'Por confirmar'
+const CONCEPTO: Record<string, string> = { Parada: 'Parada', Comer: 'Comida', Dormir: 'Alojamiento' }
+const normSitio = (s?: string) => {
+  const v = (s ?? '').trim().replace(/\/+$/, '')
+  return /^https?:\/\/[^\s]+$/.test(v) ? v : ''
+}
+const rutaFicha = (id: string) => `/#/lugares/${encodeURIComponent(id)}`
+const diaTexto = (p: ParadaDossier) => (p.dia != null ? `Día ${p.dia}` : 'Todas las noches')
+
+export interface CifrasMunicipio { atractivos: number; comer: number; dormir: number; guias: number }
+/** Cuenta lugares del catálogo del municipio. No inventa: sale de `LUGARES`. */
+export function cifrasMunicipio(slug: string): CifrasMunicipio {
+  const del = LUGARES.filter((l) => l.municipio === slug)
+  const n = (cats: string[]) => del.filter((l) => cats.includes(l.categoria)).length
+  return { atractivos: n(['atraccion', 'monumento', 'naturaleza']), comer: n(['restaurante']), dormir: n(['alojamiento']), guias: n(['operador']) }
+}
+
+function fotoDe(slug: string) {
+  const id = FOTO_MUNICIPIO[slug]
+  return id ? FOTOS[id] : undefined
+}
+
+export function htmlDossier(d: Dossier, sitio?: string): string {
+  const base = normSitio(sitio)
   const aviso = d.ejemplo
     ? '<p class="ejemplo"><strong>EJEMPLO / no guardada / no enviada.</strong> No es una reserva ni un correo real.</p>'
     : ''
-  const filas = d.paradas.map((p) => `<li><strong>${p.n}. ${escapeHtml(p.nombre)}</strong> · ${escapeHtml(p.rol)} · ${escapeHtml(p.municipio)}. Fuente: ${escapeHtml(p.fuente)}.</li>`).join('')
+  const foto = fotoDe(d.municipioSlug ?? '')
+  const cifras = cifrasMunicipio(d.municipioSlug ?? '')
+  const enMun = d.paradas.filter((p) => p.municipio === d.municipio).map((p) => p.nombre)
+  const otros = [...new Set(d.paradas.map((p) => p.municipio).filter((m) => m !== d.municipio))]
+  const imagen = foto && base
+    ? `<figure><img src="${escapeHtml(`${base}/${foto.archivo}`)}" alt="${escapeHtml(foto.pie)}" loading="lazy"><figcaption>Foto: ${escapeHtml(foto.pie)}. Fuente: ${escapeHtml(foto.fuente)}.</figcaption></figure>`
+    : foto
+      ? `<p class="credito">Foto del municipio: ${escapeHtml(foto.pie)}. Fuente: ${escapeHtml(foto.fuente)}.</p>`
+      : ''
+  const masInfo = foto?.url ? `<p>Más información turística: <a href="${escapeHtml(foto.url)}">${escapeHtml(foto.url)}</a></p>` : ''
+  const filas = d.paradas.map((p) => {
+    const ficha = p.id
+      ? (base
+        ? `<a href="${escapeHtml(base + rutaFicha(p.id))}">${escapeHtml(p.nombre)}</a><br><small>Ver ficha en Valle Directo</small>`
+        : `${escapeHtml(p.nombre)}<br><small>${escapeHtml(rutaFicha(p.id))}</small>`)
+      : `${escapeHtml(p.nombre)}<br><small>Sin ficha pública en el catálogo</small>`
+    return `<tr><td>${p.n}</td><td>${escapeHtml(diaTexto(p))}</td><td>${escapeHtml(CONCEPTO[p.rol] ?? p.rol)}</td><td>${ficha}</td><td>${escapeHtml(p.municipio)}</td><td class="der">${POR_CONFIRMAR}</td></tr>`
+  }).join('')
   const nota = d.nota ? `<p>Nota: ${escapeHtml(d.nota)}</p>` : ''
   return `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(asuntoDossier(d.codigo))}</title>
 <style>
 body{margin:0;background:#f6f3ec;color:#14302b;font-family:Georgia,serif}
-main{max-width:640px;margin:0 auto;padding:24px 16px 48px}
+main{max-width:760px;margin:0 auto;padding:24px 16px 48px}
 header{background:#14302b;color:#f6f3ec;padding:20px 16px}
 h1{font-size:28px;margin:0}
+h2{font-size:18px;border-bottom:1px solid #14302b;padding-bottom:4px;margin-top:28px}
 .marca{letter-spacing:.12em;font-size:12px;text-transform:uppercase;color:#e0902f}
 .ejemplo{background:#f3e2c4;padding:12px;border-radius:8px}
-ul{padding-left:1.2em} li{margin:8px 0}
+.doc{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+.doc p{margin:2px 0}
+figure{margin:12px 0}img{max-width:100%;height:auto;border-radius:4px}figcaption,.credito{font-size:13px;color:#3d534c}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th{background:#14302b;color:#f6f3ec;text-align:left;padding:6px}
+td{padding:6px;vertical-align:top} tr:nth-child(even) td{background:#efe9da}
+.der{text-align:right;white-space:nowrap} a{color:#1f6f6b} small{color:#1f6f6b}
+.cifras{display:flex;flex-wrap:wrap;gap:8px;padding:0;list-style:none}.cifras li{background:#efe9da;padding:8px 12px;border-radius:6px}
 </style></head><body><header><p class="marca">Valle de Tenza</p><h1>Valle Directo</h1></header><main>
 ${aviso}
-<p><strong>Solicitud recibida, pendiente de confirmación.</strong></p>
-<p>Código ${escapeHtml(d.codigo)}. ${escapeHtml(d.nombre)}, ${d.personas} ${d.personas === 1 ? 'persona' : 'personas'}, ${escapeHtml(d.fecha)}. Preferencia: ${escapeHtml(d.preferencia)}. Municipio base: ${escapeHtml(d.municipio)}.</p>
+<div class="doc"><div><h2 style="margin-top:0;border:0">COTIZACIÓN DE VIAJE</h2><p><strong>Solicitud recibida, pendiente de confirmación.</strong></p></div>
+<div><p>N.º ${escapeHtml(d.codigo)}</p><p>Emitida: ${escapeHtml(hoyColombia())}</p><p>Validez: sujeta a confirmación de cada prestador</p></div></div>
+<h2>Cliente</h2>
+<p>${escapeHtml(d.nombre)} · ${d.personas} ${d.personas === 1 ? 'persona' : 'personas'} · Fecha del viaje: ${escapeHtml(d.fecha)}<br>Preferencia: ${escapeHtml(d.preferencia)}</p>
 ${nota}
-<h2>Paradas del catálogo</h2>
-<ol>${filas}</ol>
-<p>La línea del mapa es un esquema en línea recta entre coordenadas. No es una carretera, no indica seguridad ni tiempos de viaje. No hay precios ni cupo garantizado.</p>
-<p>Posiciones del catálogo público: colaboradores de OpenStreetMap (ODbL) y datos.gov.co. Este dossier no pide direcciones externas.</p>
+<h2>Resumen de ${escapeHtml(d.municipio)}</h2>
+${imagen}
+<ul class="cifras"><li>Atractivos y naturaleza en el catálogo: <strong>${cifras.atractivos}</strong></li><li>Dónde comer: <strong>${cifras.comer}</strong></li><li>Dónde dormir: <strong>${cifras.dormir}</strong></li><li>Guías: <strong>${cifras.guias}</strong></li></ul>
+<p>Paradas de este plan en ${escapeHtml(d.municipio)}: ${enMun.length ? escapeHtml(enMun.join(', ')) : 'ninguna'}.</p>
+${otros.length ? `<p>El recorrido también pasa por: ${escapeHtml(otros.join(', '))}.</p>` : ''}
+${masInfo}
+<h2>Detalle de la cotización</h2>
+<table><thead><tr><th>N.º</th><th>Día</th><th>Concepto</th><th>Lugar o prestador</th><th>Municipio</th><th class="der">Valor (COP)</th></tr></thead><tbody>${filas}
+<tr><td colspan="5" class="der"><strong>Subtotal</strong></td><td class="der">${POR_CONFIRMAR}</td></tr>
+<tr><td colspan="5" class="der"><strong>Total</strong></td><td class="der"><strong>${POR_CONFIRMAR}</strong></td></tr></tbody></table>
+<h2>Condiciones</h2>
+<ul>
+<li>Este documento no confirma cupo, no cobra y no reserva.</li>
+<li>Cada prestador confirma su disponibilidad y su precio. No hay precios publicados en el sistema.</li>
+<li>Los enlaces llevan a la ficha pública del lugar en Valle Directo.</li>
+<li>La línea del esquema es recta entre coordenadas: no es una carretera ni un tiempo de viaje.</li>
+</ul>
+<p class="credito">Coordenadas: colaboradores de OpenStreetMap (ODbL) y datos.gov.co. Fotos: créditos en cada imagen.</p>
 </main></body></html>`
 }
-
 export function htmlCorreo(d: Dossier): string {
   const aviso = d.ejemplo
     ? '<p style="background:#f3e2c4;padding:12px;border-radius:8px"><strong>EJEMPLO / no guardada / no enviada.</strong></p>'
@@ -207,7 +282,7 @@ export function textoDossier(d: Dossier): string {
   ].filter((x) => x !== '').join('\n')
 }
 
-function dibujarEsquema(page: import('pdf-lib').PDFPage, font: import('pdf-lib').PDFFont, paradas: ParadaDossier[], x: number, y: number, w: number, h: number) {
+function dibujarEsquema(page: PDFPage, font: PDFFont, paradas: ParadaDossier[], x: number, y: number, w: number, h: number) {
   const pts = paradas.filter((p) => p.lat != null && p.lon != null) as (ParadaDossier & { lat: number; lon: number })[]
   page.drawRectangle({ x, y, width: w, height: h, color: CREMA, borderColor: VERDE, borderWidth: 1 })
   page.drawText('Esquema 2D, no es una carretera', { x: x + 8, y: y + h - 16, size: 9, font, color: VERDE })
@@ -235,52 +310,291 @@ function dibujarEsquema(page: import('pdf-lib').PDFPage, font: import('pdf-lib')
   }
 }
 
-export async function pdfDossier(d: Dossier): Promise<Uint8Array> {
+const TEAL = rgb(0.122, 0.435, 0.42)
+const LINEA = rgb(0.8, 0.78, 0.72)
+const A4: [number, number] = [595.28, 841.89]
+const MX = 40
+const ANCHO = 515
+const PIE_ALTO = 56
+
+export interface OpcionesPdf {
+  sitio?: string
+  foto?: (archivo: string) => Promise<Uint8Array | null>
+}
+
+/** Deja solo caracteres que Helvetica (WinAnsi) puede dibujar. */
+function limpia(t: string): string {
+  return t.replace(/[\r\n\t]+/g, ' ').replace(/[^ -~ -ÿ–—‘’“”•…€]/g, '?')
+}
+
+function ajusta(t: string, font: PDFFont, size: number, ancho: number): string {
+  t = limpia(t)
+  if (font.widthOfTextAtSize(t, size) <= ancho) return t
+  while (t.length > 1 && font.widthOfTextAtSize(t + '…', size) > ancho) t = t.slice(0, -1)
+  return t.trimEnd() + '…'
+}
+
+function envolver(t: string, font: PDFFont, size: number, ancho: number, maxLineas = 99): string[] {
+  const out: string[] = []
+  let linea = ''
+  for (const palabra of limpia(t).split(' ').filter(Boolean)) {
+    const prueba = linea ? `${linea} ${palabra}` : palabra
+    if (font.widthOfTextAtSize(prueba, size) <= ancho) { linea = prueba; continue }
+    if (linea) out.push(linea)
+    linea = font.widthOfTextAtSize(palabra, size) <= ancho ? palabra : ajusta(palabra, font, size, ancho)
+  }
+  if (linea) out.push(linea)
+  if (out.length > maxLineas) {
+    const corte = out.slice(0, maxLineas)
+    corte[maxLineas - 1] = ajusta(corte[maxLineas - 1] + ' …', font, size, ancho)
+    return corte
+  }
+  return out
+}
+
+/** Anotación de enlace clicable. `rect` = [x1, y1, x2, y2] en coordenadas PDF. */
+function enlazar(pdf: PDFDocument, page: PDFPage, rect: [number, number, number, number], url: string) {
+  const annot = pdf.context.register(pdf.context.obj({
+    Type: 'Annot',
+    Subtype: 'Link',
+    Rect: rect,
+    Border: [0, 0, 0],
+    A: { Type: 'Action', S: 'URI', URI: PDFString.of(url) },
+  }))
+  let annots = page.node.lookupMaybe(PDFName.of('Annots'), PDFArray)
+  if (!annots) {
+    annots = pdf.context.obj([]) as PDFArray
+    page.node.set(PDFName.of('Annots'), annots)
+  }
+  annots.push(annot)
+}
+
+export async function pdfDossier(d: Dossier, opts: OpcionesPdf = {}): Promise<Uint8Array> {
+  const sitio = normSitio(opts.sitio ?? process.env.SITIO_URL)
   const pdf = await PDFDocument.create()
+  pdf.setTitle(`Cotización de viaje ${d.codigo} · Valle Directo`)
+  pdf.setProducer('Valle Directo')
   const font = await pdf.embedFont(StandardFonts.Helvetica)
   const bold = await pdf.embedFont(StandardFonts.HelveticaBold)
-  const page = pdf.addPage([595.28, 841.89])
-  page.drawRectangle({ x: 0, y: 760, width: 595, height: 82, color: VERDE })
-  page.drawText('VALLE DE TENZA', { x: 40, y: 812, size: 9, font: bold, color: TIERRA })
-  page.drawText('Valle Directo', { x: 40, y: 786, size: 22, font: bold, color: CREMA })
-  let y = 730
-  if (d.ejemplo) {
-    page.drawText('EJEMPLO / no guardada / no enviada', { x: 40, y, size: 12, font: bold, color: TIERRA })
-    y -= 18
+  const H = A4[1]
+  const paginas: PDFPage[] = []
+  let page!: PDFPage
+  let y = 0 // coordenada PDF (crece hacia arriba)
+
+  const texto = (t: string, x: number, yy: number, size: number, f = font, color = TINTA) => {
+    page.drawText(limpia(t), { x, y: yy, size, font: f, color })
   }
-  page.drawText('Solicitud recibida, pendiente de confirmación.', { x: 40, y, size: 12, font: bold, color: VERDE })
-  y -= 16
-  const linea = (t: string, size = 11) => {
-    page.drawText(t.slice(0, 110), { x: 40, y, size, font, color: TINTA })
-    y -= size + 6
+  const derecha = (t: string, xDer: number, yy: number, size: number, f = font, color = TINTA) => {
+    const s = limpia(t)
+    page.drawText(s, { x: xDer - f.widthOfTextAtSize(s, size), y: yy, size, font: f, color })
   }
-  linea(`Código ${d.codigo}`)
-  linea(`${d.nombre} · ${d.personas} ${d.personas === 1 ? 'persona' : 'personas'} · ${d.fecha}`)
-  linea(`Preferencia: ${d.preferencia}. Municipio base: ${d.municipio}.`)
-  if (d.nota) linea(`Nota: ${d.nota.slice(0, 140)}`)
-  y -= 6
-  linea('No hay precios ni cupo garantizado.', 10)
-  y -= 8
-  const limite = Math.min(d.paradas.length, 8)
-  for (const p of d.paradas.slice(0, limite)) {
-    if (y < 250) break
-    linea(`${p.n}. ${p.nombre} · ${p.rol} · ${p.municipio}`, 10)
-  }
-  dibujarEsquema(page, font, d.paradas, 40, 48, 515, 180)
-  const sobran = d.paradas.length > limite
-  if (sobran || d.paradas.length > 6) {
-    const p2 = pdf.addPage([595.28, 841.89])
-    let y2 = 800
-    p2.drawText('Paradas y fuentes', { x: 40, y: y2, size: 16, font: bold, color: VERDE })
-    y2 -= 24
-    for (const p of d.paradas) {
-      if (y2 < 60) break
-      p2.drawText(`${p.n}. ${p.nombre}`.slice(0, 80), { x: 40, y: y2, size: 11, font: bold, color: TINTA })
-      y2 -= 14
-      p2.drawText(`${p.rol} · ${p.municipio} · ${p.fuente}`.slice(0, 100), { x: 40, y: y2, size: 9, font, color: TINTA })
-      y2 -= 18
+  const regla = (yy: number, color = LINEA, grosor = 0.6) => page.drawLine({ start: { x: MX, y: yy }, end: { x: MX + ANCHO, y: yy }, thickness: grosor, color })
+
+  const nuevaPagina = (primera: boolean) => {
+    page = pdf.addPage(A4)
+    paginas.push(page)
+    if (primera) {
+      page.drawRectangle({ x: 0, y: H - 74, width: A4[0], height: 74, color: VERDE })
+      texto('VALLE DE TENZA', MX, H - 30, 9, bold, TIERRA)
+      texto('Valle Directo', MX, H - 56, 22, bold, CREMA)
+      y = H - 74 - 26
+    } else {
+      page.drawRectangle({ x: 0, y: H - 30, width: A4[0], height: 30, color: VERDE })
+      texto('VALLE DIRECTO', MX, H - 19, 9, bold, CREMA)
+      derecha(`Cotización N.º ${d.codigo}`, MX + ANCHO, H - 19, 9, font, CREMA)
+      y = H - 30 - 24
     }
-    p2.drawText('Coordenadas del catálogo público. OpenStreetMap (ODbL) y datos.gov.co.', { x: 40, y: 40, size: 8, font, color: TINTA })
+    if (d.ejemplo) {
+      const w = bold.widthOfTextAtSize('EJEMPLO – no guardada, no enviada', 9) + 16
+      page.drawRectangle({ x: MX + ANCHO - w, y: primera ? H - 62 : H - 25, width: w, height: 16, color: TIERRA })
+      texto('EJEMPLO – no guardada, no enviada', MX + ANCHO - w + 8, primera ? H - 57 : H - 20, 9, bold, VERDE)
+    }
   }
-  return pdf.save()
+  const asegurar = (alto: number, repetir?: () => void) => {
+    if (y - alto >= PIE_ALTO + 8) return
+    nuevaPagina(false)
+    repetir?.()
+  }
+  const titulo = (t: string) => {
+    texto(t.toUpperCase(), MX, y, 10, bold, VERDE)
+    regla(y - 5, VERDE, 1)
+    y -= 20
+  }
+
+  // ---------- Página 1: cabecera y resumen ----------
+  nuevaPagina(true)
+  texto('COTIZACIÓN DE VIAJE', MX, y - 10, 20, bold, VERDE)
+  texto('Solicitud recibida, pendiente de confirmación.', MX, y - 28, 10, font, TINTA)
+  derecha(`N.º ${d.codigo}`, MX + ANCHO, y - 2, 11, bold, TINTA)
+  derecha(`Emitida: ${hoyColombia()}`, MX + ANCHO, y - 15, 9, font, TINTA)
+  derecha('Validez: sujeta a confirmación de cada prestador', MX + ANCHO, y - 27, 8, font, TINTA)
+  y -= 44
+  regla(y, VERDE, 1.2)
+  y -= 18
+
+  // Cliente / Destino base
+  const colW = 330
+  const yc = y
+  texto('CLIENTE', MX, yc, 9, bold, TIERRA)
+  texto('DESTINO BASE', MX + colW + 20, yc, 9, bold, TIERRA)
+  let yy = yc - 15
+  texto(ajusta(d.nombre, bold, 12, colW), MX, yy, 12, bold)
+  yy -= 14
+  texto(`Fecha del viaje: ${d.fecha}`, MX, yy, 9.5)
+  yy -= 13
+  texto(`Personas: ${d.personas}   ·   Preferencia: ${d.preferencia}`, MX, yy, 9.5)
+  if (d.nota) {
+    for (const l of envolver(`Nota: ${d.nota}`, font, 9, colW, 2)) { yy -= 12; texto(l, MX, yy, 9, font, TINTA) }
+  }
+  texto(ajusta(d.municipio, bold, 14, ANCHO - colW - 20), MX + colW + 20, yc - 16, 14, bold, VERDE)
+  texto('Municipio base del plan', MX + colW + 20, yc - 30, 9, font, TINTA)
+  y = Math.min(yy, yc - 38) - 30
+
+  // Resumen del municipio
+  titulo(`Resumen de ${d.municipio}`)
+  const foto = fotoDe(d.municipioSlug ?? '')
+  if (foto && opts.foto) {
+    try {
+      const bytes = await opts.foto(foto.archivo)
+      if (bytes) {
+        const img = await pdf.embedJpg(bytes)
+        const cajaW = ANCHO, cajaH = 220
+        const escala = Math.max(cajaW / img.width, cajaH / img.height)
+        const w = img.width * escala, h = img.height * escala
+        const x0 = MX, y0 = y - cajaH
+        page.pushOperators(pushGraphicsState(), rectangle(x0, y0, cajaW, cajaH), clip(), endPath())
+        page.drawImage(img, { x: x0 - (w - cajaW) / 2, y: y0 - (h - cajaH) / 2, width: w, height: h })
+        page.pushOperators(popGraphicsState())
+        page.drawRectangle({ x: x0, y: y0, width: cajaW, height: cajaH, borderColor: LINEA, borderWidth: 0.6 })
+        y = y0 - 12
+        const credito = ajusta(`Foto: ${foto.pie}. Fuente: ${foto.fuente}.`, font, 8, ANCHO)
+        texto(credito, MX, y, 8, font, TINTA)
+        y -= 18
+      }
+    } catch { /* sigue sin imagen */ }
+  }
+  // Cifras del catálogo
+  const c = cifrasMunicipio(d.municipioSlug ?? '')
+  const celdas: [string, number][] = [['Atractivos y naturaleza', c.atractivos], ['Dónde comer', c.comer], ['Dónde dormir', c.dormir], ['Guías', c.guias]]
+  const cw = (ANCHO - 3 * 8) / 4
+  celdas.forEach(([et, n], i) => {
+    const x = MX + i * (cw + 8)
+    page.drawRectangle({ x, y: y - 40, width: cw, height: 40, color: CREMA })
+    texto(String(n), x + 10, y - 22, 16, bold, VERDE)
+    texto(ajusta(et, font, 8, cw - 20), x + 10, y - 34, 8, font, TINTA)
+  })
+  y -= 54
+  texto('Cifras del catálogo de Valle Directo para este municipio; no es un inventario completo.', MX, y, 7.5, font, TINTA)
+  y -= 16
+  const enMun = d.paradas.filter((p) => p.municipio === d.municipio).map((p) => p.nombre)
+  texto('Paradas de este plan en ' + d.municipio, MX, y, 9.5, bold, VERDE)
+  y -= 13
+  const lineasMun = enMun.length ? envolver(enMun.join(' · '), font, 9, ANCHO, 3) : ['Este plan no tiene paradas en el municipio base.']
+  for (const l of lineasMun) { texto(l, MX, y, 9); y -= 12 }
+  const otros = [...new Set(d.paradas.map((p) => p.municipio).filter((m) => m !== d.municipio))]
+  if (otros.length) {
+    y -= 3
+    for (const l of envolver(`El recorrido también pasa por: ${otros.join(', ')}.`, font, 9, ANCHO, 2)) { texto(l, MX, y, 9); y -= 12 }
+  }
+  if (foto?.url) {
+    y -= 3
+    const pref = 'Más información turística: '
+    texto(pref, MX, y, 9)
+    const url = ajusta(foto.url, font, 9, ANCHO - font.widthOfTextAtSize(pref, 9))
+    const x1 = MX + font.widthOfTextAtSize(pref, 9)
+    texto(url, x1, y, 9, font, TEAL)
+    page.drawLine({ start: { x: x1, y: y - 1.5 }, end: { x: x1 + font.widthOfTextAtSize(limpia(url), 9), y: y - 1.5 }, thickness: 0.5, color: TEAL })
+    enlazar(pdf, page, [x1, y - 3, x1 + font.widthOfTextAtSize(limpia(url), 9), y + 10], foto.url)
+    y -= 12
+  }
+
+  // ---------- Página 2: detalle ----------
+  nuevaPagina(false)
+  const cols = [
+    { t: 'N.º', w: 26, der: false },
+    { t: 'Día', w: 80, der: false },
+    { t: 'Concepto', w: 60, der: false },
+    { t: 'Lugar o prestador', w: 183, der: false },
+    { t: 'Municipio', w: 76, der: false },
+    { t: 'Valor (COP)', w: 90, der: true },
+  ]
+  const cabeceraTabla = () => {
+    page.drawRectangle({ x: MX, y: y - 18, width: ANCHO, height: 20, color: VERDE })
+    let x = MX
+    for (const col of cols) {
+      if (col.der) derecha(col.t, x + col.w - 6, y - 12, 8.5, bold, CREMA)
+      else texto(col.t, x + 6, y - 12, 8.5, bold, CREMA)
+      x += col.w
+    }
+    y -= 20
+  }
+  titulo('Detalle de la cotización')
+  cabeceraTabla()
+  const FILA = 30
+  d.paradas.forEach((p, i) => {
+    asegurar(FILA + 4, cabeceraTabla)
+    if (i % 2 === 0) page.drawRectangle({ x: MX, y: y - FILA, width: ANCHO, height: FILA, color: CREMA })
+    const base = y - 12
+    let x = MX
+    const concepto = CONCEPTO[p.rol] ?? p.rol
+    const celdasT = [String(p.n), p.dia != null ? `Día ${p.dia}` : 'Todas las noches', concepto]
+    celdasT.forEach((t, k) => { texto(t, x + 6, base, 8.5); x += cols[k].w })
+    const xl = x
+    const anchoL = cols[3].w - 10
+    texto(ajusta(p.nombre, bold, 8.5, anchoL), xl + 6, base, 8.5, bold)
+    if (p.id) {
+      const rel = rutaFicha(p.id)
+      const mostrado = ajusta(sitio ? 'Ver perfil en Valle Directo' : rel, font, 8, anchoL)
+      texto(mostrado, xl + 6, base - 11, 8, font, TEAL)
+      if (sitio) enlazar(pdf, page, [xl, y - FILA, xl + cols[3].w, y], sitio + rel)
+    } else {
+      texto('Sin ficha pública en el catálogo', xl + 6, base - 11, 8, font, TINTA)
+    }
+    x = xl + cols[3].w
+    texto(ajusta(p.municipio, font, 8.5, cols[4].w - 8), x + 6, base, 8.5)
+    x += cols[4].w
+    derecha(POR_CONFIRMAR, x + cols[5].w - 6, base, 8.5)
+    y -= FILA
+  })
+  regla(y, VERDE, 0.8)
+  asegurar(60)
+  const totalFila = (et: string, f: PDFFont) => {
+    derecha(et, MX + ANCHO - cols[5].w - 8, y - 15, 9.5, f, TINTA)
+    derecha(POR_CONFIRMAR, MX + ANCHO - 6, y - 15, 9.5, f, TINTA)
+    y -= 22
+  }
+  totalFila('Subtotal', font)
+  regla(y + 2, LINEA)
+  totalFila('Total', bold)
+  regla(y + 2, VERDE, 1)
+  y -= 14
+
+  asegurar(110)
+  titulo('Condiciones')
+  const condiciones = [
+    'Este documento no confirma cupo, no cobra y no reserva.',
+    'Cada prestador confirma su disponibilidad y su precio. En el sistema no hay precios publicados, por eso el valor figura como «Por confirmar».',
+    'Los enlaces llevan a la ficha pública del lugar en Valle Directo.',
+    'La línea del esquema es recta entre coordenadas: no es una carretera ni un tiempo de viaje.',
+  ]
+  for (const cond of condiciones) {
+    const ls = envolver(cond, font, 9, ANCHO - 14)
+    asegurar(ls.length * 12 + 4)
+    texto('•', MX + 2, y, 9)
+    for (const l of ls) { texto(l, MX + 14, y, 9); y -= 12 }
+    y -= 2
+  }
+  y -= 8
+  const altoEsq = 170
+  asegurar(altoEsq + 6)
+  dibujarEsquema(page, font, d.paradas, MX, y - altoEsq, ANCHO, altoEsq)
+
+  // ---------- Pie en todas las páginas ----------
+  paginas.forEach((pg, i) => {
+    page = pg
+    regla(PIE_ALTO - 6, LINEA)
+    texto(`Valle Directo · Cotización N.º ${d.codigo} · Página ${i + 1} de ${paginas.length}`, MX, PIE_ALTO - 19, 8, bold, VERDE)
+    texto('Coordenadas: colaboradores de OpenStreetMap (ODbL) y datos.gov.co. Fotos: créditos en cada imagen.', MX, PIE_ALTO - 31, 7.5, font, TINTA)
+  })
+  return pdf.save({ useObjectStreams: false })
 }

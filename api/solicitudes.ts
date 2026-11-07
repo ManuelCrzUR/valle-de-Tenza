@@ -2,6 +2,7 @@ import { almacenSupabase } from '../server/almacen.js'
 import { datosReciboDe, crearSolicitud } from '../server/solicitud.js'
 import { enviarRecibo } from '../server/correo.js'
 import { pdfDossier } from '../server/dossier.js'
+import { cargadorFotos, sitioDe } from '../server/fotos-pdf.js'
 import { nuevoToken, tokensSupabase } from '../server/descarga.js'
 import { openaiConfig, resendConfig, supabaseConfig } from '../server/env.js'
 import { crearLimite, ipCliente, json } from '../server/http.js'
@@ -14,6 +15,7 @@ export async function POST(request: Request): Promise<Response> {
   try { cuerpo = await request.json() } catch { return json({ error: 'solicitud_invalida', mensaje: 'No pude leer la solicitud.' }, 400) }
   const sb = supabaseConfig()
   const correo = resendConfig()
+  const sitio = sitioDe(request)
   let almacen = null
   if (sb.configurado) {
     try { almacen = almacenSupabase() } catch { almacen = null }
@@ -25,7 +27,7 @@ export async function POST(request: Request): Promise<Response> {
       ? async (fila) => {
         const datos = datosReciboDe(fila)
         let pdf: Uint8Array | null = null
-        try { pdf = await pdfDossier(datos) } catch { pdf = null }
+        try { pdf = await pdfDossier(datos, { sitio, foto: cargadorFotos(sitio) }) } catch { pdf = null }
         return enviarRecibo({
           fetchImpl: fetch,
           clave: correo.clave,

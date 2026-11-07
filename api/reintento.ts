@@ -2,6 +2,7 @@ import { almacenSupabase } from '../server/almacen.js'
 import { datosReciboDe, reintentarComprobante } from '../server/solicitud.js'
 import { enviarRecibo } from '../server/correo.js'
 import { pdfDossier } from '../server/dossier.js'
+import { cargadorFotos, sitioDe } from '../server/fotos-pdf.js'
 import { tokensSupabase, vigente } from '../server/descarga.js'
 import { resendConfig, supabaseConfig } from '../server/env.js'
 import { crearLimite, ipCliente, json } from '../server/http.js'
@@ -19,6 +20,7 @@ export async function POST(request: Request): Promise<Response> {
     return json({ error: 'no_configurado', mensaje: 'Sin Supabase no hay una solicitud guardada que reintentar.' }, 503)
   }
   const correo = resendConfig()
+  const sitio = sitioDe(request)
   const r = await reintentarComprobante(cuerpo.token, {
     tokens: {
       async buscar(hash) {
@@ -34,7 +36,7 @@ export async function POST(request: Request): Promise<Response> {
       ? async (fila) => {
         const datos = datosReciboDe(fila)
         let pdf: Uint8Array | null = null
-        try { pdf = await pdfDossier(datos) } catch { pdf = null }
+        try { pdf = await pdfDossier(datos, { sitio, foto: cargadorFotos(sitio) }) } catch { pdf = null }
         return enviarRecibo({
           fetchImpl: fetch,
           clave: correo.clave,
