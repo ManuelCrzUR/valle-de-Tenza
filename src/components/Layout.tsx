@@ -5,6 +5,7 @@ import type { TabBarItem } from './ui'
 import { Logo } from './Logo'
 import { Cargando } from './Cargando'
 import { useSesion } from '../state/sesion'
+import { Agente } from './agente/Agente'
 import '../styles/prestador.css'
 
 const NAV: TabBarItem[] = [
@@ -43,6 +44,8 @@ export function Layout() {
       <main id="contenido" tabIndex={-1}>
         <div key={pathname} className="ruta-entra"><Suspense fallback={<Cargando />}><Outlet /></Suspense></div>
       </main>
+
+      <Agente />
 
       <footer className="footer">
         <div className="wrap footer-in">
