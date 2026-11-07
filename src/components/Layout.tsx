@@ -39,13 +39,12 @@ export function Layout() {
           </nav>
         </div>
       </header>
-      {/* Asistente flotante: montar <Agente /> aquí, hermano de <header>, sin envolver appbar, Outlet ni cuenta-nav. */}
+      {/* Asistente flotante: hermano de <header>, sin envolver appbar, Outlet ni cuenta-nav. */}
+      <Agente />
 
       <main id="contenido" tabIndex={-1}>
         <div key={pathname} className="ruta-entra"><Suspense fallback={<Cargando />}><Outlet /></Suspense></div>
       </main>
-
-      <Agente />
 
       <footer className="footer">
         <div className="wrap footer-in">
