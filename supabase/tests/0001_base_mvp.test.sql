@@ -25,7 +25,7 @@ select throws_ok('select * from public.reservation_requests', '42501', null, 'an
 select throws_ok('select * from public.email_outbox', '42501', null, 'anon no lee el outbox');
 select throws_ok('select * from public.dossier_tokens', '42501', null, 'anon no lee tokens del dossier');
 select throws_ok($$select public.crear_solicitud('{}'::jsonb)$$, '42501', null, 'anon no ejecuta crear_solicitud');
-select is((select count(*)::int from public.businesses), 1, 'anon ve solo el negocio publicado');
+select is((select count(*)::int from public.businesses_public), 1, 'anon ve solo el negocio publicado (vía businesses_public)');
 reset role;
 
 -- Dueño A y usuario B
@@ -34,7 +34,7 @@ set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000a1","r
 select is((select count(*)::int from public.businesses), 2, 'el dueño ve también su borrador');
 
 set local request.jwt.claims = '{"sub":"00000000-0000-0000-0000-0000000000b2","role":"authenticated"}';
-select is((select count(*)::int from public.businesses), 1, 'otro usuario no ve borradores ajenos');
+select is((select count(*)::int from public.businesses), 0, 'otro usuario no ve negocios ajenos (solo los propios)');
 update public.businesses set name = 'Hackeado' where id = '10000000-0000-0000-0000-000000000001';
 select throws_ok(
   $$insert into public.businesses (owner_id, name, category, municipality, description)
