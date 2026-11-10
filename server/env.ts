@@ -33,3 +33,14 @@ export function resendConfig() {
   const destinatarioPrueba = limpio('RESEND_SANDBOX_RECIPIENT').toLowerCase()
   return { configurado: Boolean(clave && desde), clave, desde, dominio, destinatarioPrueba }
 }
+
+export function vapidConfig() {
+  const publica = limpio('VAPID_PUBLIC_KEY')
+  const privada = limpio('VAPID_PRIVATE_KEY')
+  const asunto = limpio('VAPID_SUBJECT')
+  return { configurado: Boolean(publica && privada && asunto), publica, privada, asunto }
+}
+
+export function siteUrl(): string {
+  return limpio('SITE_URL').replace(/\/+$/, '')
+}

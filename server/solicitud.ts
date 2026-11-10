@@ -17,6 +17,9 @@ export interface EntradaSolicitud {
   fecha?: string
   personas?: number
   nota?: string
+  comparteDatos?: boolean
+  /** id business:<uuid> de la ficha desde donde se pidió */
+  negocio?: string
   itinerario?: unknown
 }
 
@@ -28,6 +31,7 @@ export interface ResultadoSolicitud {
   comprobante: EstadoCorreo | 'no_enviado'
   id: string | null
   mensaje: string
+  negociosAvisados?: number
 }
 
 function sumarMeses(iso: string, meses: number): string {
@@ -55,7 +59,7 @@ export function validarSolicitud(entrada: EntradaSolicitud, opts: { dominio?: st
   if (!propuesto) return { ok: false as const, error: 'Falta el itinerario.' }
   const it = validarPropuesta(propuesto, [], instantaneasDe(entrada.itinerario))
   if (!it.ok) return { ok: false as const, error: 'El itinerario tiene lugares que no están en el catálogo.' }
-  return { ok: true as const, valor: { clave, nombre, correo: correo.correo, telefono: tel || null, fecha, personas, nota, itinerario: it.dto } }
+  return { ok: true as const, valor: { clave, nombre, correo: correo.correo, telefono: tel || null, fecha, personas, nota, comparteDatos: entrada.comparteDatos === true, itinerario: it.dto } }
 }
 
 const demosVistos = new Map<string, string>()
@@ -109,6 +113,7 @@ export async function crearSolicitud(entrada: EntradaSolicitud, deps: {
     fecha: v.valor.fecha,
     personas: v.valor.personas,
     nota: v.valor.nota,
+    comparteDatos: v.valor.comparteDatos,
     itinerario: guardado,
   })
   if (!deps.enviar) {

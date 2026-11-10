@@ -2,6 +2,7 @@
 // No es un endpoint público. Lee solo variables de servidor del entorno.
 import { almacenSupabase } from '../server/almacen.js'
 import { datosReciboDe, reintentarOutbox } from '../server/solicitud.js'
+import { depsAvisoDeEntorno, reintentarAvisos } from '../server/avisoNegocio.js'
 import { enviarRecibo } from '../server/correo.js'
 import { resendConfig, supabaseConfig } from '../server/env.js'
 
@@ -21,3 +22,9 @@ const r = await reintentarOutbox(almacenSupabase(), (fila) => enviarRecibo({
   datos: datosReciboDe(fila),
 }))
 console.log(`Reintentos: ${r.intentos}. Enviados: ${r.enviados}.`)
+
+const deps = depsAvisoDeEntorno()
+if (deps) {
+  const a = await reintentarAvisos(deps)
+  console.log(`Avisos a negocios reintentados: ${a.intentados}. Enviados: ${a.enviados}.`)
+}

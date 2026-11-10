@@ -5,6 +5,7 @@ import { pdfDossier } from '../server/dossier.js'
 import { cargadorFotos, sitioDe } from '../server/fotos-pdf.js'
 import { nuevoToken, tokensSupabase } from '../server/descarga.js'
 import { openaiConfig, resendConfig, supabaseConfig } from '../server/env.js'
+import { avisarNegocios, depsAvisoDeEntorno } from '../server/avisoNegocio.js'
 import { crearLimite, ipCliente, json } from '../server/http.js'
 
 const limitado = crearLimite({ max: 8, ventanaMs: 60 * 60 * 1000 })
@@ -51,5 +52,19 @@ export async function POST(request: Request): Promise<Response> {
       descarga = { token: t.token, expira: t.expira }
     } catch { descarga = null }
   }
-  return json({ ...r.resultado, descarga, openaiConfigurado: openaiConfig().configurado })
+  let negociosAvisados = 0
+  const depsAviso = depsAvisoDeEntorno()
+  if (r.resultado.nueva && r.resultado.persistido && r.resultado.id && almacen && depsAviso) {
+    // Después de guardar; nunca bloquea ni rompe la solicitud. Tope de ~8 s.
+    try {
+      const fila = await almacen.buscarPorId(r.resultado.id)
+      if (fila?.comparteDatos) {
+        const directo = typeof (cuerpo as { negocio?: unknown })?.negocio === 'string' ? (cuerpo as { negocio: string }).negocio : null
+        let t: ReturnType<typeof setTimeout> | undefined
+        const espera = new Promise<{ negocios: number }>((res) => { t = setTimeout(() => res({ negocios: 0 }), 8000) })
+        try { negociosAvisados = (await Promise.race([avisarNegocios(fila, depsAviso, directo), espera])).negocios } finally { clearTimeout(t) }
+      }
+    } catch { negociosAvisados = 0 }
+  }
+  return json({ ...r.resultado, negociosAvisados, descarga, openaiConfigurado: openaiConfig().configurado })
 }

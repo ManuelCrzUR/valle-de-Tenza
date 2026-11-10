@@ -22,6 +22,7 @@ export interface SolicitudFila {
   fecha: string
   personas: number
   nota: string | null
+  comparteDatos?: boolean
   itinerario: ItinerarioDto
   outbox: Outbox
 }
@@ -34,6 +35,7 @@ export interface NuevaSolicitud {
   fecha: string
   personas: number
   nota: string | null
+  comparteDatos?: boolean
   itinerario: ItinerarioDto
 }
 
@@ -73,6 +75,7 @@ function filaDe(row: Record<string, unknown>): SolicitudFila {
     fecha: String(row.fecha).slice(0, 10),
     personas: Number(row.personas),
     nota: row.nota == null ? null : String(row.nota),
+    comparteDatos: row.comparte_datos === true,
     itinerario: row.itinerario as ItinerarioDto,
     outbox: {
       id: String(out.id ?? ''),
@@ -118,6 +121,7 @@ export function almacenSupabase(fetchImpl: typeof fetch = fetch): Almacen {
           fecha: nueva.fecha,
           personas: nueva.personas,
           nota: nueva.nota,
+          comparte_datos: nueva.comparteDatos === true,
           itinerario: nueva.itinerario,
           plan: nueva.itinerario.plan,
           municipio: nueva.itinerario.municipio,
@@ -190,6 +194,7 @@ export function almacenMemoria(eventos?: string[]): Almacen {
         fecha: nueva.fecha,
         personas: nueva.personas,
         nota: nueva.nota,
+        comparteDatos: nueva.comparteDatos === true,
         itinerario: nueva.itinerario,
         outbox: {
           id: `out_${id}`,
