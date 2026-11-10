@@ -229,3 +229,74 @@
 @media (min-width: 1024px) {
   .acceso { min-height: calc(100dvh - var(--appbar-height) - 160px); }
 }
+
+/* Secciones de la ficha del negocio */
+.prestador-seccion {
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.prestador-seccion > legend,
+.prestador-seccion > h3 { padding: 0 4px; margin: 0; color: var(--heading); }
+
+.prestador-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.prestador-check input { width: 24px; height: 24px; flex: none; accent-color: var(--accent); }
+
+.prestador-dia {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 4px 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.prestador-dia-nombre { font-weight: 700; color: var(--heading); }
+.prestador-dia .prestador-check { justify-self: end; }
+.prestador-hora { min-width: 0; }
+.prestador-hora .vd-input { width: 100%; min-height: 44px; }
+
+.prestador-servicios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0 12px;
+}
+
+.prestador-precios {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.prestador-precio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+
+.prestador-actualizada { margin: 0; color: var(--ink-muted); }
+
+@media (min-width: 720px) {
+  .prestador-dia { grid-template-columns: 120px auto 1fr 1fr; }
+  .prestador-dia .prestador-check { justify-self: start; }
+}

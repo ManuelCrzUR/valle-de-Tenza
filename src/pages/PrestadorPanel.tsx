@@ -3,6 +3,12 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, TextField } from '../components/ui'
 import { PinEmpresa } from '../components/prestador/PinEmpresa'
+import { FichaCampos, horarioAJson, horarioDesdeJson, horarioVacio } from '../components/prestador/FichaCampos'
+import type { Ficha } from '../components/prestador/FichaCampos'
+import { MenuPdf } from '../components/prestador/MenuPdf'
+import { PreciosLista } from '../components/prestador/PreciosLista'
+import { enlaceTel, numeroWhatsapp } from '../../shared/contacto'
+import type { Horario } from '../../shared/contacto'
 import { CATEGORIAS, MUNICIPIOS } from '../data/lugares'
 import type { CategoriaId } from '../data/lugares'
 import { supabase } from '../lib/supabase'
@@ -22,7 +28,24 @@ interface Empresa {
   lat: number | null
   lng: number | null
   status: 'draft' | 'published'
+  phone: string | null
+  whatsapp: string | null
+  show_phone: boolean
+  show_whatsapp: boolean
+  website: string | null
+  instagram: string | null
+  facebook: string | null
+  price_from_cop: number | null
+  price_note: string | null
+  hours: Horario | null
+  hours_note: string | null
+  services: string[]
+  menu_path: string | null
+  notify_email: string | null
+  info_updated_at: string
 }
+
+const COLUMNAS = 'id,name,category,municipality,description,contact,lat,lng,status,phone,whatsapp,show_phone,show_whatsapp,website,instagram,facebook,price_from_cop,price_note,hours,hours_note,services,menu_path,notify_email,info_updated_at'
 
 interface Foto {
   id: string
@@ -30,6 +53,18 @@ interface Foto {
   alt: string | null
   sort_order: number
   is_cover: boolean
+}
+
+function fichaVacia(): Ficha {
+  return {
+    phone: '', whatsapp: '', show_phone: false, show_whatsapp: false, notify_email: '',
+    hours: horarioVacio(), hours_note: '', price_from_cop: '', price_note: '',
+    website: '', instagram: '', facebook: '', services: [], menu_path: null,
+  }
+}
+
+function fechaActualizada(iso: string): string {
+  return new Intl.DateTimeFormat('es-CO', { dateStyle: 'long', timeZone: 'America/Bogota' }).format(new Date(iso))
 }
 
 const vacia = {
@@ -41,6 +76,7 @@ const vacia = {
   lat: null as number | null,
   lng: null as number | null,
   status: 'draft' as 'draft' | 'published',
+  ...fichaVacia(),
 }
 
 function urlDe(path: string): string {
@@ -71,7 +107,7 @@ export default function PrestadorPanel() {
     let vivo = true
     Promise.all([
       supabase.from('profiles').select('name,bio').eq('id', usuario.id).maybeSingle(),
-      supabase.from('businesses').select('id,name,category,municipality,description,contact,lat,lng,status').eq('owner_id', usuario.id).order('created_at'),
+      supabase.from('businesses').select(COLUMNAS).eq('owner_id', usuario.id).order('created_at'),
     ]).then(([p, b]) => {
       if (!vivo) return
       if (p.data) setPerfil({ name: p.data.name ?? '', bio: p.data.bio ?? '' })
@@ -100,6 +136,20 @@ export default function PrestadorPanel() {
       lat: empresa.lat,
       lng: empresa.lng,
       status: empresa.status,
+      phone: empresa.phone ?? '',
+      whatsapp: empresa.whatsapp ?? '',
+      show_phone: empresa.show_phone,
+      show_whatsapp: empresa.show_whatsapp,
+      notify_email: empresa.notify_email ?? '',
+      hours: horarioDesdeJson(empresa.hours),
+      hours_note: empresa.hours_note ?? '',
+      price_from_cop: empresa.price_from_cop == null ? '' : String(empresa.price_from_cop),
+      price_note: empresa.price_note ?? '',
+      website: empresa.website ?? '',
+      instagram: empresa.instagram ?? '',
+      facebook: empresa.facebook ?? '',
+      services: empresa.services ?? [],
+      menu_path: empresa.menu_path,
     })
     setError('')
     setAviso('')
@@ -121,6 +171,14 @@ export default function PrestadorPanel() {
     if (!supabase || !usuario) return
     if (form.description.trim().length < 10) { setError('La descripción necesita al menos 10 caracteres.'); return }
     if (form.status === 'published' && (form.lat == null || form.lng == null)) { setError('Para publicar, marca el punto en el mapa.'); return }
+    if (form.phone.trim() && !enlaceTel(form.phone)) { setError('El teléfono no es válido: usa entre 7 y 15 dígitos.'); return }
+    if (form.whatsapp.trim() && !numeroWhatsapp(form.whatsapp)) { setError('El WhatsApp no es válido: usa un celular de 10 dígitos que empiece por 3, o un número con +código de país.'); return }
+    if (form.notify_email.trim() && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.notify_email.trim())) { setError('El correo para avisos no es válido.'); return }
+    if (form.website.trim() && !form.website.trim().startsWith('https://')) { setError('El sitio web debe empezar por https://'); return }
+    const precioDesde = form.price_from_cop.trim()
+    if (precioDesde && (!/^\d+$/.test(precioDesde) || Number(precioDesde) > 50_000_000)) { setError('«Precio desde» debe ser un entero en pesos, hasta 50.000.000.'); return }
+    const horario = horarioAJson(form.hours)
+    if (horario.error) { setError(horario.error); return }
     setOcupado(true)
     setError('')
     const fila = {
@@ -133,9 +191,23 @@ export default function PrestadorPanel() {
       lat: form.lat,
       lng: form.lng,
       status: form.status,
+      phone: form.phone.trim() || null,
+      whatsapp: form.whatsapp.trim() || null,
+      show_phone: form.show_phone,
+      show_whatsapp: form.show_whatsapp,
+      notify_email: form.notify_email.trim() || null,
+      hours: horario.hours,
+      hours_note: form.hours_note.trim() || null,
+      price_from_cop: precioDesde ? Number(precioDesde) : null,
+      price_note: form.price_note.trim() || null,
+      website: form.website.trim() || null,
+      instagram: form.instagram.trim().replace(/^@+/, '') || null,
+      facebook: form.facebook.trim() || null,
+      services: form.services,
+      menu_path: form.menu_path,
     }
     if (activa && activa !== 'nueva') {
-      const { data, error: err } = await supabase.from('businesses').update(fila).eq('id', activa).select('id,name,category,municipality,description,contact,lat,lng,status')
+      const { data, error: err } = await supabase.from('businesses').update(fila).eq('id', activa).select(COLUMNAS)
       setOcupado(false)
       if (err || !data?.length) { setError('No se guardó. Solo la persona titular puede editar este negocio.'); return }
       const actual = data[0] as Empresa
@@ -143,7 +215,7 @@ export default function PrestadorPanel() {
       setAviso(actual.status === 'published' ? 'Negocio publicado.' : 'Borrador guardado.')
       return
     }
-    const { data, error: err } = await supabase.from('businesses').insert(fila).select('id,name,category,municipality,description,contact,lat,lng,status').single()
+    const { data, error: err } = await supabase.from('businesses').insert(fila).select(COLUMNAS).single()
     setOcupado(false)
     if (err || !data) { setError('No pude crear el negocio.'); return }
     const creada = data as Empresa
@@ -209,6 +281,8 @@ export default function PrestadorPanel() {
     await supabase?.auth.signOut()
     nav('/prestadores')
   }
+
+  const infoActualizada = empresas.find((e) => e.id === activa)?.info_updated_at
 
   if (!listo) {
     return (
@@ -322,14 +396,34 @@ export default function PrestadorPanel() {
               </div>
             </>
           )}
+          <FichaCampos ficha={form} onChange={(c) => setForm((f) => ({ ...f, ...c }))} />
+          {activa !== 'nueva' && (
+            <>
+              <PreciosLista businessId={activa} onAviso={setAviso} onError={setError} />
+              <MenuPdf
+                ownerId={usuario.id}
+                businessId={activa}
+                menuPath={form.menu_path}
+                onCambio={(path) => {
+                  setForm((f) => ({ ...f, menu_path: path }))
+                  setEmpresas((lista) => lista.map((item) => item.id === activa ? { ...item, menu_path: path } : item))
+                }}
+                onAviso={setAviso}
+                onError={setError}
+              />
+              {infoActualizada && <p className="prestador-actualizada">Información actualizada el {fechaActualizada(infoActualizada)}</p>}
+            </>
+          )}
           <div className="prestador-acciones">
             <Button type="submit" variant="cta" disabled={ocupado}>{ocupado ? 'Guardando…' : 'Guardar negocio'}</Button>
             {activa !== 'nueva' && <Button type="button" variant="secondary" onClick={() => void borrarEmpresa()}>Borrar</Button>}
           </div>
         </form>
       )}
-      {error && <p role="alert">{error}</p>}
-      {aviso && <p className="prestador-aviso" role="status">{aviso}</p>}
+      <div aria-live="polite">
+        {error && <p role="alert">{error}</p>}
+        {aviso && <p className="prestador-aviso" role="status">{aviso}</p>}
+      </div>
     </div>
   )
 }
