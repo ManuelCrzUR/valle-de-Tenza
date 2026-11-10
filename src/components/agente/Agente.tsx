@@ -6,6 +6,34 @@ import { Orbe } from './Orbe'
 import type { EstadoOrbe } from './Orbe'
 import { responderLocal, SUGERENCIAS, validarLink } from '../../data/agente'
 import type { LinkAgente, RespuestaAgente } from '../../data/agente'
+import { leerGustosLocal } from '../../data/gustos'
+import { MUNICIPIOS, NOMBRE_MUNICIPIO } from '../../data/lugares'
+import { fusionarGustos, normalizarGustos } from '../../../shared/gustos'
+import type { Gustos as TGustos } from '../../../shared/gustos'
+import { Gustos } from '../Gustos'
+import { guardarGustos, leerGustos } from '../../state/gustos'
+
+interface Recomendacion { id: string; nombre: string; municipio: string; razones: string[]; ruta: string }
+interface Extras { gustos?: TGustos; recomendaciones?: Recomendacion[] }
+const SLUGS = MUNICIPIOS.map((m) => m.slug)
+
+function leerRecs(x: unknown): Recomendacion[] {
+  if (!Array.isArray(x)) return []
+  const out: Recomendacion[] = []
+  for (const r of x) {
+    if (!r || typeof r !== 'object') continue
+    const o = r as Record<string, unknown>
+    if (typeof o.nombre !== 'string' || typeof o.ruta !== 'string' || !o.ruta.startsWith('/')) continue
+    out.push({
+      id: typeof o.id === 'string' ? o.id : o.ruta,
+      nombre: o.nombre,
+      municipio: typeof o.municipio === 'string' ? o.municipio : '',
+      razones: Array.isArray(o.razones) ? o.razones.filter((z): z is string => typeof z === 'string').slice(0, 3) : [],
+      ruta: o.ruta,
+    })
+  }
+  return out.slice(0, 5)
+}
 
 interface Mensaje {
   id: number
@@ -13,12 +41,14 @@ interface Mensaje {
   texto: string
   links: LinkAgente[]
   modo?: RespuestaAgente['modo']
+  recs?: Recomendacion[]
 }
 
 const CLAVE_MENSAJES = 'vd-agente-mensajes'
 const CLAVE_SALUDO = 'vd-agente-saludo'
 const MAX_MENSAJES = 20
 const TIMEOUT_MS = 15000
+const SUGERENCIAS_GUSTOS = ['Recomiéndame algo según mis gustos', 'Viajo con niños y nos gusta la naturaleza']
 const BIENVENIDA = 'Hola, soy el asistente de Valle Directo. Pregúntame por lugares, dónde dormir o cómo armar tu plan.'
 
 function leerMensajes(): Mensaje[] {
@@ -34,7 +64,7 @@ function leerMensajes(): Mensaje[] {
       if ((m.de !== 'bot' && m.de !== 'me') || typeof m.texto !== 'string' || typeof m.id !== 'number') continue
       const links = Array.isArray(m.links) ? m.links.map(validarLink).filter((l): l is LinkAgente => !!l) : []
       const modo = m.modo === 'openai' || m.modo === 'catalogo' ? m.modo : undefined
-      out.push({ id: m.id, de: m.de, texto: m.texto, links, modo })
+      out.push({ id: m.id, de: m.de, texto: m.texto, links, modo, recs: leerRecs(m.recs) })
     }
     return out.slice(-MAX_MENSAJES)
   } catch { return [] }
@@ -69,7 +99,12 @@ function irAAncla(ancla: string): void {
   requestAnimationFrame(buscar)
 }
 
-async function consultar(pregunta: string, pagina: string, senal: AbortSignal): Promise<RespuestaAgente & { aviso?: true }> {
+class ErrorServidor extends Error {
+  extras: Extras
+  constructor(extras: Extras) { super('servidor no disponible'); this.extras = extras }
+}
+
+async function consultar(pregunta: string, pagina: string, senal: AbortSignal): Promise<Omit<RespuestaAgente, 'gustos' | 'recomendaciones'> & Extras & { aviso?: true }> {
   const control = new AbortController()
   const cortar = () => control.abort()
   senal.addEventListener('abort', cortar)
@@ -78,9 +113,14 @@ async function consultar(pregunta: string, pagina: string, senal: AbortSignal): 
     const r = await fetch('/api/agente', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ pregunta, pagina }),
+      body: JSON.stringify({ pregunta, pagina, gustos: leerGustos() }),
       signal: control.signal,
     })
+    if (r.status === 503 || r.status === 502) {
+      let e: Extras = {}
+      try { e = (await r.json()) as Extras } catch { /* sin cuerpo */ }
+      throw new ErrorServidor(e)
+    }
     if (r.status === 429 || r.status === 400) {
       const e = (await r.json()) as { mensaje?: unknown }
       // Aviso del servidor (límite o petición inválida): no es respuesta del catálogo ni de la IA.
@@ -88,9 +128,9 @@ async function consultar(pregunta: string, pagina: string, senal: AbortSignal): 
       throw new Error('sin mensaje')
     }
     if (!r.ok) throw new Error(`estado ${r.status}`)
-    const d = (await r.json()) as Partial<RespuestaAgente>
+    const d = (await r.json()) as Partial<Omit<RespuestaAgente, 'gustos' | 'recomendaciones'>> & Extras
     if (d.modo !== 'openai' || typeof d.texto !== 'string' || !d.texto.trim() || !Array.isArray(d.links)) throw new Error('JSON inválido')
-    return { modo: 'openai', texto: d.texto, links: d.links.map(validarLink).filter((l): l is LinkAgente => !!l).slice(0, 3) }
+    return { modo: 'openai', texto: d.texto, links: d.links.map(validarLink).filter((l): l is LinkAgente => !!l).slice(0, 3), gustos: d.gustos, recomendaciones: leerRecs(d.recomendaciones) }
   } finally {
     window.clearTimeout(temporizador)
     senal.removeEventListener('abort', cortar)
@@ -167,12 +207,18 @@ export function Agente(): ReactElement {
     try {
       const r = await consultar(pregunta, pagina, control.signal)
       if (control.signal.aborted) return
-      agregar({ de: 'bot', texto: r.texto, links: r.links, modo: r.aviso ? undefined : r.modo })
-    } catch {
+      if (!r.aviso && r.gustos) guardarGustos(normalizarGustos(r.gustos, SLUGS))
+      agregar({ de: 'bot', texto: r.texto, links: r.links, modo: r.aviso ? undefined : r.modo, recs: r.recomendaciones })
+    } catch (err) {
       if (control.signal.aborted) return
+      const extras = err instanceof ErrorServidor ? err.extras : {}
+      if (extras.gustos) guardarGustos(normalizarGustos(extras.gustos, SLUGS))
+      else {
+        try { guardarGustos(fusionarGustos(leerGustos(), leerGustosLocal(pregunta, MUNICIPIOS))) } catch { /* ignorar */ }
+      }
       try {
         const r = responderLocal(pregunta)
-        agregar({ de: 'bot', texto: r.texto, links: r.links.map(validarLink).filter((l): l is LinkAgente => !!l), modo: 'catalogo' })
+        agregar({ de: 'bot', texto: r.texto, links: r.links.map(validarLink).filter((l): l is LinkAgente => !!l), modo: 'catalogo', recs: leerRecs(extras.recomendaciones) })
       } catch {
         setFallo(true)
         agregar({ de: 'bot', texto: 'No pude responder ahora. Intenta de nuevo en un momento.', links: [] })
@@ -219,7 +265,7 @@ export function Agente(): ReactElement {
             <ChatBubble from="bot">{BIENVENIDA}</ChatBubble>
             {mensajes.length === 0 && (
               <div className="agente-sugerencias">
-                {SUGERENCIAS.map((s) => <Option key={s} onClick={() => void enviar(s)}>{s}</Option>)}
+                {[...SUGERENCIAS, ...SUGERENCIAS_GUSTOS].map((s) => <Option key={s} onClick={() => void enviar(s)}>{s}</Option>)}
               </div>
             )}
             {mensajes.map((m) => (
@@ -230,11 +276,25 @@ export function Agente(): ReactElement {
                     {m.links.map((l) => <Button key={`${l.ruta}#${l.ancla}`} variant="secondary" onClick={() => abrirLink(l)}>{l.etiqueta}</Button>)}
                   </div>
                 )}
+                {m.de === 'bot' && m.recs && m.recs.length > 0 && (
+                  <ul className="agente-recs" aria-label="Recomendaciones para ti">
+                    {m.recs.map((r) => (
+                      <li key={r.id} className="agente-rec">
+                        <p className="agente-rec-nombre">{r.nombre}</p>
+                        {r.municipio && <p className="agente-rec-muni">{NOMBRE_MUNICIPIO[r.municipio] ?? r.municipio}</p>}
+                        {r.razones.length > 0 && <ul className="agente-rec-razones">{r.razones.map((z) => <li key={z}>{z}</li>)}</ul>}
+                        <Button variant="secondary" aria-label={`Ver ficha de ${r.nombre}`} onClick={() => abrirLink({ etiqueta: 'Ver ficha', ruta: r.ruta } as LinkAgente)}>Ver ficha</Button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
                 {m.de === 'bot' && m.modo && <Chip className="agente-modo">{m.modo === 'openai' ? 'IA · OpenAI' : 'Respuesta del catálogo'}</Chip>}
               </div>
             ))}
             {esperando && <p className="agente-pensando">Pensando…</p>}
           </div>
+
+          <Gustos />
 
           <form className="agente-form" onSubmit={alEnviar}>
             <div className="agente-campo">

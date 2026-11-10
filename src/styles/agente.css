@@ -180,3 +180,22 @@
 @media print {
   .agente-lanzador, .agente-panel, .agente-saludo { display: none; }
 }
+
+/* Gustos del viajero */
+.gustos { display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-2) 0; min-width: 0; }
+.gustos-titulo { margin: 0; font-size: 14px; font-weight: 600; color: var(--heading); }
+.gustos-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.gustos-chip { display: inline-flex; align-items: center; min-height: 44px; padding-left: var(--space-3); border-radius: 999px; background: var(--secondary-soft); color: var(--on-secondary-soft); font-size: 14px; max-width: 100%; overflow-wrap: anywhere; }
+.gustos-quitar { min-width: 44px; min-height: 44px; border: 0; background: transparent; color: inherit; cursor: pointer; border-radius: 999px; font: inherit; }
+.gustos-quitar:hover { background: var(--accent-soft); }
+.gustos-quitar:focus-visible, .gustos-borrar:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.gustos-borrar { align-self: flex-start; min-height: 44px; padding: 0 var(--space-3); border: 1px solid var(--line-strong); background: transparent; color: var(--ink); border-radius: 8px; cursor: pointer; font: inherit; font-size: 14px; }
+.gustos-nota { margin: 0; font-size: 12px; color: var(--ink-muted); }
+
+/* Recomendaciones del asistente */
+.agente-recs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.agente-rec { display: flex; flex-direction: column; gap: var(--space-1); padding: var(--space-3); border: 1px solid var(--line); border-radius: 12px; background: var(--surface-raised); min-width: 0; }
+.agente-rec-nombre { margin: 0; font-size: 15px; font-weight: 600; color: var(--heading); overflow-wrap: anywhere; }
+.agente-rec-muni { margin: 0; font-size: 13px; color: var(--ink-muted); }
+.agente-rec-razones { margin: 0; padding-left: var(--space-4); font-size: 13px; color: var(--ink); }
+.agente-rec .vd-btn { align-self: flex-start; min-height: 44px; }

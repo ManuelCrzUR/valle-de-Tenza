@@ -11,6 +11,10 @@ import type { Categoria } from '../data/planes'
 import { ordenRuta } from '../data/generarPlan'
 import { usePlan } from '../state/plan'
 import type { PlanDto } from '../state/plan'
+import { Gustos } from '../components/Gustos'
+import { leerGustos, guardarGustos } from '../state/gustos'
+import { leerGustosLocal } from '../data/gustos'
+import { fusionarGustos } from '../../shared/gustos'
 import { usePagina } from '../usePagina'
 import { AUDIO_MAX_BYTES, AUDIO_MAX_MS, TEXTO_MAX } from '../../shared/constantes'
 import '../styles/itinerario.css'
@@ -139,6 +143,9 @@ export default function Plan() {
   }
 
   async function generar(mensaje: string, extra?: { quitar?: string }) {
+    if (modo === 'asistente' && mensaje) {
+      try { guardarGustos(fusionarGustos(leerGustos(), leerGustosLocal(mensaje, MUNICIPIOS))) } catch { /* ignorar */ }
+    }
     setNotaVoz('')
     setRecibo(null)
     setFase('armando')
@@ -147,7 +154,7 @@ export default function Plan() {
     abortar.current = ctl
     try {
       const { status, data } = await postJson<{ itinerario?: PlanDto; mensaje?: string }>('/api/itinerario', {
-        mensaje, anclar: extra?.quitar || plan ? undefined : lugarInicial?.id, chips: { ...chips, ...extra }, itinerario: plan?.dto,
+        mensaje, anclar: extra?.quitar || plan ? undefined : lugarInicial?.id, chips: { ...chips, ...extra }, itinerario: plan?.dto, gustos: leerGustos(),
       }, ctl.signal)
       if (!data?.itinerario) { setFase('error'); setNotaVoz(data?.mensaje || (status === 0 ? 'No hay conexión con el servidor.' : 'No pude armar el plan.')); return }
       guardar(data.itinerario)
@@ -406,6 +413,7 @@ export default function Plan() {
               <p className="plan-panel-nota">Usa también las preferencias del planeador.</p>
             </div>
           </div>
+          <Gustos />
           {notaVoz && <p className="plan-aviso" role="status">{notaVoz}</p>}
         </section>
       )}
