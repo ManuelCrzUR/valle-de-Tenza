@@ -5,6 +5,7 @@ import { validarPropuesta } from './itinerario.js'
 import { nombreMunicipio, porId, SLUGS } from './catalogo.js'
 import type { LugarPublico } from './catalogo.js'
 import { esEmpresa, idEstatico } from '../shared/ids.js'
+import { siteUrl } from './env.js'
 import { escapeHtml, hoyColombia } from './texto.js'
 import { LUGARES } from '../src/data/lugares.js'
 import { FOTOS, FOTO_MUNICIPIO } from '../src/data/fotos.js'
@@ -370,7 +371,7 @@ function enlazar(pdf: PDFDocument, page: PDFPage, rect: [number, number, number,
 }
 
 export async function pdfDossier(d: Dossier, opts: OpcionesPdf = {}): Promise<Uint8Array> {
-  const sitio = normSitio(opts.sitio ?? process.env.SITIO_URL)
+  const sitio = normSitio(opts.sitio ?? siteUrl())
   const pdf = await PDFDocument.create()
   pdf.setTitle(`Cotización de viaje ${d.codigo} · Valle Directo`)
   pdf.setProducer('Valle Directo')

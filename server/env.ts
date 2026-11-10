@@ -41,6 +41,16 @@ export function vapidConfig() {
   return { configurado: Boolean(publica && privada && asunto), publica, privada, asunto }
 }
 
+/**
+ * Origen público del sitio. Nunca sale de cabeceras de la petición.
+ * Orden: SITIO_URL, SITE_URL, https://VERCEL_PROJECT_PRODUCTION_URL (la inyecta Vercel). Sin nada, cadena vacía.
+ */
 export function siteUrl(): string {
-  return limpio('SITE_URL').replace(/\/+$/, '')
+  const valido = (v: string) => (/^https?:\/\/[^\s/]+[^\s]*$/.test(v) ? v : '')
+  for (const nombre of ['SITIO_URL', 'SITE_URL']) {
+    const v = valido(limpio(nombre).replace(/\/+$/, ''))
+    if (v) return v
+  }
+  const host = limpio('VERCEL_PROJECT_PRODUCTION_URL').replace(/^https?:\/\//, '').replace(/\/+$/, '')
+  return /^[a-z0-9.-]+(:\d{1,5})?$/i.test(host) ? `https://${host}` : ''
 }

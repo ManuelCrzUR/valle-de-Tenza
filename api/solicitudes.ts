@@ -6,6 +6,7 @@ import { cargadorFotos, sitioDe } from '../server/fotos-pdf.js'
 import { nuevoToken, tokensSupabase } from '../server/descarga.js'
 import { openaiConfig, resendConfig, supabaseConfig } from '../server/env.js'
 import { avisarNegocios, depsAvisoDeEntorno } from '../server/avisoNegocio.js'
+import { listarPublicadas } from '../server/empresas.js'
 import { crearLimite, ipCliente, json } from '../server/http.js'
 
 const limitado = crearLimite({ max: 8, ventanaMs: 60 * 60 * 1000 })
@@ -21,8 +22,11 @@ export async function POST(request: Request): Promise<Response> {
   if (sb.configurado) {
     try { almacen = almacenSupabase() } catch { almacen = null }
   }
+  // Negocios publicados reales: los business:<uuid> del cliente solo valen si están aquí. Sin Supabase, ninguno.
+  const empresas = sb.configurado ? await listarPublicadas() : []
   const r = await crearSolicitud(cuerpo as never, {
     almacen,
+    empresas,
     dominio: correo.dominio,
     enviar: almacen && correo.configurado
       ? async (fila) => {
@@ -43,7 +47,7 @@ export async function POST(request: Request): Promise<Response> {
     remitente: correo.configurado ? correo.desde : undefined,
     destinatarioPrueba: correo.destinatarioPrueba,
   })
-  if (!r.ok) return json({ error: 'validacion', mensaje: r.error }, r.status)
+  if (!r.ok) return json({ error: r.codigo ?? 'validacion', mensaje: r.error }, r.status)
   let descarga: { token: string; expira: string } | null = null
   if (r.resultado.nueva && r.resultado.persistido && r.resultado.id && sb.configurado) {
     try {

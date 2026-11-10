@@ -114,6 +114,14 @@ Canal correo (Resend):
 - Con `@resend.dev` y otro destinatario, la fila queda `bloqueado_dominio` en `notification_outbox`. No se cambia el destinatario.
 - Reintento de los pendientes o fallidos, con las claves cargadas: `npm run reintentar-correo`.
 
+### Origen público del sitio
+
+Los correos, el PDF y las fotos del PDF construyen enlaces absolutos con una de estas variables de servidor, en este orden: `SITIO_URL`, `SITE_URL`, y `https://$VERCEL_PROJECT_PRODUCTION_URL` (Vercel la inyecta sola en producción). Nunca se usan las cabeceras `Host` o `x-forwarded-*` de la petición. Si no hay ninguna, el PDF sale sin enlaces absolutos ni fotos remotas.
+
+### Reintento del outbox
+
+`scripts/reintentar-outbox.ts` toma comprobantes `fallido` y `pendiente` con más de 10 minutos, los reclama de forma atómica, aplica la puerta de envío del remitente de prueba y adjunta el mismo PDF que `/api/solicitudes`. Si falla el lote de comprobantes, igual ejecuta el reintento de avisos a negocios.
+
 Canal push (gratis):
 
 1. Genera las llaves una vez: `npx web-push generate-vapid-keys`.

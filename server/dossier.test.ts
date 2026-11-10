@@ -118,7 +118,7 @@ describe('dossier', () => {
       personas: 2,
       nota: '',
       itinerario,
-    }, { hoy: '2026-11-06' })
+    }, { hoy: '2026-11-06', empresas: [{ ...negocio }] })
     expect(guardada.ok).toBe(true)
     if (!guardada.ok) return
     const recibo = dossierDe({

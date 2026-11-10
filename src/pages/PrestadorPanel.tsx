@@ -242,6 +242,8 @@ export default function PrestadorPanel() {
     if (!supabase || !usuario || !files || !activa || activa === 'nueva') { setError('Guarda el negocio antes de subir fotos.'); return }
     setOcupado(true)
     setError('')
+    // Contador local: `fotos` queda fijo durante el bucle, así que cada foto subida avanza su propio orden.
+    let orden = fotos.length
     for (const file of [...files].slice(0, 8)) {
       if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || file.size > 4_000_000) {
         setError('Cada foto debe ser JPG, PNG o WebP de hasta 4 MB.')
@@ -254,10 +256,13 @@ export default function PrestadorPanel() {
         business_id: activa,
         storage_path: path,
         alt: form.name || 'Foto del negocio',
-        sort_order: fotos.length,
-        is_cover: fotos.length === 0,
+        sort_order: orden,
+        is_cover: fotos.length === 0 && orden === 0,
       }).select('id,storage_path,alt,sort_order,is_cover').single()
-      if (!err && data) setFotos((lista) => [...lista, data as Foto])
+      if (!err && data) {
+        orden++
+        setFotos((lista) => [...lista, data as Foto])
+      }
     }
     setOcupado(false)
     setAviso('Fotos actualizadas.')

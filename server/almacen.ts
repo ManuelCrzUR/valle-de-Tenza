@@ -11,6 +11,8 @@ export interface Outbox {
   intentos: number
   ultimoError: string | null
   destinatario: string
+  /** Cuándo se creó el registro (ISO). Sirve para no tocar envíos recién iniciados. */
+  creadoEn?: string
 }
 
 export interface SolicitudFila {
@@ -46,7 +48,8 @@ export interface Almacen {
   marcarOutbox(id: string, patch: Partial<Pick<Outbox, 'estado' | 'providerId' | 'intentos' | 'ultimoError'>>): Promise<void>
   /** Cambia el outbox solo si el estado y los intentos siguen igual. Un segundo intento simultáneo no gana. */
   reclamar(outboxId: string, estado: EstadoCorreo, intentos: number): Promise<boolean>
-  pendientes(limite: number): Promise<SolicitudFila[]>
+  /** Con `pendienteAntesDe` (ISO), los pendientes más nuevos que ese corte se omiten: pueden estar enviándose. */
+  pendientes(limite: number, opciones?: { pendienteAntesDe?: string }): Promise<SolicitudFila[]>
 }
 
 export function cabecerasServicio(clave: string): Record<string, string> {
@@ -85,6 +88,7 @@ function filaDe(row: Record<string, unknown>): SolicitudFila {
       intentos: Number(out.intentos ?? 0),
       ultimoError: out.ultimo_error == null ? null : String(out.ultimo_error),
       destinatario: String(out.destinatario ?? row.correo),
+      creadoEn: out.created_at == null ? undefined : String(out.created_at),
     },
   }
 }
@@ -161,14 +165,15 @@ export function almacenSupabase(fetchImpl: typeof fetch = fetch): Almacen {
       const data = (await r.json()) as unknown[]
       return Array.isArray(data) && data.length > 0
     },
-    async pendientes(limite) {
-      const r = await fetchImpl(`${base}/reservation_requests?select=*,email_outbox!inner(*)&email_outbox.estado=in.(pendiente,fallido)&email_outbox.intentos=lt.3&limit=${limite}`, { headers })
+    async pendientes(limite, opciones) {
+      // Los pendientes solo cuentan si pasaron más de `pendienteAntesDe`: un envío en curso no se toca.
+      const filtro = opciones?.pendienteAntesDe
+        ? `&email_outbox.or=(estado.eq.fallido,and(estado.eq.pendiente,created_at.lt.${encodeURIComponent(opciones.pendienteAntesDe)}))`
+        : '&email_outbox.estado=in.(pendiente,fallido)'
+      const r = await fetchImpl(`${base}/reservation_requests?select=*,email_outbox!inner(*),itineraries(itinerario)${filtro}&email_outbox.intentos=lt.3&limit=${limite}`, { headers })
       if (!r.ok) throw new Error(`supabase_${r.status}`)
       const data = (await r.json()) as Record<string, unknown>[]
-      return data.map((row) => {
-        const box = Array.isArray(row.email_outbox) ? row.email_outbox[0] : row.email_outbox
-        return filaDe({ ...row, outbox: box })
-      })
+      return data.map((row) => filaConItinerario(row))
     },
   }
 }
@@ -204,6 +209,7 @@ export function almacenMemoria(eventos?: string[]): Almacen {
           intentos: 0,
           ultimoError: null,
           destinatario: nueva.correo,
+          creadoEn: new Date().toISOString(),
         },
       }
       porClave.set(nueva.idempotencyKey, fila)
@@ -228,8 +234,14 @@ export function almacenMemoria(eventos?: string[]): Almacen {
       fila.outbox.ultimoError = 'en_curso'
       return true
     },
-    async pendientes(limite) {
-      return [...porId.values()].filter((f) => (f.outbox.estado === 'pendiente' || f.outbox.estado === 'fallido') && f.outbox.intentos < 3).slice(0, limite)
+    async pendientes(limite, opciones) {
+      const corte = opciones?.pendienteAntesDe
+      return [...porId.values()].filter((f) => {
+        if (f.outbox.intentos >= 3) return false
+        if (f.outbox.estado === 'fallido') return true
+        if (f.outbox.estado !== 'pendiente') return false
+        return !corte || (f.outbox.creadoEn != null && f.outbox.creadoEn < corte)
+      }).slice(0, limite)
     },
   }
 }
