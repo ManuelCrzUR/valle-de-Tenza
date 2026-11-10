@@ -23,6 +23,18 @@ En *Settings → Environment Variables* agrega los nombres de `.env.example`. No
 
 En local: copia `.env.example` a `.env.local`, completa lo que tengas y corre `npm run dev`. Vite sirve `/api/*` con las mismas funciones.
 
+### Enlace público (sin login)
+
+Si el sitio pide iniciar sesión, está activa la *Deployment Protection* de Vercel (Vercel Authentication).
+
+1. En vercel.com abre el proyecto → *Settings* → *Deployment Protection*.
+2. En *Vercel Authentication* elige **Disabled** → *Save*.
+3. Comparte el dominio de producción (`<proyecto>.vercel.app` o el dominio propio), no la URL de un preview (`<proyecto>-<hash>-<equipo>.vercel.app`): cada preview es una URL distinta.
+
+Comprobación: abre el enlace en una ventana privada. Debe cargar sin pedir cuenta de Vercel.
+
+Nota: *Password Protection* es de planes pagos; en Hobby no se usa. Quitar la protección no expone claves: las variables de servidor nunca llegan al navegador.
+
 ## 3. OpenAI
 
 Ids comprobados el 6 de noviembre de 2026 en la documentación oficial. Si esa página cambia, pon el id nuevo en la variable; no inventes otro nombre en el código.
