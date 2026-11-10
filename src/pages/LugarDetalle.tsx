@@ -9,6 +9,7 @@ import { DatosLugar } from '../components/mapa/DatosLugar'
 import { etiquetaSubtipo, CATEGORIA_POR_ID, getLugar, tieneUbicacion } from '../data/lugares'
 import { lugarDeFicha } from '../data/empresaLugar'
 import { useNegocios } from '../state/negocios'
+import { FichaNegocio } from '../components/FichaNegocio'
 import NoEncontrado from './NoEncontrado'
 import { usePagina } from '../usePagina'
 import '../styles/lugares.css'
@@ -33,6 +34,7 @@ export default function LugarDetalle() {
       {negocio?.coverUrl && <img className="detalle-arte" src={negocio.coverUrl} alt="" />}
       {negocio && <p>{negocio.description}</p>}
       {negocio?.contact && <p>Contacto público: {negocio.contact}</p>}
+      {negocio && <FichaNegocio negocio={negocio} />}
       {negocio && <p>Empresa publicada por su titular. No confirma cupo ni reserva.</p>}
       <div className="detalle-datos"><DatosLugar lugar={lugar} /></div>
       <div className="detalle-acciones">

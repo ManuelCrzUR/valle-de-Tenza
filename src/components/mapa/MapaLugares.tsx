@@ -54,7 +54,7 @@ export default function MapaLugares() {
       onTodas={() => fijarCats(TODAS)} onNinguna={() => fijarCats([])} onMunicipio={(m) => cambiar({ mun: m, lugar: null })} />
   )
   const lista = <Resultados lugares={visibles} seleccionado={seleccionId} onElegir={elegir} />
-  const ficha = (l: Lugar) => <FichaLugar lugar={l} onVolver={volverALista} />
+  const ficha = (l: Lugar) => <FichaLugar lugar={l} negocio={empresas.find((n) => n.id === l.id)} onVolver={volverALista} />
 
   const mapa = <MapaLeaflet puntos={puntos} seleccionadoId={seleccion && tieneUbicacion(seleccion) ? seleccion.id : null} onElegir={elegir} />
   const sinUbicar = visibles.length - puntos.length

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { CategoriaId } from '../data/lugares'
+import type { Horario } from '../../shared/contacto'
 
 export interface NegocioPublico {
   id: string
@@ -11,6 +12,19 @@ export interface NegocioPublico {
   lat: number | null
   lng: number | null
   coverUrl: string | null
+  phone: string | null
+  whatsapp: string | null
+  website: string | null
+  instagram: string | null
+  facebook: string | null
+  priceFromCop: number | null
+  priceNote: string | null
+  hours: Horario | null
+  hoursNote: string | null
+  services: string[]
+  menuUrl: string | null
+  infoUpdatedAt: string | null
+  prices: { item: string; priceCop: number | null; note: string | null }[]
 }
 
 export function useNegocios(): NegocioPublico[] {
