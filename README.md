@@ -26,7 +26,9 @@ npm run preview   # sirve dist/ para revisar
 - `POST /api/transcribir` recibe un audio corto (webm u otro tipo permitido, máximo 3,5 MB).
 - `POST /api/voz` lee el resumen solo si la persona lo pide. Es voz sintética.
 - `POST /api/solicitudes` valida, guarda en Supabase si hay service role y después intenta el comprobante con Resend. Sin Supabase no guarda. Sin Resend deja el comprobante en `omitido_sin_configuracion`. Si el remitente es `@resend.dev` y el correo del formulario no es `RESEND_SANDBOX_RECIPIENT`, el estado es `bloqueado_dominio` y el destinatario no se cambia.
+Si el viajero marcó la casilla de compartir datos, `POST /api/solicitudes` también avisa a los negocios del plan (correo y push) y responde `negociosAvisados`. Sin la casilla, no sale ningún dato hacia los negocios.
 - `GET /api/negocios` devuelve solo negocios publicados. Sin Supabase responde una lista vacía.
+- `GET /api/avisos-clave` entrega la llave pública VAPID para las notificaciones push del negocio. La privada queda en el servidor.
 
 Pruebas: `npm test` (no llama a proveedores reales). Reintento de correos ya guardados: `npm run reintentar-correo`.
 

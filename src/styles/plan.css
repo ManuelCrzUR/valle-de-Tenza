@@ -115,3 +115,10 @@
 @keyframes plan-entra { from { opacity: 0; transform: translateY(24px); } }
 @keyframes plan-sube { from { opacity: 0; transform: translateY(10px); } }
 @keyframes plan-pulso { 50% { transform: scale(1.04); } }
+
+/* Consentimiento para avisar a los negocios: objetivo táctil de 44 px y texto pequeño debajo. */
+.plan-comparte { display: flex; flex-direction: column; gap: var(--space-2); }
+.plan-comparte-caja { display: flex; align-items: flex-start; gap: var(--space-3); min-height: 44px; cursor: pointer; font-size: 15px; color: var(--ink); }
+.plan-comparte-caja input { flex: 0 0 auto; width: 24px; height: 24px; margin: 0; accent-color: var(--bosque); cursor: pointer; }
+.plan-comparte-caja input:focus-visible { outline: 3px solid var(--ambar); outline-offset: 2px; }
+.plan-comparte-ayuda { margin: 0; font-size: 13px; line-height: 1.4; color: var(--ink-soft, var(--ink)); }
