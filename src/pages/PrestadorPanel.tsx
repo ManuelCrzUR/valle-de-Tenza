@@ -5,6 +5,8 @@ import { Button, TextField } from '../components/ui'
 import { PinEmpresa } from '../components/prestador/PinEmpresa'
 import { FichaCampos, horarioAJson, horarioDesdeJson, horarioVacio } from '../components/prestador/FichaCampos'
 import type { Ficha } from '../components/prestador/FichaCampos'
+import { SolicitudesRecibidas } from '../components/prestador/SolicitudesRecibidas'
+import { AvisosPush } from '../components/prestador/AvisosPush'
 import { MenuPdf } from '../components/prestador/MenuPdf'
 import { PreciosLista } from '../components/prestador/PreciosLista'
 import { enlaceTel, numeroWhatsapp } from '../../shared/contacto'
@@ -328,6 +330,9 @@ export default function PrestadorPanel() {
         <p className="sub">{usuario.email}. La sesión vive en Supabase, no en una contraseña de este navegador.</p>
         <Button variant="secondary" onClick={() => void salir()}>Salir</Button>
       </header>
+
+      <SolicitudesRecibidas />
+      <AvisosPush />
 
       <form className="prestador-form" onSubmit={(e) => void guardarPerfil(e)}>
         <h2 className="t-h2">Perfil</h2>
