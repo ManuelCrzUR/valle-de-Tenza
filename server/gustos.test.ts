@@ -110,6 +110,23 @@ describe('leerGustosLocal (respaldo sin IA)', () => {
     expect(leer(texto)).toEqual(esperado)
   })
 
+  it('negación: «no me gustan las caminatas» no da aventura', () => {
+    const r = leer('no me gustan las caminatas, prefiero la gastronomía')
+    expect(r.intereses).toEqual(['gastronomia'])
+    expect(r.evitar).toEqual(['caminatas'])
+  })
+
+  it('negación: «nada de iglesias» no da cultura', () => {
+    const r = leer('quiero naturaleza, nada de iglesias')
+    expect(r.intereses).toEqual(['naturaleza'])
+    expect(r.evitar).toEqual(['iglesias'])
+  })
+
+  it('negación: «sin termales» quita descanso pero conserva lo demás', () => {
+    const r = leer('queremos cascadas, sin termales')
+    expect(r.intereses).toEqual(['naturaleza'])
+  })
+
   it('solo devuelve claves detectadas', () => {
     expect(Object.keys(leer('viajo con mi perro'))).toEqual(['mascotas'])
   })

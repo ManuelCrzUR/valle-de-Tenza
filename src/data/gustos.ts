@@ -1,4 +1,4 @@
-import type { Gustos, Interes } from '../../shared/gustos'
+import type { Gustos, Interes } from '../../shared/gustos.js'
 
 // Respaldo sin IA: detecta gustos del viajero por palabras clave.
 // Trabaja sobre texto normalizado: minúsculas, sin tildes ni ñ (ñ pasa a n).
@@ -14,7 +14,7 @@ const REGLAS_INTERES: [Interes, RegExp][] = [
   ['naturaleza', /\b(naturaleza|cascadas?|rios?|bosques?|montanas?|cerros?|paisaje natural|aire libre)\b/],
   ['aventura', /\b(aventura|caminatas?|senderismo|trekking|escalar|parapente|extremo)\b/],
   ['gastronomia', /\b(comer|comida|gastronomia|restaurantes?|platos tipicos|cafes?|probar)\b/],
-  ['cultura', /\b(cultura|historia|iglesia|museos?|patrimonio|tradicion(es)?)\b/],
+  ['cultura', /\b(cultura|historia|iglesias?|museos?|patrimonio|tradicion(es)?)\b/],
   ['artesania', /\b(artesanias?|artesanos?|tejidos?|ceramica|canastos?)\b/],
   ['descanso', /\b(descansar|descanso|relajar|tranquil[oa]s?|desconectar|termales?|spa)\b/],
   ['fotografia', /\b(fotos?|fotografia|miradores?|atardecer)\b/],
@@ -66,7 +66,12 @@ export function leerGustosLocal(texto: string, slugsYNombres: { slug: string; no
   const t = normalizar(texto)
   const r: Partial<Gustos> = {}
 
-  const intereses = REGLAS_INTERES.filter(([, re]) => re.test(t)).map(([i]) => i)
+  // Lo negado («nada de iglesias», «no me gustan las caminatas») no cuenta como interés.
+  let tPositivo = t
+  for (const patron of PATRONES_EVITAR) {
+    tPositivo = tPositivo.replace(patron, (todo, palabra: string) => (NO_EVITAR.has(palabra) ? todo : ' '))
+  }
+  const intereses = REGLAS_INTERES.filter(([, re]) => re.test(tPositivo)).map(([i]) => i)
   if (intereses.length) r.intereses = intereses
 
   if (RITMO_TRANQUILO.test(t)) r.ritmo = 'tranquilo'
