@@ -85,7 +85,7 @@ export function contenidoCorreo(d: DatosAviso, negocio: string, sitio?: string):
   const asunto = `Nueva solicitud para ${negocio} — ${fecha}`.replace(/[\r\n]+/g, ' ')
   const num = numeroWhatsapp(d.telefono)
   const wa = num ? enlaceWhatsapp(num, `Hola ${d.nombre}, te escribimos de ${negocio} por tu solicitud del ${fecha}.`) : null
-  const panel = sitio ? `${sitio}/prestadores` : null
+  const panel = sitio ? `${sitio}/#/prestadores/panel` : null
   const e = escapeHtml
   const filas: [string, string][] = [
     ['Nombre', d.nombre],
@@ -123,7 +123,7 @@ export function cargaPush(negocio: string, fecha: string, personas: number): str
   return JSON.stringify({
     titulo: 'Nueva solicitud',
     cuerpo: `${negocio}: ${fechaLegible(fecha)}, ${personas} ${personas === 1 ? 'persona' : 'personas'}`,
-    url: '/prestadores',
+    url: '/#/prestadores/panel',
   })
 }
 
