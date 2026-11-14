@@ -6,6 +6,8 @@ import { SLUGS, porId, publico } from './catalogo.js'
 import type { LugarPublico } from './catalogo.js'
 import { supabaseConfig } from './env.js'
 import { norm, sinDatosPersonales } from './texto.js'
+import { DIAS_SEMANA } from '../shared/contacto.js'
+import type { Horario } from '../shared/contacto.js'
 
 const CATEGORIAS = new Set<CategoriaId>(['alojamiento', 'restaurante', 'comercio', 'atraccion', 'monumento', 'naturaleza', 'operador'])
 
@@ -19,6 +21,18 @@ export interface FilaEmpresa {
   lat: number | null
   lng: number | null
   cover_path?: string | null
+  phone?: string | null
+  whatsapp?: string | null
+  website?: string | null
+  instagram?: string | null
+  facebook?: string | null
+  price_from_cop?: number | null
+  price_note?: string | null
+  hours?: unknown
+  hours_note?: string | null
+  services?: unknown
+  menu_path?: string | null
+  info_updated_at?: string | null
 }
 
 export function puedeGestionar(actorId: string | null | undefined, ownerId: string): boolean {
@@ -81,6 +95,57 @@ export interface FichaPublica {
   lat: number | null
   lng: number | null
   coverUrl: string | null
+  phone: string | null
+  whatsapp: string | null
+  website: string | null
+  instagram: string | null
+  facebook: string | null
+  priceFromCop: number | null
+  priceNote: string | null
+  hours: Horario | null
+  hoursNote: string | null
+  services: string[]
+  menuUrl: string | null
+  infoUpdatedAt: string | null
+  prices: { item: string; priceCop: number | null; note: string | null }[]
+}
+
+const COLUMNAS_FICHA = 'id,name,category,municipality,description,contact,lat,lng,website,instagram,facebook,price_from_cop,price_note,hours,hours_note,services,menu_path,info_updated_at,phone,whatsapp'
+
+function texto(v: unknown, max: number): string | null {
+  if (typeof v !== 'string') return null
+  const t = v.trim().slice(0, max)
+  return t || null
+}
+
+function enteroCop(v: unknown): number | null {
+  return typeof v === 'number' && Number.isInteger(v) && v >= 0 && v <= 50_000_000 ? v : null
+}
+
+function urlHttps(v: unknown, max: number): string | null {
+  const t = texto(v, max)
+  return t && t.startsWith('https://') ? t : null
+}
+
+const HORA = /^([01]\d|2[0-3]):[0-5]\d$/
+
+export function horarioSeguro(v: unknown): Horario | null {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return null
+  const salida: Horario = {}
+  for (const { id } of DIAS_SEMANA) {
+    const d = (v as Record<string, unknown>)[id]
+    if (!d || typeof d !== 'object') continue
+    const { abre, cierra, cerrado } = d as Record<string, unknown>
+    if (cerrado === true) salida[id] = { cerrado: true }
+    else if (typeof abre === 'string' && typeof cierra === 'string' && HORA.test(abre) && HORA.test(cierra)) salida[id] = { abre, cierra }
+  }
+  return Object.keys(salida).length ? salida : null
+}
+
+const USUARIO_INSTAGRAM = /^[A-Za-z0-9._]{1,30}$/
+
+function fechaIso(v: unknown): string | null {
+  return typeof v === 'string' && !Number.isNaN(Date.parse(v)) ? v : null
 }
 
 export async function listarFichasPublicas(fetchImpl: typeof fetch = fetch): Promise<{ configurado: boolean; negocios: FichaPublica[] }> {
@@ -89,7 +154,7 @@ export async function listarFichasPublicas(fetchImpl: typeof fetch = fetch): Pro
   try {
     const headers = { apikey: cfg.clave, authorization: `Bearer ${cfg.clave}` }
     const r = await fetchImpl(
-      `${cfg.url}/rest/v1/businesses?status=eq.published&select=id,name,category,municipality,description,contact,lat,lng`,
+      `${cfg.url}/rest/v1/businesses_public?select=${COLUMNAS_FICHA}`,
       { headers, signal: AbortSignal.timeout(4000) },
     )
     if (!r.ok) return { configurado: true, negocios: [] }
@@ -111,6 +176,25 @@ export async function listarFichasPublicas(fetchImpl: typeof fetch = fetch): Pro
         }
       }
     }
+    const precios = new Map<string, FichaPublica['prices']>()
+    if (ids.length) {
+      const pr = await fetchImpl(
+        `${cfg.url}/rest/v1/business_prices?business_id=in.(${ids.join(',')})&order=sort_order&select=business_id,item,price_cop,note`,
+        { headers, signal: AbortSignal.timeout(4000) },
+      )
+      if (pr.ok) {
+        const lista = (await pr.json()) as { business_id?: string; item?: string; price_cop?: number | null; note?: string | null }[]
+        if (Array.isArray(lista)) {
+          for (const p of lista) {
+            const item = texto(p?.item, 120)
+            if (!p?.business_id || !item) continue
+            const grupo = precios.get(p.business_id) ?? []
+            grupo.push({ item, priceCop: enteroCop(p.price_cop), note: texto(p.note, 160) })
+            precios.set(p.business_id, grupo)
+          }
+        }
+      }
+    }
     const negocios = rows.flatMap((row) => {
       const pub = filaAPublico(row)
       if (!pub) return []
@@ -125,6 +209,19 @@ export async function listarFichasPublicas(fetchImpl: typeof fetch = fetch): Pro
         lat: pub.lat,
         lng: pub.lon,
         coverUrl: urlFotoPublica(cfg.url, fotos.get(row.id)),
+        phone: texto(row.phone, 30),
+        whatsapp: texto(row.whatsapp, 30),
+        website: urlHttps(row.website, 200),
+        instagram: typeof row.instagram === 'string' && USUARIO_INSTAGRAM.test(row.instagram.trim().replace(/^@/, '')) ? row.instagram.trim().replace(/^@/, '') : null,
+        facebook: urlHttps(row.facebook, 200),
+        priceFromCop: enteroCop(row.price_from_cop),
+        priceNote: texto(row.price_note, 200),
+        hours: horarioSeguro(row.hours),
+        hoursNote: texto(row.hours_note, 200),
+        services: Array.isArray(row.services) ? row.services.flatMap((x) => { const t = texto(x, 60); return t ? [t] : [] }).slice(0, 30) : [],
+        menuUrl: urlMenuPublico(cfg.url, row.menu_path),
+        infoUpdatedAt: fechaIso(row.info_updated_at),
+        prices: precios.get(row.id) ?? [],
       }]
     })
     return { configurado: true, negocios }
@@ -138,7 +235,7 @@ export async function listarPublicadas(fetchImpl: typeof fetch = fetch): Promise
   if (!cfg.configurado) return []
   try {
     const r = await fetchImpl(
-      `${cfg.url}/rest/v1/businesses?status=eq.published&select=id,name,category,municipality,description,lat,lng`,
+      `${cfg.url}/rest/v1/businesses_public?select=id,name,category,municipality,description,lat,lng`,
       { headers: { apikey: cfg.clave, authorization: `Bearer ${cfg.clave}` }, signal: AbortSignal.timeout(4000) },
     )
     if (!r.ok) return []
@@ -155,4 +252,11 @@ const RUTA_FOTO = /^[0-9a-f-]{36}\/[0-9a-f-]{36}\/[a-zA-Z0-9._-]+$/
 export function urlFotoPublica(baseUrl: string, storagePath: string | null | undefined): string | null {
   if (!storagePath || !RUTA_FOTO.test(storagePath)) return null
   return `${baseUrl.replace(/\/$/, '')}/storage/v1/object/public/business-photos/${storagePath}`
+}
+
+const RUTA_MENU = /^[0-9a-f-]{36}\/[0-9a-f-]{36}\/[a-zA-Z0-9._-]+\.pdf$/
+
+export function urlMenuPublico(baseUrl: string, menuPath: string | null | undefined): string | null {
+  if (!menuPath || !RUTA_MENU.test(menuPath)) return null
+  return `${baseUrl.replace(/\/$/, '')}/storage/v1/object/public/business-menus/${menuPath}`
 }

@@ -2,9 +2,18 @@
 // Lo usa también el servidor: por eso los imports relativos llevan extensión .js.
 import { LUGARES, MUNICIPIOS, NOMBRE_MUNICIPIO, getLugar } from './lugares.js'
 import type { Lugar } from './lugares.js'
+import type { Gustos } from '../../shared/gustos.js'
 
 export interface LinkAgente { etiqueta: string; ruta: string; ancla: string | null }
-export interface RespuestaAgente { modo: 'openai' | 'catalogo'; texto: string; links: LinkAgente[] }
+export interface RecomendacionAgente { id: string; nombre: string; municipio: string; categoria: string; razones: string[]; ruta: string }
+export interface RespuestaAgente {
+  modo: 'openai' | 'catalogo'
+  texto: string
+  links: LinkAgente[]
+  /** Gustos acumulados (previos del navegador + lo detectado en este mensaje). Solo en /api/agente. */
+  gustos?: Gustos
+  recomendaciones?: RecomendacionAgente[]
+}
 export interface EmpresaAgente { id: string; nombre: string; categoria: string; municipio: string; descripcion?: string }
 
 const ID_EMPRESA = /^business:[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i

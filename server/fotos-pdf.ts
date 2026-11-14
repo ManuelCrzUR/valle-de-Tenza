@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { siteUrl } from './env.js'
 
 const PATRON = /^fotos\/\d{1,3}\.jpg$/
 const MAX_BYTES = 2 * 1024 * 1024
@@ -31,18 +32,11 @@ export function cargadorFotos(sitio?: string): (archivo: string) => Promise<Uint
   }
 }
 
-/** Origen del sitio: `SITIO_URL` tiene prioridad; si no, el de la petición. */
-export function sitioDe(request: Request): string {
-  const env = (process.env.SITIO_URL ?? '').trim().replace(/\/+$/, '')
-  if (/^https?:\/\/[^\s]+$/.test(env)) return env
-  try {
-    const url = new URL(request.url)
-    // La cabecera Host trae el puerto real (el servidor de desarrollo reconstruye la URL sin él).
-    const host = request.headers.get('host')?.trim() ?? ''
-    if (/^[a-z0-9.-]+(:\d{1,5})?$/i.test(host)) {
-      const proto = request.headers.get('x-forwarded-proto')?.split(',')[0]?.trim()
-      return `${proto === 'http' || proto === 'https' ? proto : url.protocol.replace(':', '')}://${host}`
-    }
-    return url.origin
-  } catch { return '' }
+/**
+ * Origen del sitio, solo desde variables de entorno (SITIO_URL, SITE_URL o VERCEL_PROJECT_PRODUCTION_URL).
+ * Nunca usa cabeceras del cliente (Host, x-forwarded-*): evita inyección de host y SSRF.
+ * Sin origen configurado devuelve '' y no hay enlaces absolutos ni fotos remotas.
+ */
+export function sitioDe(_request?: Request): string {
+  return siteUrl()
 }

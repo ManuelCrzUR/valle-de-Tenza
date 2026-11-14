@@ -4,15 +4,21 @@ Responde preguntas cortas sobre el viaje al Valle de Tenza (7 municipios) y prop
 
 ## Endpoint
 
-`POST /api/agente` con `{ "pregunta": string, "pagina"?: string }`.
+`POST /api/agente` con `{ "pregunta": string, "pagina"?: string, "gustos"?: Gustos }`. `gustos` es lo que el navegador acumuló; el servidor lo normaliza (`normalizarGustos`) y descarta lo que no cumpla el formato.
 
 | Estado | Cuerpo |
 | --- | --- |
-| 200 | `{ modo: 'openai', texto, links: [{ etiqueta, ruta, ancla }] }` (máx. 3 links) |
+| 200 | `{ modo: 'openai', texto, links: [{ etiqueta, ruta, ancla }], gustos, recomendaciones }` (máx. 3 links). `gustos`: los previos fusionados con lo detectado en este mensaje. `recomendaciones`: 0 a 4 de `{ id, nombre, municipio (slug), categoria, razones, ruta: '/lugares/<id>' }` |
 | 400 | `solicitud_invalida` (no es JSON, pregunta vacía o no es texto) o `mensaje_largo` (más de 500 caracteres) |
 | 429 | `limite`: 30 preguntas cada 10 minutos por IP |
-| 503 | `no_configurado`: falta `OPENAI_API_KEY` (no se llama a OpenAI) |
-| 502 | `openai_no_disponible`: error, timeout (20 s), JSON inválido o texto vacío; `detalle` corto (`http_500`, `json`, `vacio`, `timeout`) |
+| 503 | `no_configurado`: falta `OPENAI_API_KEY` (no se llama a OpenAI). El cuerpo trae además `gustos` y `recomendaciones` calculados localmente (`leerGustosLocal` + `recomendar`) |
+| 502 | `openai_no_disponible`: error, timeout (20 s), JSON inválido o texto vacío; `detalle` corto (`http_500`, `json`, `vacio`, `timeout`). Igual que el 503, incluye `gustos` y `recomendaciones` locales |
+
+## Gustos y recomendaciones
+
+El modelo devuelve en `gustos_detectados` lo que la persona dijo en ese mensaje y puede llamar a la herramienta `recomendar_lugares` (`{ gustos, municipio }`), que ejecuta el servidor con `recomendar` sobre el catálogo y las fichas publicadas. Al modelo solo le vuelven `id, nombre, municipio, categoria, razones`. Las recomendaciones finales se filtran a ids que existan en el catálogo; si el modelo no llamó la herramienta pero hay gustos y la pregunta pide recomendaciones, se calculan igual. Máximo 3 rondas, `max_output_tokens` 900.
+
+`POST /api/itinerario` también acepta `gustos`: en modo catálogo reordena candidatos por puntaje (determinista) y en modo OpenAI añade los gustos al prompt. `validarPropuesta` sigue siendo la última palabra.
 
 ## Variables
 
@@ -25,6 +31,8 @@ Ante 503, 502 o error de red, el navegador usa `responderLocal` (`src/data/agent
 ## Privacidad
 
 La pregunta no se guarda ni se registra. Antes de enviarla se quitan correos y teléfonos (`sinDatosPersonales`). El modelo solo ve ids, nombres, municipio y categoría del catálogo.
+
+Los gustos no se guardan en el servidor: viven en el navegador, viajan en cada petición y no se registran. Solo se envían al modelo como etiquetas (intereses, ritmo, presupuesto, etc.), sin datos personales.
 
 ## Lista blanca de links
 

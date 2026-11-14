@@ -11,6 +11,10 @@ import type { Categoria } from '../data/planes'
 import { ordenRuta } from '../data/generarPlan'
 import { usePlan } from '../state/plan'
 import type { PlanDto } from '../state/plan'
+import { Gustos } from '../components/Gustos'
+import { leerGustos, guardarGustos } from '../state/gustos'
+import { leerGustosLocal } from '../data/gustos'
+import { fusionarGustos } from '../../shared/gustos'
 import { usePagina } from '../usePagina'
 import { AUDIO_MAX_BYTES, AUDIO_MAX_MS, TEXTO_MAX } from '../../shared/constantes'
 import '../styles/itinerario.css'
@@ -26,13 +30,13 @@ type Modo = 'planeador' | 'asistente'
 const ESTADO_ORBE: Record<Fase, EstadoOrbe> = { listo: 'listo', escuchando: 'escuchando', transcribiendo: 'pensando', armando: 'pensando', hablando: 'hablando', error: 'error' }
 const RECIBO_KEY = 'valle-directo:recibo'
 const REINTENTABLES = new Set(['bloqueado_dominio', 'fallido', 'omitido_sin_configuracion'])
-type Recibo = { persistido: boolean; comprobante: string; mensaje: string; token: string | null; expira: string | null }
+type Recibo = { persistido: boolean; comprobante: string; mensaje: string; token: string | null; expira: string | null; avisados: number }
 
 function leerRecibo(): Recibo | null {
   try {
     const raw = JSON.parse(sessionStorage.getItem(RECIBO_KEY) ?? 'null') as Recibo | null
     if (!raw || typeof raw.mensaje !== 'string' || typeof raw.comprobante !== 'string') return null
-    return { persistido: !!raw.persistido, comprobante: raw.comprobante, mensaje: raw.mensaje, token: typeof raw.token === 'string' ? raw.token : null, expira: typeof raw.expira === 'string' ? raw.expira : null }
+    return { persistido: !!raw.persistido, comprobante: raw.comprobante, mensaje: raw.mensaje, token: typeof raw.token === 'string' ? raw.token : null, expira: typeof raw.expira === 'string' ? raw.expira : null, avisados: typeof raw.avisados === 'number' ? raw.avisados : 0 }
   } catch { return null }
 }
 const ETIQUETA: Record<Fase, string> = {
@@ -76,6 +80,7 @@ export default function Plan() {
   const descartar = useRef(false)
   const [clave, setClave] = useState(() => crypto.randomUUID())
   const [form, setForm] = useState({ nombre: '', correo: '', telefono: '', fecha: '', personas: '2', nota: '' })
+  const [comparte, setComparte] = useState(false)
   const [enviando, setEnviando] = useState(false)
   const [recibo, setRecibo] = useState<Recibo | null>(leerRecibo)
   const [reintentando, setReintentando] = useState(false)
@@ -139,6 +144,9 @@ export default function Plan() {
   }
 
   async function generar(mensaje: string, extra?: { quitar?: string }) {
+    if (modo === 'asistente' && mensaje) {
+      try { guardarGustos(fusionarGustos(leerGustos(), leerGustosLocal(mensaje, MUNICIPIOS))) } catch { /* ignorar */ }
+    }
     setNotaVoz('')
     setRecibo(null)
     setFase('armando')
@@ -147,7 +155,7 @@ export default function Plan() {
     abortar.current = ctl
     try {
       const { status, data } = await postJson<{ itinerario?: PlanDto; mensaje?: string; ref?: string }>('/api/itinerario', {
-        mensaje, anclar: extra?.quitar || plan ? undefined : lugarInicial?.id, chips: { ...chips, ...extra }, itinerario: plan?.dto,
+        mensaje, anclar: extra?.quitar || plan ? undefined : lugarInicial?.id, chips: { ...chips, ...extra }, itinerario: plan?.dto, gustos: leerGustos(),
       }, ctl.signal)
       if (!data?.itinerario) {
         setFase('error')
@@ -293,8 +301,8 @@ export default function Plan() {
     setEnviando(true)
     setNotaVoz('')
     try {
-      const { data, status } = await postJson<{ persistido?: boolean; comprobante?: string; mensaje?: string; descarga?: { token?: string; expira?: string } | null }>('/api/solicitudes', {
-        idempotencyKey: clave, ...form, personas: Number(form.personas), itinerario: plan.dto,
+      const { data, status } = await postJson<{ persistido?: boolean; comprobante?: string; mensaje?: string; negociosAvisados?: number; descarga?: { token?: string; expira?: string } | null }>('/api/solicitudes', {
+        idempotencyKey: clave, ...form, personas: Number(form.personas), itinerario: plan.dto, comparteDatos: comparte,
       })
       if (!data?.mensaje || status >= 400) { setNotaVoz(data?.mensaje || 'No se pudo enviar la solicitud.'); return }
       setRecibo({
@@ -303,6 +311,7 @@ export default function Plan() {
         mensaje: data.mensaje,
         token: data.descarga?.token ?? null,
         expira: data.descarga?.expira ?? null,
+        avisados: typeof data.negociosAvisados === 'number' ? data.negociosAvisados : 0,
       })
       setClave(crypto.randomUUID())
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -410,6 +419,7 @@ export default function Plan() {
               <p className="plan-panel-nota">Usa también las preferencias del planeador.</p>
             </div>
           </div>
+          <Gustos />
           {notaVoz && <p className="plan-aviso" role="status">{notaVoz}</p>}
         </section>
       )}
@@ -490,6 +500,13 @@ export default function Plan() {
               <span className="vd-field-label">Nota (opcional)</span>
               <textarea className="vd-input plan-texto" maxLength={500} value={form.nota} onChange={(e) => setForm({ ...form, nota: e.target.value })} />
             </label>
+            <div className="plan-comparte">
+              <label className="plan-comparte-caja">
+                <input type="checkbox" checked={comparte} onChange={(e) => setComparte(e.target.checked)} aria-describedby="plan-comparte-ayuda" />
+                <span>Comparto mi nombre, teléfono y correo con los negocios de mi plan para que me contacten sobre esta solicitud.</span>
+              </label>
+              <p id="plan-comparte-ayuda" className="plan-comparte-ayuda">Si no la marcas, la solicitud se guarda pero los negocios no reciben tus datos. Borramos las solicitudes a los 12 meses (Ley 1581 de 2012).</p>
+            </div>
             <Button type="submit" variant="cta" disabled={enviando}>{enviando ? 'Enviando…' : 'Enviar solicitud'}</Button>
             <Button type="button" variant="secondary" onClick={() => void ejemplo()}>Ver ejemplo de correo y dossier</Button>
           </form>
@@ -498,6 +515,7 @@ export default function Plan() {
           <div id="plan-recibo" className="plan-aviso" role="status">
             <p><strong>{recibo.persistido ? 'Solicitud guardada' : 'Vista previa, no guardada'}</strong></p>
             <p>{recibo.mensaje}</p>
+            {recibo.avisados > 0 && <p>Avisamos a {recibo.avisados} negocio(s) de tu plan.</p>}
             <p>Estado del comprobante: {etiquetaComprobante(recibo.comprobante)}.</p>
             {recibo.persistido && recibo.token && REINTENTABLES.has(recibo.comprobante) && (
               <Button type="button" variant="secondary" disabled={reintentando} onClick={() => void reintentarEnvio()}>
