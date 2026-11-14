@@ -4,8 +4,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Button, ChatBubble, Chip, Option, TextField } from '../ui'
 import { Orbe } from './Orbe'
 import type { EstadoOrbe } from './Orbe'
-import { responderLocal, SUGERENCIAS, validarLink } from '../../data/agente'
-import type { LinkAgente, RespuestaAgente } from '../../data/agente'
+import { empresasDeNegocios, respaldoLocal, SUGERENCIAS, validarLink } from '../../data/agente'
+import type { EmpresaAgente, LinkAgente, RespuestaAgente } from '../../data/agente'
 import { leerGustosLocal } from '../../data/gustos'
 import { MUNICIPIOS, NOMBRE_MUNICIPIO } from '../../data/lugares'
 import { fusionarGustos, normalizarGustos } from '../../../shared/gustos'
@@ -62,7 +62,7 @@ function leerMensajes(): Mensaje[] {
       if (!d || typeof d !== 'object') continue
       const m = d as Record<string, unknown>
       if ((m.de !== 'bot' && m.de !== 'me') || typeof m.texto !== 'string' || typeof m.id !== 'number') continue
-      const links = Array.isArray(m.links) ? m.links.map(validarLink).filter((l): l is LinkAgente => !!l) : []
+      const links = Array.isArray(m.links) ? m.links.map((l) => validarLink(l)).filter((l): l is LinkAgente => !!l) : []
       const modo = m.modo === 'openai' || m.modo === 'catalogo' ? m.modo : undefined
       out.push({ id: m.id, de: m.de, texto: m.texto, links, modo, recs: leerRecs(m.recs) })
     }
@@ -104,7 +104,7 @@ class ErrorServidor extends Error {
   constructor(extras: Extras) { super('servidor no disponible'); this.extras = extras }
 }
 
-async function consultar(pregunta: string, pagina: string, senal: AbortSignal): Promise<Omit<RespuestaAgente, 'gustos' | 'recomendaciones'> & Extras & { aviso?: true }> {
+async function consultar(pregunta: string, pagina: string, senal: AbortSignal, empresas: EmpresaAgente[]): Promise<Omit<RespuestaAgente, 'gustos' | 'recomendaciones'> & Extras & { aviso?: true }> {
   const control = new AbortController()
   const cortar = () => control.abort()
   senal.addEventListener('abort', cortar)
@@ -130,7 +130,7 @@ async function consultar(pregunta: string, pagina: string, senal: AbortSignal): 
     if (!r.ok) throw new Error(`estado ${r.status}`)
     const d = (await r.json()) as Partial<Omit<RespuestaAgente, 'gustos' | 'recomendaciones'>> & Extras
     if (d.modo !== 'openai' || typeof d.texto !== 'string' || !d.texto.trim() || !Array.isArray(d.links)) throw new Error('JSON inválido')
-    return { modo: 'openai', texto: d.texto, links: d.links.map(validarLink).filter((l): l is LinkAgente => !!l).slice(0, 3), gustos: d.gustos, recomendaciones: leerRecs(d.recomendaciones) }
+    return { modo: 'openai', texto: d.texto, links: d.links.map((l) => validarLink(l, empresas)).filter((l): l is LinkAgente => !!l).slice(0, 3), gustos: d.gustos, recomendaciones: leerRecs(d.recomendaciones) }
   } finally {
     window.clearTimeout(temporizador)
     senal.removeEventListener('abort', cortar)
@@ -204,8 +204,18 @@ export function Agente(): ReactElement {
     const control = new AbortController()
     pendiente.current = control
     const pagina = `/${pathname.split('/')[1] ?? ''}`
+    let empresas: EmpresaAgente[] = []
+    let lectura: 'ok' | 'error' = 'ok'
     try {
-      const r = await consultar(pregunta, pagina, control.signal)
+      const lista = await fetch('/api/negocios', { cache: 'no-store', signal: control.signal })
+      if (!lista.ok) lectura = 'error'
+      else empresas = empresasDeNegocios(await lista.json())
+    } catch {
+      if (control.signal.aborted) return
+      lectura = 'error'
+    }
+    try {
+      const r = await consultar(pregunta, pagina, control.signal, empresas)
       if (control.signal.aborted) return
       if (!r.aviso && r.gustos) guardarGustos(normalizarGustos(r.gustos, SLUGS))
       agregar({ de: 'bot', texto: r.texto, links: r.links, modo: r.aviso ? undefined : r.modo, recs: r.recomendaciones })
@@ -217,8 +227,8 @@ export function Agente(): ReactElement {
         try { guardarGustos(fusionarGustos(leerGustos(), leerGustosLocal(pregunta, MUNICIPIOS))) } catch { /* ignorar */ }
       }
       try {
-        const r = responderLocal(pregunta)
-        agregar({ de: 'bot', texto: r.texto, links: r.links.map(validarLink).filter((l): l is LinkAgente => !!l), modo: 'catalogo', recs: leerRecs(extras.recomendaciones) })
+        const r = respaldoLocal(pregunta, empresas, lectura)
+        agregar({ de: 'bot', texto: r.texto, links: r.links, modo: 'catalogo', recs: leerRecs(extras.recomendaciones) })
       } catch {
         setFallo(true)
         agregar({ de: 'bot', texto: 'No pude responder ahora. Intenta de nuevo en un momento.', links: [] })

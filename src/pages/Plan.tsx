@@ -72,6 +72,7 @@ export default function Plan() {
   const [edit, setEdit] = useState('')
   const [sel, setSel] = useState<string | null>(null)
   const [corrida, setCorrida] = useState(0)
+  const [mapaBase, setMapaBase] = useState<'cargando' | 'listo' | 'error'>('cargando')
   const [tour, setTour] = useState({ i: 0, modo: 'quieto' as 'quieto' | 'sigue' | 'pausa', seq: 0 })
   const rec = useRef<MediaRecorder | null>(null)
   const audio = useRef<HTMLAudioElement | null>(null)
@@ -153,10 +154,15 @@ export default function Plan() {
     const ctl = new AbortController()
     abortar.current = ctl
     try {
-      const { status, data } = await postJson<{ itinerario?: PlanDto; mensaje?: string }>('/api/itinerario', {
+      const { status, data } = await postJson<{ itinerario?: PlanDto; mensaje?: string; ref?: string }>('/api/itinerario', {
         mensaje, anclar: extra?.quitar || plan ? undefined : lugarInicial?.id, chips: { ...chips, ...extra }, itinerario: plan?.dto, gustos: leerGustos(),
       }, ctl.signal)
-      if (!data?.itinerario) { setFase('error'); setNotaVoz(data?.mensaje || (status === 0 ? 'No hay conexión con el servidor.' : 'No pude armar el plan.')); return }
+      if (!data?.itinerario) {
+        setFase('error')
+        const aviso = data?.mensaje || (status === 0 ? 'No hay conexión con el servidor.' : 'No pude armar el plan.')
+        setNotaVoz(data?.ref ? `${aviso} Referencia ${data.ref}.` : aviso)
+        return
+      }
       guardar(data.itinerario)
       setCorrida((c) => c + 1)
       setSel(null)
@@ -429,16 +435,16 @@ export default function Plan() {
               <p className="plan-esquema">Mapa 2D. La línea es un esquema en línea recta, no una carretera ni un tiempo de viaje.</p>
               <div className="mapa-ruta plan-mapa">
                 <Suspense fallback={<Cargando />}>
-                  <MapaRuta paradas={puntos} seleccionadoId={sel} onElegir={setSel} corrida={corrida} foco={actual ? { id: actual.lugar.id, seq: tour.seq } : null} />
+                  <MapaRuta paradas={puntos} seleccionadoId={sel} onElegir={setSel} corrida={corrida} foco={actual ? { id: actual.lugar.id, seq: tour.seq } : null} onBase={setMapaBase} />
                 </Suspense>
               </div>
               {tourParadas.length >= 3 && (
                 <div className="tour" role="group" aria-label="Recorrido guiado">
-                  <Button type="button" variant="secondary" onClick={() => setTour({ i: 0, modo: 'sigue', seq: tour.seq + 1 })}>Iniciar recorrido</Button>
-                  <Button type="button" variant="ghost" onClick={() => setTour((t) => ({ ...t, modo: t.modo === 'sigue' ? 'pausa' : 'sigue' }))}>{tour.modo === 'sigue' ? 'Pausar' : 'Seguir'}</Button>
-                  <Button type="button" variant="ghost" onClick={() => saltar(tour.i - 1)}>Anterior</Button>
-                  <Button type="button" variant="ghost" onClick={() => saltar(tour.i + 1)}>Siguiente</Button>
-                  <Button type="button" variant="ghost" onClick={() => setTour({ i: 0, modo: 'pausa', seq: tour.seq + 1 })}>Reiniciar</Button>
+                  <Button type="button" variant="secondary" disabled={mapaBase !== 'listo'} onClick={() => setTour({ i: 0, modo: 'sigue', seq: tour.seq + 1 })}>Iniciar recorrido</Button>
+                  <Button type="button" variant="ghost" disabled={mapaBase !== 'listo'} onClick={() => setTour((t) => ({ ...t, modo: t.modo === 'sigue' ? 'pausa' : 'sigue' }))}>{tour.modo === 'sigue' ? 'Pausar' : 'Seguir'}</Button>
+                  <Button type="button" variant="ghost" disabled={mapaBase !== 'listo'} onClick={() => saltar(tour.i - 1)}>Anterior</Button>
+                  <Button type="button" variant="ghost" disabled={mapaBase !== 'listo'} onClick={() => saltar(tour.i + 1)}>Siguiente</Button>
+                  <Button type="button" variant="ghost" disabled={mapaBase !== 'listo'} onClick={() => setTour({ i: 0, modo: 'pausa', seq: tour.seq + 1 })}>Reiniciar</Button>
                   <Button type="button" variant="secondary" onClick={() => void hablar(textoParada)}>{fase === 'hablando' ? 'Detener voz' : 'Escuchar esta parada'}</Button>
                 </div>
               )}

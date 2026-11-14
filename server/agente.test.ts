@@ -3,6 +3,7 @@ import { POST } from '../api/agente.js'
 import { LUGARES } from '../src/data/lugares.js'
 import { TEXTO_MAX } from '../shared/constantes.js'
 import { responderAgente } from './agente.js'
+import type { LugarPublico } from './catalogo.js'
 
 const envCopia = { ...process.env }
 afterEach(() => {
@@ -82,6 +83,33 @@ describe('agente flotante', () => {
     expect(bodies).toHaveLength(2)
     expect(bodies[1]).toContain('function_call_output')
     expect(bodies[1]).toContain('resp_1')
+  })
+
+  it('incluye el negocio publicado en la búsqueda y no un id que no existe', async () => {
+    process.env.OPENAI_API_KEY = 'test-key'
+    const empresa: LugarPublico = {
+      id: 'business:11111111-1111-4111-8111-111111111111',
+      nombre: 'Cafe La Esperanza',
+      categoria: 'restaurante',
+      municipio: 'tenza',
+      lat: 5.1,
+      lon: -73.4,
+      precision: 'exacta',
+      descripcion: 'Cafe de la plaza',
+    }
+    const { fetchImpl, bodies } = simulado(
+      { id: 'resp_1', output: [{ type: 'function_call', name: 'buscar_lugares', call_id: 'c1', arguments: JSON.stringify({ municipio: 'tenza', categoria: 'restaurante', texto: null }) }] },
+      salida('Está publicado.', [
+        { etiqueta: 'Ver la ficha', ruta: `/lugares/${empresa.id}`, ancla: null },
+        { etiqueta: 'Inventado', ruta: '/lugares/business:22222222-2222-4222-8222-222222222222', ancla: null },
+      ]),
+    )
+    const r = await responderAgente({ pregunta: 'cafe en tenza' }, { fetchImpl, empresas: [empresa] })
+    expect(bodies[1]).toContain('Cafe La Esperanza')
+    expect(bodies[1]).not.toContain('Borrador')
+    expect(r.ok).toBe(true)
+    if (!r.ok) return
+    expect(r.respuesta.links.map((l) => l.ruta)).toEqual([`/lugares/${empresa.id}`])
   })
 
   it('quita correos y teléfonos antes de enviar a OpenAI', async () => {

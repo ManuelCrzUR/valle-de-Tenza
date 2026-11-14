@@ -18,6 +18,6 @@ export async function POST(request: Request): Promise<Response> {
     chips: c.chips && typeof c.chips === 'object' ? c.chips as { plan?: string; municipio?: string; dias?: number; quitar?: string } : undefined,
     itinerario: c.itinerario && typeof c.itinerario === 'object' ? c.itinerario as { plan?: string; municipio?: string; dias?: { paradas?: string[]; comida?: string | null }[]; hospedaje?: string | null } : undefined,
   }, { signal: request.signal })
-  if (!r.ok) return json({ error: r.error, mensaje: r.mensaje, detalle: r.detalle }, r.status)
+  if (!r.ok) return json({ error: r.error, mensaje: r.mensaje, detalle: r.detalle, ref: r.ref }, r.status)
   return json({ itinerario: r.itinerario })
 }

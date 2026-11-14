@@ -253,15 +253,60 @@ const ESQUEMA = {
   },
 }
 
-interface RespApi { id?: string; output_text?: string; output?: { type?: string; name?: string; call_id?: string; arguments?: string; content?: { type?: string; text?: string }[] }[] }
+interface RespApi {
+  id?: string
+  status?: string
+  output_text?: string
+  output?: {
+    type?: string
+    name?: string
+    call_id?: string
+    arguments?: string
+    text?: string
+    content?: string | { type?: string; text?: string; refusal?: string }[]
+  }[]
+}
 
 function textoDe(data: RespApi): string {
   if (typeof data.output_text === 'string' && data.output_text.trim()) return data.output_text
   const partes: string[] = []
+  const tomar = (tipo: string | undefined, texto: string | undefined) => {
+    if (typeof texto === 'string' && texto.trim() && tipo !== 'refusal') partes.push(texto)
+  }
   for (const item of data.output ?? []) {
-    for (const c of item.content ?? []) if (c.type === 'output_text' && c.text) partes.push(c.text)
+    if (item.type === 'output_text' || item.type === 'text') tomar(item.type, item.text)
+    if (typeof item.content === 'string') partes.push(item.content)
+    else for (const c of item.content ?? []) if (c.type === 'output_text' || c.type === 'text') tomar(c.type, c.text)
   }
   return partes.join('')
+}
+
+function jsonItinerario(texto: string): Crudo | null {
+  const limpio = texto.trim().replace(/^```(?:json)?\s*/i, '').replace(/```$/i, '').trim()
+  const piezas = [limpio]
+  const abre = limpio.indexOf('{')
+  const cierra = limpio.lastIndexOf('}')
+  if (abre >= 0 && cierra > abre) piezas.push(limpio.slice(abre, cierra + 1))
+  for (const pieza of piezas) {
+    try {
+      const valor = JSON.parse(pieza) as unknown
+      if (typeof valor === 'string') {
+        const otro = JSON.parse(valor) as unknown
+        if (otro && typeof otro === 'object') return otro as Crudo
+      } else if (valor && typeof valor === 'object') return valor as Crudo
+    } catch { /* el siguiente corte */ }
+  }
+  return null
+}
+
+async function detalleHttp(r: Response): Promise<string> {
+  let codigo = ''
+  try {
+    const err = await r.json() as { error?: { code?: unknown; type?: unknown } }
+    const crudo = err?.error?.code ?? err?.error?.type
+    if (typeof crudo === 'string' && /^[a-z0-9_.-]{1,40}$/i.test(crudo)) codigo = crudo
+  } catch { /* cuerpo ilegible: no se registra */ }
+  return codigo ? `http_${r.status}:${codigo}` : `http_${r.status}`
 }
 
 function llamadasDe(data: RespApi): { call_id: string; arguments: string }[] {
@@ -287,28 +332,37 @@ export async function completarConModelo(opts: {
     { role: 'system', content: sistema },
     { role: 'user', content: usuario },
   ]
-  for (let ronda = 0; ronda < 3; ronda++) {
+  let sinRazonamiento = false
+  let reparacion = false
+  for (let ronda = 0; ronda < 4; ronda++) {
     const r = await opts.fetchImpl('https://api.openai.com/v1/responses', {
       method: 'POST',
       signal: opts.signal,
       headers: { authorization: `Bearer ${opts.clave}`, 'content-type': 'application/json' },
       body: JSON.stringify({
         model: opts.modelo,
-        reasoning: { effort: 'none' },
+        ...(sinRazonamiento ? {} : { reasoning: { effort: 'none' } }),
         input,
         tools: [HERRAMIENTA],
-        tool_choice: 'auto',
+        tool_choice: reparacion ? 'none' : 'auto',
         text: { format: ESQUEMA },
         max_output_tokens: 1200,
         ...(previous ? { previous_response_id: previous } : {}),
       }),
     })
-    if (!r.ok) throw new OpenAIFallo(`http_${r.status}`)
-    const data = (await r.json()) as RespApi
+    if (!r.ok) {
+      const detalle = await detalleHttp(r)
+      if (detalle.startsWith('http_400') && !sinRazonamiento) { sinRazonamiento = true; continue }
+      throw new OpenAIFallo(detalle)
+    }
+    let data: RespApi
+    try { data = (await r.json()) as RespApi } catch { throw new OpenAIFallo('vacio') }
     previous = data.id
     const calls = llamadasDe(data)
     const texto = textoDe(data)
-    if (calls.length && ronda < 2) {
+    const crudoDirecto = texto.trim() ? jsonItinerario(texto) : null
+    if (crudoDirecto) return { crudo: crudoDirecto, modelo: opts.modelo }
+    if (calls.length && ronda < 3) {
       input = calls.map((c) => {
         let args: { municipio?: string | null; categoria?: string | null; texto?: string | null } = {}
         try { args = JSON.parse(c.arguments) } catch { args = {} }
@@ -331,10 +385,12 @@ export async function completarConModelo(opts: {
       })
       continue
     }
-    if (!texto) throw new OpenAIFallo('vacio')
-    let crudo: Crudo
-    try { crudo = JSON.parse(texto) as Crudo } catch { throw new OpenAIFallo('json') }
-    return { crudo, modelo: opts.modelo }
+    if (!reparacion) {
+      reparacion = true
+      input = [{ role: 'user', content: 'Devuelve solo el objeto del esquema, con ids ya listados, sin texto alrededor.' }]
+      continue
+    }
+    throw new OpenAIFallo(!texto.trim() ? (data.status === 'incomplete' ? 'incompleto' : 'vacio') : 'json')
   }
   throw new OpenAIFallo('vacio')
 }
@@ -345,7 +401,19 @@ class OpenAIFallo extends Error {
 
 export type ResultadoArmado =
   | { ok: true; itinerario: ItinerarioDto }
-  | { ok: false; status: number; error: string; mensaje: string; detalle?: string }
+  | { ok: false; status: number; error: string; mensaje: string; detalle?: string; ref?: string }
+
+function mensajeFallo(detalle: string): string {
+  const seguir = 'No lo reemplacé por un resultado presentado como de la IA. Pulsa Armar el plan otra vez.'
+  if (detalle.startsWith('http_401') || detalle.startsWith('http_403')) return `OpenAI rechazó la credencial del servidor. ${seguir}`
+  if (detalle.startsWith('http_429')) return `OpenAI está saturado ahora. ${seguir}`
+  if (detalle.startsWith('http_400')) return `OpenAI no aceptó la petición (${detalle}). ${seguir}`
+  if (detalle.startsWith('http_')) return `OpenAI respondió con un error (${detalle}). ${seguir}`
+  if (detalle === 'incompleto') return `La respuesta de OpenAI llegó cortada. ${seguir}`
+  if (detalle === 'vacio') return `OpenAI no envió el itinerario. ${seguir}`
+  if (detalle === 'json') return `OpenAI respondió, pero el formato no era un itinerario. ${seguir}`
+  return `OpenAI no devolvió un itinerario usable. ${seguir}`
+}
 
 export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetchImpl?: typeof fetch; signal?: AbortSignal; empresas?: LugarPublico[] }): Promise<ResultadoArmado> {
   const mensaje = typeof entrada.mensaje === 'string' ? entrada.mensaje.slice(0, 500) : ''
@@ -397,6 +465,8 @@ export async function armarItinerario(entrada: EntradaItinerario, deps?: { fetch
       return { ok: false, status: 504, error: 'tiempo_agotado', mensaje: 'La generación tardó demasiado y se canceló. Puedes intentar de nuevo o usar los chips, que arman el plan sin OpenAI.' }
     }
     const detalle = e instanceof OpenAIFallo ? e.detalle : 'excepcion'
-    return { ok: false, status: 502, error: 'openai_no_disponible', detalle, mensaje: 'OpenAI no devolvió un itinerario usable. No lo reemplacé por un resultado presentado como de la IA.' }
+    const ref = crypto.randomUUID().slice(0, 8)
+    console.error(JSON.stringify({ evento: 'itinerario_openai', ref, modelo: ai.modeloItinerario, detalle }))
+    return { ok: false, status: 502, error: 'openai_no_disponible', detalle, ref, mensaje: mensajeFallo(detalle) }
   }
 }

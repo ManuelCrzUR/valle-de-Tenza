@@ -7,6 +7,7 @@ import type { Gustos } from '../shared/gustos.js'
 import { OPENAI_TIMEOUT_MS, TEXTO_MAX } from '../shared/constantes.js'
 import { buscarLugares, SLUGS } from './catalogo.js'
 import type { LugarPublico } from './catalogo.js'
+import { empresasCoinciden, listarPublicadas } from './empresas.js'
 import { openaiConfig } from './env.js'
 import { candidatosRecomendacion, recomendar } from './recomendar.js'
 import type { LugarRecomendable, Recomendacion } from './recomendar.js'
@@ -21,7 +22,7 @@ const TEXTO_RESPUESTA_MAX = 600
 const HERRAMIENTA = {
   type: 'function',
   name: 'buscar_lugares',
-  description: 'Busca lugares reales del catálogo de los 7 municipios. No devuelve teléfonos ni correos.',
+  description: 'Busca lugares del catálogo y negocios publicados. No devuelve teléfonos, correos ni borradores.',
   strict: true,
   parameters: {
     type: 'object',
@@ -104,7 +105,7 @@ function promptSistema(pagina: string, gustos: Gustos): string {
     RESUMEN_DESTINOS,
     'Reglas:',
     '- Los links solo pueden usar las rutas de la lista anterior.',
-    '- Antes de enlazar la ficha de un lugar (/lugares/<id>) o /plan?lugar=<id>, usa la herramienta buscar_lugares para obtener ids reales.',
+    '- Antes de enlazar la ficha (/lugares/<id>), el mapa (/mapa?lugar=<id>) o /plan?lugar=<id>, usa buscar_lugares. Un negocio publicado usa id business:<uuid>.',
     '- Identifica los gustos de la persona (intereses, ritmo, presupuesto, si viaja con niños, mascota o movilidad reducida, cosas a evitar y municipio) y devuelve solo lo que dijo en ESTE mensaje en gustos_detectados (vacío o null si no dijo nada).',
     '- Si pide recomendaciones o ya hay gustos suficientes, usa la herramienta recomendar_lugares y menciona de 1 a 3 lugares con su razón. Si faltan gustos, haz UNA pregunta corta, por ejemplo «¿Prefieres naturaleza, comida o cultura?».',
     '- Nunca inventes lugares: solo menciona ids y nombres devueltos por las herramientas.',
@@ -154,7 +155,7 @@ interface EstadoRecomendar { candidatos?: Promise<LugarRecomendable[]>; recomend
 
 const cargarCandidatos = (st: EstadoRecomendar, fetchImpl: typeof fetch) => (st.candidatos ??= candidatosRecomendacion(fetchImpl))
 
-async function consultarModelo(opts: { pregunta: string; pagina: string; gustos: Gustos; estado: EstadoRecomendar; fetchImpl: typeof fetch; signal: AbortSignal; clave: string; modelo: string }): Promise<{ texto: string; links: unknown[]; gustosDetectados: unknown }> {
+async function consultarModelo(opts: { pregunta: string; pagina: string; gustos: Gustos; estado: EstadoRecomendar; empresas: LugarPublico[]; fetchImpl: typeof fetch; signal: AbortSignal; clave: string; modelo: string }): Promise<{ texto: string; links: unknown[]; gustosDetectados: unknown }> {
   let previous: string | undefined
   let input: unknown = [
     { role: 'system', content: promptSistema(opts.pagina, opts.gustos) },
@@ -195,12 +196,21 @@ async function consultarModelo(opts: { pregunta: string; pagina: string; gustos:
         }
         let args: { municipio?: string | null; categoria?: string | null; texto?: string | null } = {}
         try { args = JSON.parse(c.arguments) } catch { args = {} }
-        const encontrados = buscarLugares({
+        const textoBusqueda = sinDatosPersonales(args.texto || '', 80)
+        const estaticos = buscarLugares({
           municipio: args.municipio || undefined,
           categoria: (args.categoria || undefined) as LugarPublico['categoria'] | undefined,
-          texto: sinDatosPersonales(args.texto || '', 80),
+          texto: textoBusqueda,
           limite: 8,
-        }).map((l) => ({ id: l.id, nombre: l.nombre, municipio: l.municipio, categoria: l.categoria }))
+        })
+        const publicados = empresasCoinciden(opts.empresas, {
+          municipio: args.municipio || undefined,
+          categoria: args.categoria || undefined,
+          texto: textoBusqueda,
+        })
+        const encontrados = [...estaticos, ...publicados.filter((e) => !estaticos.some((s) => s.id === e.id))]
+          .slice(0, 12)
+          .map((l) => ({ id: l.id, nombre: l.nombre, municipio: l.municipio, categoria: l.categoria, descripcion: l.descripcion ?? null }))
         return { type: 'function_call_output', call_id: c.call_id, output: JSON.stringify(encontrados) }
       }))
       continue
@@ -219,25 +229,25 @@ const PIDE_RECOMENDACION = /recomiend|sugier|sugerenc|que hacer|que puedo hacer|
 
 const MUNICIPIOS_NOMBRE = MUNICIPIOS.map((m) => ({ slug: m.slug, nombre: m.nombre }))
 
-function aDto(lista: Recomendacion[], existentes?: Set<string>): RecomendacionAgente[] {
+function aDto(lista: Recomendacion[], empresas: LugarPublico[], existentes?: Set<string>): RecomendacionAgente[] {
   const salida: RecomendacionAgente[] = []
   for (const r of lista) {
     if (salida.length >= 4) break
     if (existentes && !existentes.has(r.id)) continue
     const ruta = `/lugares/${r.id}`
-    if (!validarLink({ etiqueta: r.nombre.slice(0, 60) || 'Lugar', ruta, ancla: null })) continue
+    if (!validarLink({ etiqueta: r.nombre.slice(0, 60) || 'Lugar', ruta, ancla: null }, empresas)) continue
     salida.push({ id: r.id, nombre: r.nombre, municipio: r.municipio, categoria: r.categoria, razones: r.razones.slice(0, 3), ruta })
   }
   return salida
 }
 
 /** Gustos y recomendaciones calculados sin IA, para acompañar los errores 503/502. */
-async function respaldoLocal(pregunta: string, entrantes: Gustos, fetchImpl: typeof fetch): Promise<{ gustos: Gustos; recomendaciones: RecomendacionAgente[] }> {
+async function respaldoLocal(pregunta: string, entrantes: Gustos, empresas: LugarPublico[], fetchImpl: typeof fetch): Promise<{ gustos: Gustos; recomendaciones: RecomendacionAgente[] }> {
   const gustos = fusionarGustos(entrantes, normalizarGustos(leerGustosLocal(pregunta, MUNICIPIOS_NOMBRE), SLUGS))
   if (!hayGustos(gustos)) return { gustos, recomendaciones: [] }
   try {
     const candidatos = await candidatosRecomendacion(fetchImpl)
-    return { gustos, recomendaciones: aDto(recomendar(candidatos, gustos, 4)) }
+    return { gustos, recomendaciones: aDto(recomendar(candidatos, gustos, 4), empresas) }
   } catch {
     return { gustos, recomendaciones: [] }
   }
@@ -245,31 +255,32 @@ async function respaldoLocal(pregunta: string, entrantes: Gustos, fetchImpl: typ
 
 export async function responderAgente(
   entrada: { pregunta: string; pagina?: string; gustos?: unknown },
-  deps?: { fetchImpl?: typeof fetch; signal?: AbortSignal },
+  deps?: { fetchImpl?: typeof fetch; signal?: AbortSignal; empresas?: LugarPublico[] },
 ): Promise<ResultadoAgente> {
+  const empresas = deps?.empresas ?? await listarPublicadas()
   const ai = openaiConfig()
   const fetchImpl = deps?.fetchImpl ?? fetch
   const pregunta = sinDatosPersonales(String(entrada.pregunta ?? ''), TEXTO_MAX)
   const entrantes = normalizarGustos(entrada.gustos, SLUGS)
   if (!ai.configurado) {
-    const local = await respaldoLocal(pregunta, entrantes, fetchImpl)
+    const local = await respaldoLocal(pregunta, entrantes, empresas, fetchImpl)
     return { ok: false, status: 503, error: 'no_configurado', mensaje: 'El asistente con IA no está configurado.', ...local }
   }
   const pagina = typeof entrada.pagina === 'string' && entrada.pagina.length <= 30 && /^\/[a-z-]*$/.test(entrada.pagina) ? entrada.pagina : ''
   const noDisponible = async (detalle: string): Promise<ResultadoAgente> =>
-    ({ ok: false, status: 502, error: 'openai_no_disponible', mensaje: 'El asistente con IA no respondió. Usa la búsqueda del sitio.', detalle, ...(await respaldoLocal(pregunta, entrantes, fetchImpl)) })
+    ({ ok: false, status: 502, error: 'openai_no_disponible', mensaje: 'El asistente con IA no respondió. Usa la búsqueda del sitio.', detalle, ...(await respaldoLocal(pregunta, entrantes, empresas, fetchImpl)) })
   const estado: EstadoRecomendar = { recomendadas: [] }
   try {
     const signal = combinar(deps?.signal, AbortSignal.timeout(OPENAI_TIMEOUT_MS))
     const { texto, links, gustosDetectados } = await consultarModelo({
-      pregunta, pagina, gustos: entrantes, estado, fetchImpl, signal, clave: ai.clave, modelo: ai.modeloItinerario,
+      pregunta, pagina, gustos: entrantes, estado, empresas, fetchImpl, signal, clave: ai.clave, modelo: ai.modeloItinerario,
     })
     const limpio = texto.trim().slice(0, TEXTO_RESPUESTA_MAX).trim()
     if (!limpio) return await noDisponible('vacio')
     const vistos = new Set<string>()
     let validos: LinkAgente[] = []
     for (const l of links) {
-      const v = validarLink(l)
+      const v = validarLink(l, empresas)
       if (!v) continue
       const clave = `${v.ruta}#${v.ancla ?? ''}`
       if (vistos.has(clave)) continue
@@ -277,15 +288,15 @@ export async function responderAgente(
       validos.push(v)
     }
     validos = validos.slice(0, 3)
-    if (!validos.length) validos = responderLocal(pregunta).links.slice(0, 3)
+    if (!validos.length) validos = responderLocal(pregunta, empresas).links.slice(0, 3)
     const gustos = fusionarGustos(entrantes, normalizarGustos(gustosDetectados, SLUGS))
     let recomendaciones: RecomendacionAgente[] = []
     if (estado.candidatos) {
       const ids = new Set((await estado.candidatos).map((c) => c.id))
-      recomendaciones = aDto(estado.recomendadas, ids)
+      recomendaciones = aDto(estado.recomendadas, empresas, ids)
     } else if (hayGustos(gustos) && PIDE_RECOMENDACION.test(norm(pregunta))) {
       const candidatos = await cargarCandidatos(estado, fetchImpl)
-      recomendaciones = aDto(recomendar(candidatos, gustos, 4))
+      recomendaciones = aDto(recomendar(candidatos, gustos, 4), empresas)
     }
     return { ok: true, respuesta: { modo: 'openai', texto: limpio, links: validos, gustos, recomendaciones: recomendaciones.slice(0, 4) } }
   } catch (e) {

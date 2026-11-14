@@ -22,7 +22,7 @@ El modelo devuelve en `gustos_detectados` lo que la persona dijo en ese mensaje 
 
 ## Variables
 
-Solo las existentes: `OPENAI_API_KEY` y, opcionalmente, `OPENAI_ITINERARY_MODEL`.
+Solo las existentes: `OPENAI_API_KEY` y, opcionalmente, `OPENAI_ITINERARY_MODEL`. Los negocios publicados salen de Supabase en cada pregunta (`listarPublicadas`), sin caché. Un borrador no entra. Si esa lectura falla, la respuesta local lo dice y sigue con el catálogo fijo.
 
 ## Respaldo local
 
