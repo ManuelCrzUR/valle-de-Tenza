@@ -2,7 +2,8 @@ import { NOMBRE_MAX, NOTA_MAX, PERSONAS_MAX } from '../shared/constantes.js'
 import type { ItinerarioDto } from './itinerario.js'
 import { validarPropuesta } from './itinerario.js'
 import type { Almacen, EstadoCorreo, SolicitudFila } from './almacen.js'
-import { dossierDe, instantaneasDe, type Dossier } from './dossier.js'
+import { dossierDe, type Dossier } from './dossier.js'
+import type { LugarPublico } from './catalogo.js'
 import type { Envio } from './correo.js'
 import { puertaEnvio } from './puerta.js'
 import { correoValido, hoyColombia } from './texto.js'
@@ -17,6 +18,9 @@ export interface EntradaSolicitud {
   fecha?: string
   personas?: number
   nota?: string
+  comparteDatos?: boolean
+  /** id business:<uuid> de la ficha desde donde se pidió */
+  negocio?: string
   itinerario?: unknown
 }
 
@@ -28,6 +32,7 @@ export interface ResultadoSolicitud {
   comprobante: EstadoCorreo | 'no_enviado'
   id: string | null
   mensaje: string
+  negociosAvisados?: number
 }
 
 function sumarMeses(iso: string, meses: number): string {
@@ -36,7 +41,11 @@ function sumarMeses(iso: string, meses: number): string {
   return dt.toISOString().slice(0, 10)
 }
 
-export function validarSolicitud(entrada: EntradaSolicitud, opts: { dominio?: string; hoy?: string }) {
+/**
+ * `empresas` son los negocios publicados reales (servidor). Los `business:<uuid>` del cliente solo valen si
+ * están ahí, y nombre, descripción y municipio salen de esa lista, nunca del cliente. Sin lista, se rechazan.
+ */
+export function validarSolicitud(entrada: EntradaSolicitud, opts: { dominio?: string; hoy?: string; empresas?: LugarPublico[] }) {
   const hoy = opts.hoy ?? hoyColombia()
   const clave = (entrada.idempotencyKey ?? '').trim()
   if (!UUID.test(clave)) return { ok: false as const, error: 'Falta una clave de idempotencia válida.' }
@@ -53,9 +62,9 @@ export function validarSolicitud(entrada: EntradaSolicitud, opts: { dominio?: st
   const nota = (entrada.nota ?? '').trim().slice(0, NOTA_MAX)
   const propuesto = entrada.itinerario as { plan?: unknown; municipio?: unknown; dias?: unknown; hospedaje?: unknown } | undefined
   if (!propuesto) return { ok: false as const, error: 'Falta el itinerario.' }
-  const it = validarPropuesta(propuesto, [], instantaneasDe(entrada.itinerario))
+  const it = validarPropuesta(propuesto, [], opts.empresas ?? [])
   if (!it.ok) return { ok: false as const, error: 'El itinerario tiene lugares que no están en el catálogo.' }
-  return { ok: true as const, valor: { clave, nombre, correo: correo.correo, telefono: tel || null, fecha, personas, nota, itinerario: it.dto } }
+  return { ok: true as const, valor: { clave, nombre, correo: correo.correo, telefono: tel || null, fecha, personas, nota, comparteDatos: entrada.comparteDatos === true, itinerario: it.dto } }
 }
 
 const demosVistos = new Map<string, string>()
@@ -73,8 +82,10 @@ export async function crearSolicitud(entrada: EntradaSolicitud, deps: {
   eventos?: string[]
   remitente?: string
   destinatarioPrueba?: string
-}): Promise<{ ok: true; resultado: ResultadoSolicitud } | { ok: false; status: number; error: string }> {
-  const v = validarSolicitud(entrada, { dominio: deps.dominio, hoy: deps.hoy })
+  /** Negocios publicados reales, para validar las paradas `business:<uuid>`. */
+  empresas?: LugarPublico[]
+}): Promise<{ ok: true; resultado: ResultadoSolicitud } | { ok: false; status: number; error: string; codigo?: string }> {
+  const v = validarSolicitud(entrada, { dominio: deps.dominio, hoy: deps.hoy, empresas: deps.empresas })
   if (!v.ok) return { ok: false, status: 400, error: v.error }
   const canon = JSON.stringify(v.valor)
   if (!deps.almacen) {
@@ -90,7 +101,10 @@ export async function crearSolicitud(entrada: EntradaSolicitud, deps: {
       },
     }
   }
-  const ya = await deps.almacen.buscar(v.valor.clave)
+  const almacen = deps.almacen
+  const noDisponible = { ok: false as const, status: 503, codigo: 'almacen_no_disponible', error: 'No pude guardar la solicitud. Intenta de nuevo en un momento.' }
+  let ya: SolicitudFila | null
+  try { ya = await almacen.buscar(v.valor.clave) } catch { return noDisponible }
   if (ya) {
     return {
       ok: true,
@@ -101,35 +115,49 @@ export async function crearSolicitud(entrada: EntradaSolicitud, deps: {
     }
   }
   const guardado: ItinerarioDto = { ...v.valor.itinerario, modo: 'ajuste', modelo: null, resumen: '' }
-  const fila = await deps.almacen.crear({
-    idempotencyKey: v.valor.clave,
-    nombre: v.valor.nombre,
-    correo: v.valor.correo,
-    telefono: v.valor.telefono,
-    fecha: v.valor.fecha,
-    personas: v.valor.personas,
-    nota: v.valor.nota,
-    itinerario: guardado,
+  let fila: SolicitudFila
+  try {
+    fila = await almacen.crear({
+      idempotencyKey: v.valor.clave,
+      nombre: v.valor.nombre,
+      correo: v.valor.correo,
+      telefono: v.valor.telefono,
+      fecha: v.valor.fecha,
+      personas: v.valor.personas,
+      nota: v.valor.nota,
+      comparteDatos: v.valor.comparteDatos,
+      itinerario: guardado,
+    })
+  } catch { return noDisponible }
+  // La fila ya está guardada: si no se puede anotar el estado del correo, queda pendiente para el reintento.
+  const marcar = async (patch: Parameters<Almacen['marcarOutbox']>[1]): Promise<boolean> => {
+    try { await almacen.marcarOutbox(fila.outbox.id, patch); return true } catch { return false }
+  }
+  const guardada = (comprobante: EstadoCorreo, anotado: boolean, mensaje: string) => ({
+    ok: true as const,
+    resultado: { ok: true as const, persistido: true, nueva: true, modo: 'supabase' as const, comprobante: anotado ? comprobante : 'pendiente' as const, id: fila.id, mensaje: anotado ? mensaje : mensajeDe('pendiente', true) },
   })
   if (!deps.enviar) {
-    await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'omitido_sin_configuracion', intentos: 0, ultimoError: null })
-    return { ok: true, resultado: { ok: true, persistido: true, nueva: true, modo: 'supabase', comprobante: 'omitido_sin_configuracion', id: fila.id, mensaje: mensajeDe('omitido_sin_configuracion', true) } }
+    const ok = await marcar({ estado: 'omitido_sin_configuracion', intentos: 0, ultimoError: null })
+    return guardada('omitido_sin_configuracion', ok, mensajeDe('omitido_sin_configuracion', true))
   }
   if (deps.remitente) {
     const puerta = puertaEnvio(deps.remitente, fila.correo, deps.destinatarioPrueba ?? '')
     if (!puerta.ok) {
-      await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'bloqueado_dominio', intentos: 0, ultimoError: puerta.error })
-      return { ok: true, resultado: { ok: true, persistido: true, nueva: true, modo: 'supabase', comprobante: 'bloqueado_dominio', id: fila.id, mensaje: puerta.mensaje } }
+      const ok = await marcar({ estado: 'bloqueado_dominio', intentos: 0, ultimoError: puerta.error })
+      return guardada('bloqueado_dominio', ok, puerta.mensaje)
     }
   }
   let envio: Envio
   try { envio = await deps.enviar(fila) } catch { envio = { ok: false, error: 'correo_excepcion' } }
   if (envio.ok) {
-    await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'enviado', providerId: envio.id, intentos: 1, ultimoError: null })
-    return { ok: true, resultado: { ok: true, persistido: true, nueva: true, modo: 'supabase', comprobante: 'enviado', id: fila.id, mensaje: mensajeDe('enviado', true) } }
+    const ok = await marcar({ estado: 'enviado', providerId: envio.id, intentos: 1, ultimoError: null })
+    // El correo salió aunque no se pudo anotar: se informa como enviado (el mismo Idempotency-Key evita duplicados).
+    void ok
+    return guardada('enviado', true, mensajeDe('enviado', true))
   }
-  await deps.almacen.marcarOutbox(fila.outbox.id, { estado: 'fallido', intentos: 1, ultimoError: envio.error, providerId: null })
-  return { ok: true, resultado: { ok: true, persistido: true, nueva: true, modo: 'supabase', comprobante: 'fallido', id: fila.id, mensaje: mensajeDe('fallido', true) } }
+  const ok = await marcar({ estado: 'fallido', intentos: 1, ultimoError: envio.error, providerId: null })
+  return guardada('fallido', ok, mensajeDe('fallido', true))
 }
 
 function mensajeDe(estado: EstadoCorreo | 'no_enviado', nueva: boolean): string {
@@ -142,20 +170,47 @@ function mensajeDe(estado: EstadoCorreo | 'no_enviado', nueva: boolean): string 
   return nueva ? `Modo demostración. ${base}` : `La misma solicitud ya se había registrado. ${base}`
 }
 
-export async function reintentarOutbox(almacen: Almacen, enviar: (fila: SolicitudFila) => Promise<Envio>, limite = 20): Promise<{ intentos: number; enviados: number }> {
-  const filas = await almacen.pendientes(limite)
+/** Minutos que debe tener un envío `pendiente` para que el reintento lo tome (si no, puede estar en curso). */
+export const MINUTOS_PENDIENTE = 10
+
+export async function reintentarOutbox(
+  almacen: Almacen,
+  enviar: (fila: SolicitudFila) => Promise<Envio>,
+  limite = 20,
+  opciones: { remitente?: string; destinatarioPrueba?: string; ahora?: number } = {},
+): Promise<{ intentos: number; enviados: number; omitidos: number; errores: number }> {
+  const corte = new Date((opciones.ahora ?? Date.now()) - MINUTOS_PENDIENTE * 60_000).toISOString()
+  const filas = await almacen.pendientes(limite, { pendienteAntesDe: corte })
   let enviados = 0
+  let omitidos = 0
+  let errores = 0
   for (const fila of filas) {
-    const envio = await enviar(fila)
-    const intentos = fila.outbox.intentos + 1
-    if (envio.ok) {
-      enviados++
-      await almacen.marcarOutbox(fila.outbox.id, { estado: 'enviado', providerId: envio.id, intentos, ultimoError: null })
-    } else {
-      await almacen.marcarOutbox(fila.outbox.id, { estado: 'fallido', intentos, ultimoError: envio.error })
+    // Un fallo en una fila no detiene el lote.
+    try {
+      const gano = await almacen.reclamar(fila.outbox.id, fila.outbox.estado, fila.outbox.intentos)
+      if (!gano) { omitidos++; continue }
+      const intentos = fila.outbox.intentos + 1
+      if (opciones.remitente) {
+        const puerta = puertaEnvio(opciones.remitente, fila.correo, opciones.destinatarioPrueba ?? '')
+        if (!puerta.ok) {
+          await almacen.marcarOutbox(fila.outbox.id, { estado: 'bloqueado_dominio', intentos, ultimoError: puerta.error })
+          omitidos++
+          continue
+        }
+      }
+      let envio: Envio
+      try { envio = await enviar(fila) } catch { envio = { ok: false, error: 'correo_excepcion' } }
+      if (envio.ok) {
+        enviados++
+        await almacen.marcarOutbox(fila.outbox.id, { estado: 'enviado', providerId: envio.id, intentos, ultimoError: null })
+      } else {
+        await almacen.marcarOutbox(fila.outbox.id, { estado: 'fallido', intentos, ultimoError: envio.error })
+      }
+    } catch {
+      errores++
     }
   }
-  return { intentos: filas.length, enviados }
+  return { intentos: filas.length, enviados, omitidos, errores }
 }
 
 const REINTENTABLES: EstadoCorreo[] = ['bloqueado_dominio', 'fallido', 'omitido_sin_configuracion']

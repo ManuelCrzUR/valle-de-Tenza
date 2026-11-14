@@ -7,3 +7,19 @@
 .lugares-vacio p { margin: 0; color: var(--ink-muted); }
 .detalle-acciones { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); width: 100%; max-width: 420px; }
 .detalle-datos { display: grid; gap: var(--space-3); width: 100%; }
+
+/* Ficha pública del negocio */
+.ficha-negocio { display: grid; gap: var(--space-4); width: 100%; max-width: 520px; }
+.ficha-negocio section { display: grid; gap: var(--space-2); }
+.ficha-negocio h2, .ficha-negocio p, .ficha-negocio ul { margin: 0; }
+.contacto-botones { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-2); width: 100%; max-width: 420px; }
+.contacto-botones .vd-btn { min-height: var(--touch-min); gap: var(--space-2); text-align: center; }
+.contacto-compacto { flex-direction: row; flex-wrap: wrap; max-width: none; }
+.contacto-compacto .vd-btn { flex: 1 1 140px; padding: 10px 14px; }
+.fn-redes, .fn-horario, .fn-precios, .fn-chips { list-style: none; padding: 0; display: grid; gap: var(--space-1); }
+.fn-redes a { display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--touch-min); overflow-wrap: anywhere; }
+.fn-horario li, .fn-precios li { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-1) 0; border-bottom: 1px solid var(--surface-sunken); }
+.fn-precios li span:first-child { min-width: 0; overflow-wrap: anywhere; }
+.fn-desde { font-weight: 700; font-size: 1.25rem; }
+.fn-nota { color: var(--ink-muted); }
+.fn-chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }

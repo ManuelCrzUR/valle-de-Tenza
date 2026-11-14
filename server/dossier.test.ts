@@ -1,4 +1,6 @@
+import { readFileSync } from 'node:fs'
 import { inflateSync } from 'node:zlib'
+import { PDFDocument } from 'pdf-lib'
 import { describe, expect, it } from 'vitest'
 import { LUGARES, tieneUbicacion } from '../src/data/lugares.js'
 import { htmlCorreo, htmlDossier, pdfDossier, validarEjemplo, asuntoDossier, dossierDe } from './dossier.js'
@@ -6,6 +8,7 @@ import { POST } from '../api/dossier.js'
 import { validarSolicitud } from './solicitud.js'
 import { huella, memoriaTokens, nuevoToken, vigente } from './descarga.js'
 import { enviarRecibo } from './correo.js'
+import { cargadorFotos } from './fotos-pdf.js'
 
 function textoPdf(buf: Buffer): string {
   const marker = Buffer.from('stream')
@@ -115,7 +118,7 @@ describe('dossier', () => {
       personas: 2,
       nota: '',
       itinerario,
-    }, { hoy: '2026-11-06' })
+    }, { hoy: '2026-11-06', empresas: [{ ...negocio }] })
     expect(guardada.ok).toBe(true)
     if (!guardada.ok) return
     const recibo = dossierDe({
@@ -181,5 +184,73 @@ describe('dossier', () => {
     expect(cuerpo).toContain('Valle Directo | Solicitud recibida · EJEMPLO')
     expect(cuerpo).toContain('valle-directo-solicitud.pdf')
     expect(cuerpo).toContain(Buffer.from(pdf).toString('base64').slice(0, 40))
+  })
+
+  describe('cotización formal', () => {
+    function ejemploTenza() {
+      const de = LUGARES.filter((l) => l.municipio === 'tenza' && tieneUbicacion(l))
+      const cat = (c: string[], n: number) => de.filter((l) => c.includes(l.categoria)).slice(0, n).map((l) => l.id)
+      const v = validarEjemplo({
+        itinerario: {
+          plan: 'cultura', municipio: 'tenza', hospedaje: cat(['alojamiento'], 1)[0] ?? null,
+          dias: [{ paradas: cat(['atraccion', 'monumento', 'naturaleza'], 3), comida: cat(['restaurante'], 1)[0] ?? null }, { paradas: cat(['monumento'], 1), comida: null }],
+        },
+        nombre: 'Ana', fecha: '2026-12-01', personas: 2,
+      })
+      if (!v.ok) throw new Error('ejemplo')
+      return v.dossier
+    }
+    const latin1 = (b: Uint8Array) => Buffer.from(b).toString('latin1')
+
+    it('tiene al menos 2 páginas y enlaces a las fichas solo si hay sitio', async () => {
+      const d = ejemploTenza()
+      expect(d.paradas.every((p) => p.id && p.dia !== undefined)).toBe(true)
+      const con = await pdfDossier(d, { sitio: 'https://ejemplo.test/' })
+      expect((await PDFDocument.load(con)).getPageCount()).toBeGreaterThanOrEqual(2)
+      expect(latin1(con)).toContain('ejemplo.test/#/lugares/')
+      expect(latin1(con)).toContain('/URI')
+      const sin = await pdfDossier(d, { sitio: '' })
+      expect(latin1(sin)).not.toContain('/#/lugares/')
+    })
+
+    it('embebe la foto del municipio y sigue sin ella si falla', async () => {
+      const d = ejemploTenza()
+      const jpg = new Uint8Array(readFileSync('public/fotos/11.jpg'))
+      const sinFoto = await pdfDossier(d)
+      const conFoto = await pdfDossier(d, { foto: async () => jpg })
+      expect(conFoto.length).toBeGreaterThan(sinFoto.length + 1000)
+      const lanza = await pdfDossier(d, { foto: async () => { throw new Error('x') } })
+      const nula = await pdfDossier(d, { foto: async () => null })
+      const rota = await pdfDossier(d, { foto: async () => new Uint8Array([1, 2, 3]) })
+      for (const p of [lanza, nula, rota]) expect((await PDFDocument.load(p)).getPageCount()).toBeGreaterThanOrEqual(2)
+      expect(textoPdf(Buffer.from(conFoto))).toContain('Foto: Centro hist')
+    })
+
+    it('cargadorFotos rechaza rutas fuera de fotos/N.jpg', async () => {
+      const cargar = cargadorFotos('https://ejemplo.test')
+      expect(await cargar('../etc/passwd')).toBeNull()
+      expect(await cargar('fotos/x.png')).toBeNull()
+      expect(await cargar('fotos/../package.json')).toBeNull()
+      expect((await cargar('fotos/11.jpg'))?.length).toBeGreaterThan(1000)
+    })
+
+    it('no muestra precios: todo valor es «Por confirmar»', async () => {
+      const d = ejemploTenza()
+      const html = htmlDossier(d, 'https://ejemplo.test')
+      expect(html).toContain('Por confirmar')
+      expect(html).not.toContain('$')
+      expect(html).toContain('https://ejemplo.test/#/lugares/')
+      expect(html).toContain('COTIZACIÓN DE VIAJE')
+      expect(textoPdf(Buffer.from(await pdfDossier(d)))).toContain('Por confirmar')
+    })
+  })
+})
+
+describe('cotización: ficha de empresas', () => {
+  it('la empresa publicada lleva el id de su ficha pública', async () => {
+    const { paradasDe } = await import('./dossier.js')
+    const uuid = 'business:11111111-2222-4333-8444-555555555555'
+    const ps = paradasDe({ dias: [{ paradas: [uuid], comida: null }], hospedaje: null, lugares: [{ id: uuid, nombre: 'Finca de prueba', categoria: 'alojamiento', municipio: 'tenza', lat: null, lon: null, precision: null }] } as never)
+    expect(ps[0]?.id).toBe(uuid)
   })
 })

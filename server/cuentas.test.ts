@@ -172,7 +172,8 @@ describe('puerta de correo', () => {
         description: 'Descripcion publica suficiente', contact: 'mesa', lat: 5.1, lng: -73.4,
       }]), { status: 200 })
     })
-    expect(urls[0]).toContain('status=eq.published')
+    expect(urls[0]).toContain('/rest/v1/businesses_public')
+    expect(urls[0]).not.toContain('/rest/v1/businesses?')
     expect(r.configurado).toBe(true)
     expect(r.negocios).toHaveLength(1)
     expect(r.negocios[0].id).toBe(`business:${id}`)

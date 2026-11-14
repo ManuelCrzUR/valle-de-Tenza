@@ -229,3 +229,87 @@
 @media (min-width: 1024px) {
   .acceso { min-height: calc(100dvh - var(--appbar-height) - 160px); }
 }
+
+/* Secciones de la ficha del negocio */
+.prestador-seccion {
+  min-width: 0;
+  margin: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-raised);
+}
+
+.prestador-seccion > legend,
+.prestador-seccion > h3 { padding: 0 4px; margin: 0; color: var(--heading); }
+
+.prestador-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.prestador-check input { width: 24px; height: 24px; flex: none; accent-color: var(--accent); }
+
+.prestador-dia {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 4px 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.prestador-dia-nombre { font-weight: 700; color: var(--heading); }
+.prestador-dia .prestador-check { justify-self: end; }
+.prestador-hora { min-width: 0; }
+.prestador-hora .vd-input { width: 100%; min-height: 44px; }
+
+.prestador-servicios {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0 12px;
+}
+
+.prestador-precios {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.prestador-precio {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 8px);
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface-sunken);
+}
+
+.prestador-actualizada { margin: 0; color: var(--ink-muted); }
+
+@media (min-width: 720px) {
+  .prestador-dia { grid-template-columns: 120px auto 1fr 1fr; }
+  .prestador-dia .prestador-check { justify-self: start; }
+}
+
+/* Solicitudes recibidas y avisos push */
+.solicitudes, .avisos-push { margin: var(--space-5) 0; max-width: 100%; }
+.solicitudes-cabecera { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3); }
+.solicitudes-privacidad, .avisos-nota { color: var(--ink-muted); font-size: 0.9rem; }
+.solicitudes-error { color: var(--danger); font-weight: 600; }
+.solicitudes-lista { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; gap: var(--space-3); }
+.solicitud-card { padding: var(--space-4); overflow-wrap: anywhere; }
+.solicitud-card p { margin: var(--space-1) 0; }
+.solicitud-negocio { margin: 0 0 var(--space-2); font-family: var(--font-display); color: var(--heading); }
+.solicitud-recibida { color: var(--ink-muted); font-size: 0.9rem; }
+.solicitud-acciones { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
+.solicitud-acciones .vd-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
