@@ -75,7 +75,7 @@ async function borrarArchivos(bucket: string, rutas: string[], o: Required<Opcio
 
 /**
  * Elimina la cuenta de quien presenta el token: primero sus archivos de Storage y después el usuario
- * (las FKs en cascada borran negocios, fotos, avisos y solicitudes ligadas). Si Storage falla no se borra
+ * (las FKs en cascada borran perfil, negocios, fotos, avisos y los vínculos con solicitudes; las solicitudes del viajero se conservan hasta la purga de 12 meses). Si Storage falla no se borra
  * el usuario, para que se pueda reintentar sin dejar archivos huérfanos.
  */
 export async function eliminarCuenta(request: Request, opciones: OpcionesCuenta): Promise<Response> {

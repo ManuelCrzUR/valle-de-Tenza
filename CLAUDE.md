@@ -25,7 +25,7 @@ npm run reintentar-correo                       # reintenta el outbox con las cl
 
 | Ruta | Qué es |
 | --- | --- |
-| `api/*.ts` | Endpoints: `agente`, `itinerario`, `solicitudes`, `negocios`, `dossier`, `reintento`, `transcribir`, `voz` |
+| `api/*.ts` | Endpoints: `agente`, `itinerario`, `solicitudes`, `negocios`, `cuenta`, `dossier`, `reintento`, `transcribir`, `voz` |
 | `server/agente.ts` | Agente flotante con OpenAI: herramienta `buscar_lugares`, salida JSON, links en lista blanca |
 | `server/itinerario.ts` | Plan con OpenAI o con el catálogo; `validarPropuesta` descarta ids que no existen |
 | `server/catalogo.ts` | Catálogo del servidor: `buscarLugares`, `leerPreferencias`, `SLUGS` |
