@@ -245,6 +245,14 @@ otp_expiry = 3600
 # sender_name = "Admin"
 
 
+[auth.email.template.confirmation]
+subject = "Confirma tu correo en Valle Directo"
+content_path = "./supabase/templates/confirmacion.html"
+
+[auth.email.template.recovery]
+subject = "Crea una contraseña nueva en Valle Directo"
+content_path = "./supabase/templates/recuperacion.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"

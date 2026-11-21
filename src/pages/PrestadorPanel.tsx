@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, TextField } from '../components/ui'
@@ -7,6 +7,7 @@ import { FichaCampos, horarioAJson, horarioDesdeJson, horarioVacio } from '../co
 import type { Ficha } from '../components/prestador/FichaCampos'
 import { SolicitudesRecibidas } from '../components/prestador/SolicitudesRecibidas'
 import { AvisosPush } from '../components/prestador/AvisosPush'
+import { ConfirmarBorrado } from '../components/prestador/ConfirmarBorrado'
 import { MenuPdf } from '../components/prestador/MenuPdf'
 import { PreciosLista } from '../components/prestador/PreciosLista'
 import { enlaceTel, numeroWhatsapp } from '../../shared/contacto'
@@ -103,6 +104,8 @@ export default function PrestadorPanel() {
   const [aviso, setAviso] = useState('')
   const [error, setError] = useState('')
   const [ocupado, setOcupado] = useState(false)
+  const [confirmando, setConfirmando] = useState<'negocio' | 'cuenta' | null>(null)
+  const tituloNegocios = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     if (!listo || !supabase || !usuario) return
@@ -227,15 +230,61 @@ export default function PrestadorPanel() {
   }
 
   async function borrarEmpresa() {
-    if (!supabase || !activa || activa === 'nueva') return
+    if (!supabase || !usuario || !activa || activa === 'nueva') return
+    const id = activa
     setOcupado(true)
-    const { error: err } = await supabase.from('businesses').delete().eq('id', activa)
+    setError('')
+    setAviso('')
+    // Archivos primero: si fallan, la fila se borra igual (el dueño pidió borrar) y se avisa.
+    let archivosFallidos = false
+    for (const bucket of ['business-photos', 'business-menus']) {
+      const carpeta = `${usuario.id}/${id}`
+      const { data, error: errLista } = await supabase.storage.from(bucket).list(carpeta, { limit: 1000 })
+      if (errLista) { archivosFallidos = true; continue }
+      const rutas = (data ?? []).filter((o) => o.id).map((o) => `${carpeta}/${o.name}`)
+      if (rutas.length) {
+        const { error: errBorra } = await supabase.storage.from(bucket).remove(rutas)
+        if (errBorra) archivosFallidos = true
+      }
+    }
+    const { error: err } = await supabase.from('businesses').delete().eq('id', id)
     setOcupado(false)
-    if (err) { setError('No pude borrar el negocio.'); return }
-    setEmpresas((lista) => lista.filter((item) => item.id !== activa))
+    setConfirmando(null)
+    if (err) { setError('No pude borrar el negocio. Es posible que se hayan borrado algunas fotos o el menú; vuelve a intentarlo.'); return }
+    setEmpresas((lista) => lista.filter((item) => item.id !== id))
     setActiva(null)
     setForm(vacia)
-    setAviso('Negocio borrado.')
+    setAviso(archivosFallidos
+      ? 'Negocio borrado, pero no pude borrar todas sus fotos o su menú del almacenamiento. Pueden quedar archivos sin usar.'
+      : 'Negocio borrado, con sus fotos y su menú.')
+    // El botón que abrió el diálogo ya no existe: el foco va al título de la lista.
+    requestAnimationFrame(() => tituloNegocios.current?.focus())
+  }
+
+  async function eliminarCuenta() {
+    if (!supabase) return
+    setOcupado(true)
+    setError('')
+    setAviso('')
+    try {
+      const { data } = await supabase.auth.getSession()
+      const token = data.session?.access_token
+      if (!token) { setError('Tu sesión venció. Entra de nuevo para eliminar la cuenta.'); return }
+      const r = await fetch('/api/cuenta', { method: 'POST', headers: { authorization: `Bearer ${token}` } })
+      if (!r.ok) {
+        setError(r.status === 429
+          ? 'Demasiados intentos. Espera un rato; tu cuenta sigue activa.'
+          : 'No pude eliminar la cuenta. Puede que algo se haya borrado a medias; vuelve a intentarlo.')
+        return
+      }
+      await supabase.auth.signOut()
+      nav('/prestadores', { state: { aviso: 'Tu cuenta y sus datos fueron eliminados.' } })
+    } catch {
+      setError('No pude conectar para eliminar la cuenta. Tu cuenta sigue activa.')
+    } finally {
+      setOcupado(false)
+      setConfirmando(null)
+    }
   }
 
   async function subirFotos(files: FileList | null) {
@@ -346,7 +395,7 @@ export default function PrestadorPanel() {
         <Button type="submit" variant="secondary" disabled={ocupado}>Guardar perfil</Button>
       </form>
 
-      <h2 className="t-h2">Negocios</h2>
+      <h2 ref={tituloNegocios} tabIndex={-1} className="t-h2">Negocios</h2>
       <div className="prestador-lista">
         {empresas.map((empresa) => (
           <button key={empresa.id} type="button" className="panel prestador-card" onClick={() => elegir(empresa)}>
@@ -426,7 +475,7 @@ export default function PrestadorPanel() {
           )}
           <div className="prestador-acciones">
             <Button type="submit" variant="cta" disabled={ocupado}>{ocupado ? 'Guardando…' : 'Guardar negocio'}</Button>
-            {activa !== 'nueva' && <Button type="button" variant="secondary" onClick={() => void borrarEmpresa()}>Borrar</Button>}
+            {activa !== 'nueva' && <Button type="button" variant="secondary" onClick={() => setConfirmando('negocio')}>Borrar negocio</Button>}
           </div>
         </form>
       )}
@@ -434,6 +483,43 @@ export default function PrestadorPanel() {
         {error && <p role="alert">{error}</p>}
         {aviso && <p className="prestador-aviso" role="status">{aviso}</p>}
       </div>
+
+      <section className="prestador-peligro" aria-labelledby="zona-peligro">
+        <h2 id="zona-peligro" className="t-h2">Zona de peligro</h2>
+        <p>Eliminar tu cuenta borra todo lo que tienes aquí. No se puede deshacer.</p>
+        <Button type="button" variant="secondary" className="vd-btn-peligro" onClick={() => setConfirmando('cuenta')} disabled={ocupado}>Eliminar mi cuenta</Button>
+      </section>
+
+      <ConfirmarBorrado
+        abierto={confirmando === 'negocio'}
+        titulo="Borrar este negocio"
+        confirmar={empresas.find((e) => e.id === activa)?.name ?? ''}
+        etiquetaBoton="Borrar negocio"
+        ocupado={ocupado}
+        onConfirmar={() => void borrarEmpresa()}
+        onCancelar={() => setConfirmando(null)}
+      >
+        <p>Se borran el negocio, sus fotos, su menú en PDF y sus precios. Las solicitudes que te enviaron por este negocio dejan de aparecer en tu panel. No se puede deshacer.</p>
+      </ConfirmarBorrado>
+      <ConfirmarBorrado
+        abierto={confirmando === 'cuenta'}
+        titulo="Eliminar mi cuenta"
+        confirmar={usuario.email ?? ''}
+        etiquetaCampo="Escribe tu correo para confirmar"
+        etiquetaBoton="Eliminar mi cuenta"
+        ocupado={ocupado}
+        onConfirmar={() => void eliminarCuenta()}
+        onCancelar={() => setConfirmando(null)}
+      >
+        <p>Se borran para siempre:</p>
+        <ul>
+          <li>tu perfil y tu acceso;</li>
+          <li>todos tus negocios, con sus fotos y menús;</li>
+          <li>tus avisos y suscripciones;</li>
+          <li>tu acceso a las solicitudes que te enviaron (dejan de aparecer en tu panel).</li>
+        </ul>
+        <p>No se puede deshacer. Escribe el correo de tu cuenta.</p>
+      </ConfirmarBorrado>
     </div>
   )
 }

@@ -29,6 +29,7 @@ npm run preview   # sirve dist/ para revisar
 Si el viajero marcó la casilla de compartir datos, `POST /api/solicitudes` también avisa a los negocios del plan (correo y push) y responde `negociosAvisados`. Sin la casilla, no sale ningún dato hacia los negocios.
 - `GET /api/negocios` devuelve solo negocios publicados. Sin Supabase responde una lista vacía.
 - `GET /api/avisos-clave` entrega la llave pública VAPID para las notificaciones push del negocio. La privada queda en el servidor.
+- `POST /api/cuenta` elimina la cuenta del prestador que la pide con su sesión; las solicitudes de viajeros se conservan hasta la purga de 12 meses.
 
 Pruebas: `npm test` (no llama a proveedores reales). Reintento de correos ya guardados: `npm run reintentar-correo`.
 
@@ -60,7 +61,7 @@ scraper/.venv/bin/python scraper/probar.py                      # pruebas sin re
 
 Quien viaja no necesita cuenta. En `/plan` envía nombre, correo, fecha y el plan ya validado. El estado visible separa «no guardada», «guardada» y «correo enviado». Ninguno de esos estados es una reserva confirmada.
 
-Quien tiene un negocio entra en `/#/prestadores` con correo y contraseña de Supabase Auth. El borrador lo ve solo su titular; lo publicado puede salir en el mapa y en un plan. La migración es `supabase/migrations/003_perfiles_empresas.sql`. Detalle y límites: [docs/cuentas-prestadores.md](docs/cuentas-prestadores.md).
+Quien tiene un negocio entra en `/#/prestadores` con correo y contraseña de Supabase Auth. Si olvidó la contraseña, la recupera con «¿Olvidaste tu contraseña?» (enlace por correo). El borrador lo ve solo su titular; lo publicado puede salir en el mapa y en un plan. La migración es `supabase/migrations/003_perfiles_empresas.sql`. Detalle y límites: [docs/cuentas-prestadores.md](docs/cuentas-prestadores.md).
 
 ## Publicación
 

@@ -131,3 +131,46 @@ Canal push (gratis):
 5. En iPhone, las notificaciones web solo funcionan si la app está agregada a la pantalla de inicio.
 
 Retención: `005_solicitudes_negocio.sql` define `purgar_solicitudes()`, que borra las solicitudes de más de 12 meses junto con sus filas de correo y enlaces de descarga. Si `pg_cron` está disponible, la migración la programa a diario (`purgar-solicitudes`, 08:15 UTC). Si no, hay que programarla a mano con `select public.purgar_solicitudes();`.
+
+## 9. Correos de cuenta (Supabase Auth)
+
+Los correos de confirmación y de recuperación de contraseña los envía Supabase Auth, no Resend. Estos pasos se hacen una vez en el dashboard de Supabase de **producción**. No hay variables que copiar a Vercel y ninguna clave va al repositorio.
+
+a) **Confirmar el correo.** *Authentication → Sign In / Providers → Email*: activa **Confirm email**. Sin esto, la cuenta entra sin confirmar el correo.
+
+b) **Dirección de la app.** *Authentication → URL Configuration*:
+
+- **Site URL**: `https://valle-de-tenza.vercel.app`
+- **Redirect URLs**: agrega `https://valle-de-tenza.vercel.app/**` y, para desarrollo, `http://localhost:5173/**`.
+
+Los enlaces del correo vuelven a `/#/prestadores/confirmar` y `/#/prestadores/clave-nueva`. La lista de redirección debe cubrirlos.
+
+c) **SMTP propio con Resend.** *Authentication → Emails → SMTP Settings → Enable custom SMTP*:
+
+- **Host**: `smtp.resend.com`
+- **Port**: `465`
+- **Username**: `resend`
+- **Password**: la API key de Resend. Puede ser la de `RESEND_API_KEY` o una nueva que solo tenga permiso de envío.
+- **Sender email**: una dirección del dominio verificado en Resend, `getaurenai.com` (el mismo de `RESEND_FROM_EMAIL`).
+- **Sender name**: `Valle Directo`
+
+Por qué: el envío integrado de Supabase es solo para pruebas. Tiene un límite por hora muy bajo (en `supabase/config.toml`, `email_sent = 2`) y los correos salen desde el remitente de Supabase, no desde tu dominio. Con SMTP propio, sube el límite en *Authentication → Rate Limits*; por ejemplo, 30 correos por hora.
+
+d) **Plantillas.** *Authentication → Emails → Templates*:
+
+- **Confirm signup**: asunto `Confirma tu correo en Valle Directo`. Pega el contenido completo de `supabase/templates/confirmacion.html`.
+- **Reset Password**: asunto `Crea una contraseña nueva en Valle Directo`. Pega el contenido completo de `supabase/templates/recuperacion.html`.
+
+Los asuntos son los de `supabase/config.toml` (`[auth.email.template.confirmation]` y `[auth.email.template.recovery]`). Si cambias uno, cámbialo en los dos sitios.
+
+e) **Cómo probar** con la app publicada:
+
+1. En `/#/prestadores/entrar`, pulsa **Crear cuenta** y escribe correo y contraseña.
+2. Llega el correo «Confirma tu correo en Valle Directo». Abre el enlace: la página debe decir **Confirmamos tu correo**.
+3. En **Iniciar sesión**, pulsa **¿Olvidaste tu contraseña?** y escribe el correo. Llega «Crea una contraseña nueva en Valle Directo».
+4. Abre ese enlace, escribe una contraseña de al menos 8 caracteres y entra con ella.
+
+f) **Enlace vencido o ya usado.** Por defecto dura 1 hora (`otp_expiry = 3600` en `supabase/config.toml`).
+
+- Confirmación: la página dice **Este enlace venció o ya se usó** y tiene un campo de correo con **Reenviar correo**. Entre envíos hay 60 s de espera. El mensaje es el mismo exista o no la cuenta.
+- Recuperación: la página dice **El enlace venció** (en `clave-nueva`) o **Este enlace venció o ya se usó** (en `confirmar?type=recovery`), con **Pedir otro enlace**, que abre otra vez la recuperación.

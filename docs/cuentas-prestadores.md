@@ -51,3 +51,32 @@ Desde el panel, el negocio completa:
 - **Avisos push**: el botón «Activar avisos en este dispositivo». Cada dispositivo se activa aparte.
 
 La pestaña **Solicitudes recibidas** lista solo las solicitudes de viajeros que marcaron la casilla de compartir datos. El negocio ve nombre, teléfono, correo, fecha, personas y nota. Las solicitudes sin consentimiento no aparecen.
+
+## Confirmación y recuperación de contraseña
+
+- **Crear cuenta** envía un correo de confirmación. Su enlace abre `/#/prestadores/confirmar`, que valida el `token_hash` con `verifyOtp` y muestra «Confirmamos tu correo». También acepta el enlace heredado con `#access_token`.
+- **Reenviar correo** tiene 60 s de espera y responde igual exista o no la cuenta.
+- **¿Olvidaste tu contraseña?** (en «Iniciar sesión») envía un correo. Su enlace abre `/#/prestadores/confirmar?type=recovery` y de ahí `/#/prestadores/clave-nueva`. La respuesta es neutral: no dice si el correo tiene cuenta.
+- Las plantillas están en `supabase/templates/confirmacion.html` y `supabase/templates/recuperacion.html`. Los pasos del dashboard, en [configuracion-mvp.md](configuracion-mvp.md#9-correos-de-cuenta-supabase-auth).
+
+## Borrar un negocio
+
+En el panel, **Borrar negocio** pide escribir el nombre del negocio para confirmar. Después:
+
+- **Se borra** la ficha (`businesses`) con lo que cuelga de ella: precios, fotos, enlaces a solicitudes (`request_businesses`) y avisos pendientes a ese negocio (`notification_outbox`).
+- **Se borran** sus archivos en Storage: `business-photos` y `business-menus`, en la carpeta del titular. Si Storage falla, la fila se borra igual y el panel lo avisa.
+- **No se borra** la cuenta de acceso, ni otros negocios, ni las solicitudes de viajeros. El negocio deja de verlas, porque su enlace en `request_businesses` desaparece.
+
+## Eliminar la cuenta
+
+«Eliminar mi cuenta» (zona de peligro del panel) llama a `POST /api/cuenta` con el token de sesión en `Authorization: Bearer`. El servidor:
+
+1. Valida el token en Supabase Auth y obtiene el id del usuario. No lee ningún id del cuerpo de la petición.
+2. Borra los archivos de `business-photos` y `business-menus` de ese usuario.
+3. Borra el usuario en Auth. Si Storage falla, no borra el usuario y se puede reintentar.
+
+Al borrar el usuario caen en cascada su perfil, sus negocios y todo lo que cuelga de ellos, y sus suscripciones push.
+
+**Las solicitudes de viajeros no se borran al eliminar la cuenta.** Siguen en `reservation_requests` con su comprobante hasta la purga de 12 meses (`purgar_solicitudes()`, en la migración `005`). El negocio deja de verlas.
+
+Requiere `SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY` en el servidor. Sin ellas responde 503 y no borra nada. Tiene un límite de 5 intentos por hora y red.
