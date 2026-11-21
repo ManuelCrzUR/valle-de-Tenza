@@ -1,6 +1,8 @@
 import { lazy } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/Layout'
+import { Cargando } from './components/Cargando'
+import { interpretarHashHeredado } from './lib/enlaceAuth'
 
 const Inicio = lazy(() => import('./pages/Inicio'))
 const Plan = lazy(() => import('./pages/Plan'))
@@ -14,6 +16,12 @@ const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
 const AuthConfirmar = lazy(() => import('./pages/AuthConfirmar'))
 const ClaveNueva = lazy(() => import('./pages/ClaveNueva'))
 const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
+
+// Mientras supabase-js lee un enlace de correo heredado (#access_token=… o #error=…), no se muestra «no encontrado»:
+// src/lib/supabase.ts lleva a la persona a la pantalla correcta en cuanto termina.
+function RutaDesconocida() {
+  return interpretarHashHeredado(window.location.hash) ? <Cargando /> : <NoEncontrado />
+}
 
 export default function App() {
   return (
@@ -32,7 +40,7 @@ export default function App() {
         <Route path="prestadores/panel" element={<PrestadorPanel />} />
         <Route path="prestadores/confirmar" element={<AuthConfirmar />} />
         <Route path="prestadores/clave-nueva" element={<ClaveNueva />} />
-        <Route path="*" element={<NoEncontrado />} />
+        <Route path="*" element={<RutaDesconocida />} />
       </Route>
     </Routes>
   )
