@@ -16,6 +16,14 @@ const NAV: TabBarItem[] = [
 ]
 const base = import.meta.env.BASE_URL
 
+let mapaPrecargado = false
+// Descarga el código del mapa (Leaflet) antes del clic: al pasar el cursor, enfocar o tocar el enlace.
+function precargarMapa() {
+  if (mapaPrecargado) return
+  mapaPrecargado = true
+  void import('./mapa/MapaLugares').catch(() => { mapaPrecargado = false })
+}
+
 export function Layout() {
   const { pathname } = useLocation()
   const go = useNavigate()
@@ -29,7 +37,9 @@ export function Layout() {
         <div className="wrap appbar-in">
           <Link to="/" className="appbar-logo" aria-label="Valle Directo, inicio"><Logo size={40} /></Link>
           <nav className="topnav" aria-label="Principal">
-            {NAV.map((n) => <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
+            {NAV.map((n) => n.id === 'mapa'
+              ? <NavLink key={n.id} to={`/${n.id}`} onPointerEnter={precargarMapa} onFocus={precargarMapa} onTouchStart={precargarMapa}>{n.label}</NavLink>
+              : <NavLink key={n.id} to={`/${n.id}`}>{n.label}</NavLink>)}
           </nav>
           <nav className="cuenta-nav" aria-label="Cuenta de prestador">
             <NavLink to="/prestadores" end>Soy prestador</NavLink>
