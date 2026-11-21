@@ -313,3 +313,30 @@
 .solicitud-recibida { color: var(--ink-muted); font-size: 0.9rem; }
 .solicitud-acciones { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
 .solicitud-acciones .vd-btn { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }
+
+/* Borrado seguro y zona de peligro */
+.confirmar-borrado {
+  width: min(calc(100vw - 2 * var(--space-4)), 480px);
+  padding: var(--space-5);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  background: var(--surface, #fff);
+  color: var(--ink);
+}
+.confirmar-borrado::backdrop { background: rgb(0 0 0 / 0.55); }
+.confirmar-borrado-form { display: grid; gap: var(--space-4); }
+.confirmar-borrado-desc p, .confirmar-borrado-desc ul { margin: 0 0 var(--space-2); }
+.confirmar-borrado-desc ul { padding-left: var(--space-5); }
+.confirmar-borrado-acciones { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: flex-end; }
+.vd-btn-peligro { background: var(--danger); color: #fff; border-color: var(--danger); }
+.vd-btn-peligro:hover:not(:disabled) { filter: brightness(0.92); }
+.prestador-peligro {
+  margin: var(--space-7) 0 var(--space-5);
+  padding: var(--space-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: var(--space-3);
+}
+.prestador-peligro h2 { color: var(--danger); margin: 0; }
+.prestador-peligro p { margin: 0; }
