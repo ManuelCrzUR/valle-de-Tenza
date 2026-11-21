@@ -496,7 +496,7 @@ export default function PrestadorPanel() {
         onConfirmar={() => void borrarEmpresa()}
         onCancelar={() => setConfirmando(null)}
       >
-        <p>Se borran el negocio, sus fotos, su menú en PDF, sus precios y las solicitudes ligadas a él. No se puede deshacer.</p>
+        <p>Se borran el negocio, sus fotos, su menú en PDF y sus precios. Las solicitudes que te enviaron por este negocio dejan de aparecer en tu panel. No se puede deshacer.</p>
       </ConfirmarBorrado>
       <ConfirmarBorrado
         abierto={confirmando === 'cuenta'}
@@ -512,7 +512,7 @@ export default function PrestadorPanel() {
           <li>tu perfil y tu acceso;</li>
           <li>todos tus negocios, con sus fotos y menús;</li>
           <li>tus avisos y suscripciones;</li>
-          <li>las solicitudes ligadas a tus negocios.</li>
+          <li>tu acceso a las solicitudes que te enviaron (dejan de aparecer en tu panel).</li>
         </ul>
         <p>No se puede deshacer. Escribe el correo de tu cuenta.</p>
       </ConfirmarBorrado>
