@@ -30,10 +30,24 @@ La solicitud se guarda antes de intentar el envío. Si el remitente es `@resend.
 
 ## Qué no se tocó a propósito
 
-Otro cambio, en otra rama, agrega el asistente flotante. Este trabajo no edita `src/styles/plan.css` ni crea archivos bajo `src/components/agente/`, `src/styles/agente.css`, `src/data/agente.ts`, `api/agente.ts`, `server/agente.ts` ni `docs/agente.md`.
+Otro cambio, en otra rama, agrega el asistente flotante. Ese cambio original no creaba archivos bajo `src/components/agente/`, `src/styles/agente.css`, `src/data/agente.ts`, `api/agente.ts`, `server/agente.ts` ni `docs/agente.md`.
 
 Se conservan las firmas que ese asistente importa: `crearLimite`, `ipCliente` y `json`; `openaiConfig`; `sinDatosPersonales`; `buscarLugares`; y los exports `MUNICIPIOS`, `CATEGORIAS` y `getLugar`.
 
 En `/plan` siguen `plan-asistente` y `plan-resultado`. El formulario de solicitud ahora tiene `id="plan-solicitud"`. El enlace de una empresa publicada abre `/plan` sin `?texto=`: ese prefill queda para el otro cambio.
 
 Los estilos del panel están en `src/styles/prestador.css`.
+
+## Ficha y solicitudes
+
+Desde el panel, el negocio completa:
+
+- **Contacto**, con un interruptor de publicación. Apagado, el teléfono y el correo no salen en la ficha pública.
+- **Horario**, con el cálculo de «abierto ahora» en hora de Bogotá.
+- **Precios**, con fecha de verificación visible.
+- **Menú en PDF**, máximo 5 MB.
+- **Redes** y **servicios**.
+- **Correo privado para avisos**: recibe el aviso de cada solicitud con consentimiento. Nunca se muestra en la vista pública (`businesses_public`).
+- **Avisos push**: el botón «Activar avisos en este dispositivo». Cada dispositivo se activa aparte.
+
+La pestaña **Solicitudes recibidas** lista solo las solicitudes de viajeros que marcaron la casilla de compartir datos. El negocio ve nombre, teléfono, correo, fecha, personas y nota. Las solicitudes sin consentimiento no aparecen.

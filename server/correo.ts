@@ -46,3 +46,31 @@ export async function enviarRecibo(opts: {
   if (!data?.id) return { ok: false, error: 'resend_sin_id' }
   return { ok: true, id: data.id }
 }
+
+export interface CorreoSimple {
+  fetchImpl: typeof fetch
+  clave: string
+  desde: string
+  para: string
+  asunto: string
+  html: string
+  texto: string
+  idempotencyKey: string
+}
+
+/** Envío genérico por Resend (avisos al negocio). No incluye adjuntos. */
+export async function enviarCorreoSimple(o: CorreoSimple): Promise<Envio> {
+  const r = await o.fetchImpl('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${o.clave}`,
+      'content-type': 'application/json',
+      'idempotency-key': o.idempotencyKey,
+    },
+    body: JSON.stringify({ from: o.desde, to: [o.para], subject: o.asunto, html: o.html, text: o.texto }),
+  })
+  if (!r.ok) return { ok: false, error: `resend_${r.status}` }
+  const data = (await r.json().catch(() => null)) as { id?: string } | null
+  if (!data?.id) return { ok: false, error: 'resend_sin_id' }
+  return { ok: true, id: data.id }
+}

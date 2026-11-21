@@ -23,6 +23,18 @@ En *Settings → Environment Variables* agrega los nombres de `.env.example`. No
 
 En local: copia `.env.example` a `.env.local`, completa lo que tengas y corre `npm run dev`. Vite sirve `/api/*` con las mismas funciones.
 
+### Enlace público (sin login)
+
+Si el sitio pide iniciar sesión, está activa la *Deployment Protection* de Vercel (Vercel Authentication).
+
+1. En vercel.com abre el proyecto → *Settings* → *Deployment Protection*.
+2. En *Vercel Authentication* elige **Disabled** → *Save*.
+3. Comparte el dominio de producción (`<proyecto>.vercel.app` o el dominio propio), no la URL de un preview (`<proyecto>-<hash>-<equipo>.vercel.app`): cada preview es una URL distinta.
+
+Comprobación: abre el enlace en una ventana privada. Debe cargar sin pedir cuenta de Vercel.
+
+Nota: *Password Protection* es de planes pagos; en Hobby no se usa. Quitar la protección no expone claves: las variables de servidor nunca llegan al navegador.
+
 ## 3. OpenAI
 
 Ids comprobados el 6 de noviembre de 2026 en la documentación oficial. Si esa página cambia, pon el id nuevo en la variable; no inventes otro nombre en el código.
@@ -85,3 +97,37 @@ Variables nuevas, sin valores en el repositorio:
 - `RESEND_SANDBOX_RECIPIENT` — ya descrita en la sección 4.
 
 Rutas: `/#/prestadores`, `/#/prestadores/entrar`, `/#/prestadores/panel`. El enlace está en el inicio. La barra de navegación no se tocó en este cambio. El detalle de ids, correo y archivos que no se editan está en [cuentas-prestadores.md](cuentas-prestadores.md).
+
+## Avisos al negocio
+
+Migraciones, en orden: `supabase/migrations/004_ficha_negocio.sql` y luego `005_solicitudes_negocio.sql`. **Aplica la 004 antes de desplegar.** `GET /api/negocios` lee la vista `businesses_public`; sin ella, la ficha falla.
+
+Reglas:
+
+- La solicitud llega al negocio solo si el viajero marca la casilla «Comparto mi nombre, teléfono y correo…». Desmarcada, la solicitud se guarda y no sale ningún dato hacia los negocios.
+- El aviso no lleva datos personales del viajero: ni nombre, ni teléfono, ni correo.
+- `POST /api/solicitudes` responde `negociosAvisados` con el número de negocios del plan que recibieron el aviso. No significa que respondieron ni que hay cupo.
+
+Canal correo (Resend):
+
+- Necesita un dominio verificado para escribir a cualquier negocio. Con remitente `@resend.dev` solo entrega al correo de la cuenta (`RESEND_SANDBOX_RECIPIENT`).
+- Con `@resend.dev` y otro destinatario, la fila queda `bloqueado_dominio` en `notification_outbox`. No se cambia el destinatario.
+- Reintento de los pendientes o fallidos, con las claves cargadas: `npm run reintentar-correo`.
+
+### Origen público del sitio
+
+Los correos, el PDF y las fotos del PDF construyen enlaces absolutos con una de estas variables de servidor, en este orden: `SITIO_URL`, `SITE_URL`, y `https://$VERCEL_PROJECT_PRODUCTION_URL` (Vercel la inyecta sola en producción). Nunca se usan las cabeceras `Host` o `x-forwarded-*` de la petición. Si no hay ninguna, el PDF sale sin enlaces absolutos ni fotos remotas.
+
+### Reintento del outbox
+
+`scripts/reintentar-outbox.ts` toma comprobantes `fallido` y `pendiente` con más de 10 minutos, los reclama de forma atómica, aplica la puerta de envío del remitente de prueba y adjunta el mismo PDF que `/api/solicitudes`. Si falla el lote de comprobantes, igual ejecuta el reintento de avisos a negocios.
+
+Canal push (gratis):
+
+1. Genera las llaves una vez: `npx web-push generate-vapid-keys`.
+2. Carga `VAPID_PUBLIC_KEY`, `VAPID_PRIVATE_KEY`, `VAPID_SUBJECT` (un `mailto:`) y `SITE_URL` en Vercel. La privada no va a una variable `VITE_`.
+3. `GET /api/avisos-clave` entrega solo la pública.
+4. El negocio entra al panel y pulsa «Activar avisos en este dispositivo». Cada dispositivo se activa por separado.
+5. En iPhone, las notificaciones web solo funcionan si la app está agregada a la pantalla de inicio.
+
+Retención: `005_solicitudes_negocio.sql` define `purgar_solicitudes()`, que borra las solicitudes de más de 12 meses junto con sus filas de correo y enlaces de descarga. Si `pg_cron` está disponible, la migración la programa a diario (`purgar-solicitudes`, 08:15 UTC). Si no, hay que programarla a mano con `select public.purgar_solicitudes();`.

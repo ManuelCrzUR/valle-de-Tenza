@@ -5,8 +5,10 @@ import { Chip } from '../ui'
 import { LinkButton } from '../LinkButton'
 import { CategoriaIcono } from './iconos'
 import { DatosLugar } from './DatosLugar'
+import { BotonesContacto } from '../FichaNegocio'
+import type { NegocioPublico } from '../../state/negocios'
 
-export function FichaLugar({ lugar, onVolver }: { lugar: Lugar; onVolver: () => void }) {
+export function FichaLugar({ lugar, negocio, onVolver }: { lugar: Lugar; negocio?: NegocioPublico; onVolver: () => void }) {
   const cat = CATEGORIA_POR_ID[lugar.categoria]
   const x = lugar.extra
   const osm = tieneUbicacion(lugar) ? `https://www.openstreetmap.org/?mlat=${lugar.lat}&mlon=${lugar.lon}#map=17/${lugar.lat}/${lugar.lon}` : null
@@ -22,6 +24,7 @@ export function FichaLugar({ lugar, onVolver }: { lugar: Lugar; onVolver: () => 
       </div>
       {lugar.conRegistro && <Chip tone="strong">Con registro de turismo</Chip>}
       <DatosLugar lugar={lugar} />
+      {negocio && <BotonesContacto negocio={negocio} compacto />}
       <div className="ficha-acciones">
         {tipoReserva(lugar) && <LinkButton to={`/plan?lugar=${lugar.id}`} variant="cta">Incluir en mi plan</LinkButton>}
         {osm && <a className="vd-btn vd-btn-secondary" href={osm} target="_blank" rel="noopener noreferrer">Ver en OpenStreetMap <ExternalLink size={16} aria-hidden /></a>}
