@@ -174,3 +174,18 @@ f) **Enlace vencido o ya usado.** Por defecto dura 1 hora (`otp_expiry = 3600` e
 
 - Confirmación: la página dice **Este enlace venció o ya se usó** y tiene un campo de correo con **Reenviar correo**. Entre envíos hay 60 s de espera. El mensaje es el mismo exista o no la cuenta.
 - Recuperación: la página dice **El enlace venció** (en `clave-nueva`) o **Este enlace venció o ya se usó** (en `confirmar?type=recovery`), con **Pedir otro enlace**, que abre otra vez la recuperación.
+
+## 10. Avisos de seguridad de Supabase (Advisors)
+
+La migración `006_endurecimiento.sql` fija el `search_path` de las funciones y le quita a `anon` y `authenticated`
+el permiso de llamar a `crear_perfil()` (la función del trigger de alta). Después de aplicarla quedan avisos que
+son **intencionales**:
+
+- `businesses_public` (vista *security definer*, nivel ERROR): muestra solo las columnas públicas de los negocios
+  publicados y el contacto solo si el negocio activó su interruptor. Con `security_invoker`, la clave anónima
+  tendría que poder leer la tabla `businesses` completa, con los datos de contacto privados. No cambiarla.
+- `negocio_visible()` y `mis_solicitudes()` (*security definer* ejecutables por roles de la API): tienen
+  `search_path` fijo y filtran por publicación y por `auth.uid()`; las usan las políticas y el panel.
+- Tablas con RLS y sin políticas (`reservation_requests`, `notification_outbox`, `request_businesses`,
+  `email_outbox`, `itineraries`, `dossier_tokens`): a propósito; solo la service role del servidor las usa.
+- «Leaked password protection»: es una función de los planes de pago; no aplica en Supabase Free.
