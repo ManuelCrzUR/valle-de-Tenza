@@ -201,6 +201,38 @@
   text-decoration: underline;
 }
 
+/* Enlace de texto en el formulario de acceso (¿Olvidaste tu contraseña?). */
+.acceso-enlace {
+  align-self: center;
+  min-height: var(--touch-min);
+  padding: 0 12px;
+  font: inherit;
+  font-weight: 700;
+  color: var(--link);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.acceso-card .t-h1:focus-visible,
+.acceso-enlace:focus-visible {
+  outline: 3px solid var(--ambar);
+  outline-offset: 2px;
+  border-radius: var(--radius-md);
+}
+
+/* Confirmación de correo: ícono de check. */
+.confirmar-icono {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--success) 14%, var(--surface-raised));
+  color: var(--success);
+}
+
 .prestador-sesion {
   width: 100%;
   max-width: 720px;

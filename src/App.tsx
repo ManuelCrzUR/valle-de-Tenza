@@ -11,6 +11,8 @@ const Galeria = lazy(() => import('./pages/Galeria'))
 const Prestadores = lazy(() => import('./pages/Prestadores'))
 const PrestadorAcceso = lazy(() => import('./pages/PrestadorAcceso'))
 const PrestadorPanel = lazy(() => import('./pages/PrestadorPanel'))
+const AuthConfirmar = lazy(() => import('./pages/AuthConfirmar'))
+const ClaveNueva = lazy(() => import('./pages/ClaveNueva'))
 const NoEncontrado = lazy(() => import('./pages/NoEncontrado'))
 
 export default function App() {
@@ -28,6 +30,8 @@ export default function App() {
         <Route path="prestadores" element={<Prestadores />} />
         <Route path="prestadores/entrar" element={<PrestadorAcceso />} />
         <Route path="prestadores/panel" element={<PrestadorPanel />} />
+        <Route path="prestadores/confirmar" element={<AuthConfirmar />} />
+        <Route path="prestadores/clave-nueva" element={<ClaveNueva />} />
         <Route path="*" element={<NoEncontrado />} />
       </Route>
     </Routes>
