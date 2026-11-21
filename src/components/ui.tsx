@@ -81,12 +81,17 @@ export function ChatBubble({ from = 'bot', author, children, className }: ChatBu
 
 // ---------- TabBar ----------
 export interface TabBarItem { id: string; label: string; icon: IconName }
-export interface TabBarProps { items: TabBarItem[]; value: string; onChange?: (id: string) => void; label?: string; className?: string }
-export function TabBar({ items, value, onChange, label = 'Navegación principal', className }: TabBarProps): ReactElement {
+export interface TabBarProps {
+  items: TabBarItem[]; value: string; onChange?: (id: string) => void; label?: string; className?: string
+  /** Se llama antes del clic (tocar, pasar el cursor o enfocar), p. ej. para precargar la pantalla. */
+  onIntencion?: (id: string) => void
+}
+export function TabBar({ items, value, onChange, onIntencion, label = 'Navegación principal', className }: TabBarProps): ReactElement {
   return (
     <nav className={cx('vd-tabbar', className)} aria-label={label}>
       {items.map((it) => (
-        <button key={it.id} type="button" className="vd-tab" aria-current={it.id === value ? 'page' : undefined} onClick={() => onChange?.(it.id)}>
+        <button key={it.id} type="button" className="vd-tab" aria-current={it.id === value ? 'page' : undefined} onClick={() => onChange?.(it.id)}
+          onTouchStart={onIntencion && (() => onIntencion(it.id))} onPointerEnter={onIntencion && (() => onIntencion(it.id))} onFocus={onIntencion && (() => onIntencion(it.id))}>
           <span className="vd-tab-pill"><Icon name={it.icon} size={24} /></span>
           <span className="vd-tab-label">{it.label}</span>
         </button>

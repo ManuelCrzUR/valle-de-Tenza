@@ -64,7 +64,7 @@ export function Layout() {
       </footer>
 
       <div className="tabbar-fixed">
-        <TabBar items={NAV} value={NAV.some((n) => n.id === seg) ? seg : ''} onChange={(id) => go(`/${id}`)} />
+        <TabBar items={NAV} value={NAV.some((n) => n.id === seg) ? seg : ''} onChange={(id) => go(`/${id}`)} onIntencion={(id) => { if (id === 'mapa') precargarMapa() }} />
       </div>
     </div>
   )
