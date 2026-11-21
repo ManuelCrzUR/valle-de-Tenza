@@ -10,6 +10,8 @@ interface Props {
   /** Qué se borra y que no se puede deshacer. */
   children: ReactNode
   etiquetaBoton: string
+  /** Etiqueta del campo de confirmación. */
+  etiquetaCampo?: string
   ocupado?: boolean
   onConfirmar: () => void
   onCancelar: () => void
@@ -18,7 +20,7 @@ interface Props {
 const normal = (s: string) => s.trim().toLocaleLowerCase('es')
 
 /** Diálogo modal nativo para acciones destructivas: exige escribir el nombre. Devuelve el foco al botón que lo abrió. */
-export function ConfirmarBorrado({ abierto, titulo, confirmar, children, etiquetaBoton, ocupado, onConfirmar, onCancelar }: Props) {
+export function ConfirmarBorrado({ abierto, titulo, confirmar, children, etiquetaBoton, etiquetaCampo = 'Escribe el nombre para confirmar', ocupado, onConfirmar, onCancelar }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
   const origen = useRef<HTMLElement | null>(null)
   const [texto, setTexto] = useState('')
@@ -51,12 +53,12 @@ export function ConfirmarBorrado({ abierto, titulo, confirmar, children, etiquet
   }
 
   return (
-    <dialog ref={ref} className="confirmar-borrado" aria-labelledby={idTitulo} aria-describedby={idDesc} onClose={alCerrar}>
+    <dialog ref={ref} className="confirmar-borrado" aria-labelledby={idTitulo} aria-describedby={idDesc} onClose={alCerrar} onCancel={(e) => { if (ocupado) e.preventDefault() }}>
       <form onSubmit={enviar} className="confirmar-borrado-form">
         <h2 id={idTitulo} className="t-h2">{titulo}</h2>
         <div id={idDesc} className="confirmar-borrado-desc">{children}</div>
         <TextField
-          label="Escribe el nombre para confirmar"
+          label={etiquetaCampo}
           hint={confirmar}
           value={texto}
           onChange={(e) => setTexto(e.target.value)}

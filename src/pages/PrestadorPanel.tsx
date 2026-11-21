@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Button, TextField } from '../components/ui'
@@ -105,6 +105,7 @@ export default function PrestadorPanel() {
   const [error, setError] = useState('')
   const [ocupado, setOcupado] = useState(false)
   const [confirmando, setConfirmando] = useState<'negocio' | 'cuenta' | null>(null)
+  const tituloNegocios = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
     if (!listo || !supabase || !usuario) return
@@ -249,13 +250,15 @@ export default function PrestadorPanel() {
     const { error: err } = await supabase.from('businesses').delete().eq('id', id)
     setOcupado(false)
     setConfirmando(null)
-    if (err) { setError('No pude borrar el negocio. No se borró nada de la cuenta.'); return }
+    if (err) { setError('No pude borrar el negocio. Es posible que se hayan borrado algunas fotos o el menú; vuelve a intentarlo.'); return }
     setEmpresas((lista) => lista.filter((item) => item.id !== id))
     setActiva(null)
     setForm(vacia)
     setAviso(archivosFallidos
       ? 'Negocio borrado, pero no pude borrar todas sus fotos o su menú del almacenamiento. Pueden quedar archivos sin usar.'
       : 'Negocio borrado, con sus fotos y su menú.')
+    // El botón que abrió el diálogo ya no existe: el foco va al título de la lista.
+    requestAnimationFrame(() => tituloNegocios.current?.focus())
   }
 
   async function eliminarCuenta() {
@@ -392,7 +395,7 @@ export default function PrestadorPanel() {
         <Button type="submit" variant="secondary" disabled={ocupado}>Guardar perfil</Button>
       </form>
 
-      <h2 className="t-h2">Negocios</h2>
+      <h2 ref={tituloNegocios} tabIndex={-1} className="t-h2">Negocios</h2>
       <div className="prestador-lista">
         {empresas.map((empresa) => (
           <button key={empresa.id} type="button" className="panel prestador-card" onClick={() => elegir(empresa)}>
@@ -502,6 +505,7 @@ export default function PrestadorPanel() {
         abierto={confirmando === 'cuenta'}
         titulo="Eliminar mi cuenta"
         confirmar={usuario.email ?? ''}
+        etiquetaCampo="Escribe tu correo para confirmar"
         etiquetaBoton="Eliminar mi cuenta"
         ocupado={ocupado}
         onConfirmar={() => void eliminarCuenta()}

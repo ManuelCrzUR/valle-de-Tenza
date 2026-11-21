@@ -360,8 +360,13 @@
 .confirmar-borrado-desc p, .confirmar-borrado-desc ul { margin: 0 0 var(--space-2); }
 .confirmar-borrado-desc ul { padding-left: var(--space-5); }
 .confirmar-borrado-acciones { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: flex-end; }
-.vd-btn-peligro { background: var(--danger); color: #fff; border-color: var(--danger); }
-.vd-btn-peligro:hover:not(:disabled) { filter: brightness(0.92); }
+/* .vd-btn.vd-btn-peligro gana a .vd-btn-primary:hover y .vd-btn-secondary:hover */
+.vd-btn.vd-btn-peligro, .vd-btn.vd-btn-peligro:hover:not(:disabled) { background: var(--danger); color: #fff; border-color: var(--danger); }
+.vd-btn.vd-btn-peligro:hover:not(:disabled) { filter: brightness(0.92); }
+.confirmar-borrado { overflow-wrap: anywhere; }
+.confirmar-borrado .vd-field-msg { min-width: 0; overflow-wrap: anywhere; }
+/* Enlaces y botones de texto sueltos en las tarjetas de acceso: objetivo táctil de 44 px */
+.acceso-cambio button, .acceso-card > p > a { display: inline-flex; align-items: center; min-height: var(--touch-min); }
 .prestador-peligro {
   margin: var(--space-7) 0 var(--space-5);
   padding: var(--space-4);

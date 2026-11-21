@@ -147,6 +147,7 @@ export default function PrestadorAcceso() {
               Te enviamos un correo a {pendiente}. Abre el enlace para confirmar tu cuenta.
             </p>
             {error && <p className="acceso-error" role="alert">{error}</p>}
+            <div role="status">{aviso && <p className="acceso-aviso">{aviso}</p>}</div>
             {reenvio}
           </div>
         ) : (
@@ -181,7 +182,7 @@ export default function PrestadorAcceso() {
               />
             )}
             {error && <p className="acceso-error" role="alert">{error}</p>}
-            {aviso && <p className="acceso-aviso" role="status">{aviso}</p>}
+            <div role="status">{aviso && <p className="acceso-aviso">{aviso}</p>}</div>
             {modo === 'entrar' && pendiente && reenvio}
             <Button type="submit" variant="cta" disabled={!configurado || ocupado}>
               {ocupado ? 'Espera…' : textoBoton}

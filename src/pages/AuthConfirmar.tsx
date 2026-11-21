@@ -114,7 +114,7 @@ export default function AuthConfirmar() {
                     disabled={ocupado}
                   />
                   {error && <p className="acceso-error" role="alert">{error}</p>}
-                  <p className="acceso-aviso" role="status" hidden={!aviso}>{aviso}</p>
+                  <div role="status">{aviso && <p className="acceso-aviso">{aviso}</p>}</div>
                   <Button type="submit" variant="cta" disabled={ocupado || restan > 0 || !supabase}>
                     {restan > 0 ? `Reenviar correo (${restan} s)` : 'Reenviar correo'}
                   </Button>

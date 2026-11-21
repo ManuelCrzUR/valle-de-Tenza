@@ -20,7 +20,7 @@ export default function ClaveNueva() {
   const titulo = useRef<HTMLHeadingElement>(null)
   const vencido = listo && !usuario && !hecho
 
-  useEffect(() => { titulo.current?.focus() }, [vencido, hecho])
+  useEffect(() => { titulo.current?.focus() }, [listo, usuario, vencido, hecho])
 
   async function enviar(e: FormEvent) {
     e.preventDefault()
